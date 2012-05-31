@@ -12,7 +12,7 @@ include 'connect.php'; ?>
 
 
 <h4>Search Results:</h4>
-<?php $sql = mysql_query("select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';");
+<?php $sql = mysql_query("select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name;");
 
 while ($row = mysql_fetch_array($sql)){
 

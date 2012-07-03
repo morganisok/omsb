@@ -9,9 +9,9 @@ $textile = new Textile(); ?>
 
 <?php 
 $id=$_GET['id'];
-$sql = mysql_query("select * from authors where id=$id;");
+$sql = mysqli_query($db_server, "select * from authors where id=$id;");
 
-$author = mysql_fetch_array($sql);
+$author = mysqli_fetch_array($sql);
 $name = $author['name'];
 $alias = $author['alias'];
 $title = $author['title'];

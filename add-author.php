@@ -4,7 +4,7 @@
 $labels = array( 
 		"name" => "Name",
 		"alias" => "Alias",
-		"title" => "Ttile",
+		"title" => "Title",
 		);
 
 /* Check information from form */
@@ -29,24 +29,17 @@ else /* if data is okay */
 
 	foreach($labels as $field => $value)
   	{
-     		$good_data[ $field] = 
-           		strip_tags( trim( $_POST[$field] ) ) ;
-     		if( $field == "phone" )
-		{
-        		$good_data[ $field] =
-            		preg_replace( " /[) ( . -] /" , "" , $good_data[ $field] ) ;
-     		}
+     	$good_data[ $field] = 
+           	strip_tags( trim( $_POST[$field] ) ) ;    		
 		$good_data[$field] = 
-			mysqli_real_escape_string($cxn, $good_data[$field]);
+			mysqli_real_escape_string($db_server, $good_data[$field]);
 		}
-		$query = "INSERT INTO authors SET author='$good_data[author]'
-			WHERE name='$_POST[name]'
-			AND alias='$_POST[alias]'
-			AND title='$_POST[title]'";
-		$result = mysqli_query($cxn,$query)
+		$query = "INSERT INTO authors (name, alias, title) VALUES ('$_POST[name]','$_POST[alias]','$_POST[title]');";
+
+		$result = mysqli_query($db_server,$query)
 			or die ("Couldn't execute query:"
-				.mysqli_error($cxn));
-		if(mysqli_affected_rows($cxn) > 0)
+				.mysqli_error($db_server));
+		if(mysqli_affected_rows($db_server) > 0)
 		{
 			echo "{$_POST['name']} has been added.";
 		}
@@ -54,6 +47,6 @@ else /* if data is okay */
 			echo "No author added.";
 	}
 
-include footer.php;
+include ('footer.php');
 ?>
 

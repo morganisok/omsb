@@ -12,9 +12,9 @@ include 'connect.php'; ?>
 
 
 <h4>Search Results:</h4>
-<?php $sql = mysql_query("select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name;");
+<?php $sql = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name;");
 
-while ($row = mysql_fetch_array($sql)){
+while ($row = mysqli_fetch_array($sql)){
 
 	$id = $row['id'];
 	$name = $row['name'];

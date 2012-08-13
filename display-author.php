@@ -38,7 +38,29 @@ $bio = $author['bio'];
 	<?php echo $textile->TextileThis($bio); ?>
 </div>
 
+<div class="works">
+	<h4>OMSB Records by <?php echo $name; ?></h4>
 
-<?php include 'footer.php';
+<?php
+
+#  need to look up author_id in authorship table & return all source ids
+
+$sql = mysqli_query($db_server, "select source_id from authorships where author_id=$id;");
+while ($row = mysqli_fetch_array($sql)){
+
+    $sql2 = mysqli_query($db_server, "select editor,title from sources where id=$row[0];");
+    $temp2 = mysqli_fetch_array($sql2);
+
+    echo "<pre>";
+    print_r($temp2);
+    echo "</pre>";
+}
+#$name = $author['name'];
+#  need to loop over each source id & pull info from source_id table
+
 ?>
+
+</div>
+
+<?php include 'footer.php'; ?>
 

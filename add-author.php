@@ -5,27 +5,12 @@ $labels = array(
 		"name" => "Name",
 		"alias" => "Alias",
 		"title" => "Title",
+		"date_type" => "datemod",
+		"date_begin" => "from",
+		"date_end" => "to",
+		"bio" => "bio",
 		);
 
-/* Check information from form */
-foreach($_POST as $field => $value)
-{
-	/* check for blank fields */
-	if(empty($value))
-	{
-		$blank_array[] = $field;
-	}
-}
-if(@sizeof($blank_array) > 0) 
-{
-	echo "You didn't fill in one or more required fields.  You must enter:";
-	foreach($blank_array as $value)
-	{
-		echo "{$labels[$value]}";
-	}
-}
-else /* if data is okay */
-{
 
 	foreach($labels as $field => $value)
   	{
@@ -34,7 +19,22 @@ else /* if data is okay */
 		$good_data[$field] = 
 			mysqli_real_escape_string($db_server, $good_data[$field]);
 		}
-		$query = "INSERT INTO authors (name, alias, title) VALUES ('$_POST[name]','$_POST[alias]','$_POST[title]');";
+		$query = "INSERT INTO authors (
+				name, 
+				alias, 
+				title, 
+				date_type,
+				date_begin,
+				date_end
+			)
+			VALUES (
+				'$_POST[name]',
+				'$_POST[alias]',
+				'$_POST[title]', 
+				'$_POST[datemod]',
+				'$_POST[from]',
+				'$_POST[to]'
+			);";
 
 		$result = mysqli_query($db_server,$query)
 			or die ("Couldn't execute query:"
@@ -45,7 +45,7 @@ else /* if data is okay */
 		}
 		else
 			echo "No author added.";
-	}
+
 
 include ('footer.php');
 ?>

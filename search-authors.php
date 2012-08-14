@@ -24,7 +24,7 @@ function confirmAction(){
 
 <h4>Search Results:</h4>
 <!-- Pagination Stuff -->
-<?php $sql = mysqli_query($db_server, "select count(*) from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name;");
+<?php $sql = mysqli_query($db_server, "select count(*) from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';");
 	$db_count = mysqli_fetch_array($sql);
 	$pages = new Paginator;
 	$pages->items_total = $db_count[0];

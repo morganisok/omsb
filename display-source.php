@@ -60,7 +60,6 @@ $source = mysqli_fetch_array($sql);
 	<li><b>trans_none:</b>			<?php echo $trans_none; ?></li>
 	<li><b>date_begin:</b>			<?php echo $date_begin; ?></li>
 	<li><b>date_end:</b>			<?php echo $date_end; ?></li>
-	<li><b>region:</b>				<?php echo $region; ?></li>
 	<li><b>archive:</b>				<?php echo $archive; ?></li>
 	<li><b>link:</b>				<?php echo $link; ?></li>
 	<li><b>app_index:</b>			<?php echo $app_index; ?></li>
@@ -79,7 +78,36 @@ $source = mysqli_fetch_array($sql);
 	<li><b>trans_comment:</b>		<?php echo $trans_comment; ?></li>
 	<li><b>text_name:</b>			<?php echo $text_name; ?></li>
 	<li><b>cataloger:</b>			<?php echo $cataloger; ?></li>
+	<li><b>Countries:</b>
+		<ul>
+		<?php $countries = mysqli_query($db_server, "select name from countries where source_id=$id;");
+		while ($row = mysqli_fetch_array($countries)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul>
+	<li><b>Languages:</b>
+		<ul>
+		<?php $languages = mysqli_query($db_server, "select name from languages where source_id=$id;");
+		while ($row = mysqli_fetch_array($languages)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul>
+	<li><b>Types:</b>
+		<ul>
+		<?php $types = mysqli_query($db_server, "select name from types where source_id=$id;");
+		while ($row = mysqli_fetch_array($types)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul>
+	<li><b>Subjects:</b>
+		<ul>
+		<?php $subjects = mysqli_query($db_server, "select name from subjects where source_id=$id;");
+		while ($row = mysqli_fetch_array($subjects)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul>							
 </ul>
+
 
 <?php include 'footer.php'; ?>
 

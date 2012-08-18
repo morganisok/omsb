@@ -85,6 +85,7 @@ $source = mysqli_fetch_array($sql);
 			echo "<li> $row[0] </li>";
 		} ?>
 		</ul>
+	</li>
 	<li><b>Languages:</b>
 		<ul>
 		<?php $languages = mysqli_query($db_server, "select name from languages where source_id=$id;");
@@ -92,6 +93,7 @@ $source = mysqli_fetch_array($sql);
 			echo "<li> $row[0] </li>";
 		} ?>
 		</ul>
+	</li>
 	<li><b>Types:</b>
 		<ul>
 		<?php $types = mysqli_query($db_server, "select name from types where source_id=$id;");
@@ -99,13 +101,31 @@ $source = mysqli_fetch_array($sql);
 			echo "<li> $row[0] </li>";
 		} ?>
 		</ul>
+	</li>
 	<li><b>Subjects:</b>
 		<ul>
 		<?php $subjects = mysqli_query($db_server, "select name from subjects where source_id=$id;");
 		while ($row = mysqli_fetch_array($subjects)){
 			echo "<li> $row[0] </li>";
 		} ?>
-		</ul>							
+		</ul>	
+	</li>
+	<li><b>Authors:</b>
+		<ul>
+		<?php $authors = mysqli_query($db_server, "select author_id from authorships where source_id=$id;");
+		$authorsquery = "select name from authors where id in (";
+		while ($row = mysqli_fetch_array($authors)){
+			$authorsquery .= "$row[0],";
+		}
+		$authorsquery = substr($authorsquery,0,-1);
+		$authorsquery .= ");";
+		$authorsname = mysqli_query($db_server, $authorsquery);
+		while ($row = mysqli_fetch_array($authorsname)){
+			echo "<li> $row[0] </li>";
+		}
+		?>
+		</ul>	
+	</li>
 </ul>
 
 

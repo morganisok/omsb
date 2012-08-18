@@ -130,10 +130,11 @@ $labels = array(
 		 	if (next($region)==true) $query2 .= ",";
 		 }
 		 	 	$query2 .= ";";
-		 }
 			$result = mysqli_query($db_server,$query2)
 				or die ("Couldn't execute query:"
 					.mysqli_error($db_server));
+		 }
+
 
 // Insert Languagess into database
 		$language=$_POST['language'];
@@ -144,10 +145,10 @@ $labels = array(
 		 	if (next($language)==true) $query3 .= ",";
 		 }
 		 	 	$query3 .= ";";
-		 }
 			$result = mysqli_query($db_server,$query3)
 				or die ("Couldn't execute query:"
 					.mysqli_error($db_server));
+		 }
 
 // Insert Record Types into database
 		$type=$_POST['type'];
@@ -158,10 +159,10 @@ $labels = array(
 		 	if (next($type)==true) $query4 .= ",";
 		 }
 		 	 	$query4 .= ";";
-		 }
 			$result = mysqli_query($db_server,$query4)
 				or die ("Couldn't execute query:"
 					.mysqli_error($db_server));
+		 }
 
 
 // Insert Subjects into database
@@ -173,10 +174,24 @@ $labels = array(
 		 	if (next($subject)==true) $query5 .= ",";
 		 }
 		 	 	$query5 .= ";";
-		 }
 			$result = mysqli_query($db_server,$query5)
 				or die ("Couldn't execute query:"
-					.mysqli_error($db_server));									
+					.mysqli_error($db_server));		
+		 }
+
+// Insert Authors into database
+		$author=$_POST['author'];
+		if ($author){
+			$query6 = "insert into authorships (source_id, author_id) VALUES";
+		 foreach ($author as $a){
+		 	$query6 .= "($source_id,\"$a\")";
+		 	if (next($author)==true) $query6 .= ",";
+		 }
+		 	 	$query6 .= ";";
+			$result = mysqli_query($db_server,$query6)
+				or die ("Couldn't execute query:"
+					.mysqli_error($db_server));								
+		 }
 
 include ('footer.php');
 ?>

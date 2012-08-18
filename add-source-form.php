@@ -1,4 +1,5 @@
-<?php include('header.php'); ?>
+<?php include('header.php'); 
+include 'connect.php'; ?>
 
 <h2>Create a New Source</h2>
 
@@ -43,7 +44,14 @@
 				<textarea id="trans_comment" name="trans_comment" rows="5" placeholder="Other information about the translation, such as whether it appears on facing page of original text, whether translations are only offered for some of the text, or whether a translation of poetry is in verse or prose."></textarea></li>
 			<li><label for="archive">Archival Reference</label>
 				<textarea id="archive" name="archive" rows="3" placeholder="Archive, record office or library where original documents are located; include shelf no/class/call no. if known."></textarea></li>
-			<li>Need dropdowns for medieval author</li>
+			<li>Medieval Author
+				<select name="author[]" multiple="multiple">
+					<?php $authors = mysqli_query($db_server, "select name,id from authors order by name;");
+						while ($row = mysqli_fetch_array($authors)){ ?>
+							<option value="<?php echo $row[1]; ?>"><?php echo $row[0]; ?></option>
+						<?php } ?>
+				</select>
+			</li>
 			<li>Original Language:
 				<select name="language[]" multiple="multiple">
 					<option value="Anglo-Norman">Anglo-Norman</option>
@@ -331,7 +339,7 @@
 				<textarea id="intro_summary" name="intro_summary" rows="10"></textarea></li>
 			<li><label for="addenda">Notes</label>
 				<textarea id="addenda" name="addenda" rows="5" placeholder="These are private notes and will not be seen by the public."></textarea></li>
-			<li><li><input name="live" value="1" type="checkbox">Make record public</li></li>
+			<li><input name="live" value="1" type="checkbox">Make record public</li>
 
 	<input type='submit' value='Create New Source' />
 </form>

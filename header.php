@@ -1,19 +1,45 @@
-<html>
+<!doctype html>
 <head>
-<title>Online Medieval Sources Bibliography</title>
+  <meta charset="utf-8">
+
+  <title>Online Medieval Sources Bibliography</title>
+  <meta name="description" content="An Annotated Bibliography of Printed and Online Primary Sources for the Middle Ages">
+  <meta http-equiv="cleartype" content="on">
+
+  <link rel="stylesheet" href="http://omsb.alchemycs.com/style.css">
+
+  <script src="http://omsb.alchemycs.com/js/libs/modernizr-custom.js"></script>
 </head>
+
 <body>
+<div id="shadow">
+	<div id="wrapper">
+		<div id="content">
 
-<h1>Online Medieval Sources Bibliography</h1>
+		<header>
 
-<nav>
-	<a href="source-search-form.php">Search Sources</a> | 
-	<a href="add-source-form.php">Add Source</a>
-</nav>
+			<hgroup>
+				<h1>Online Medieval Sources Bibliography</h1>
+				<h2>An Annotated Bibliography of Printed and Online Primary Sources for the Middle Ages</h2>
+			</hgroup>
 
-<nav>
-	<a href="author-search-form.php">Search Authors</a> | 
-	<a href="add-author-form.php">Add Author</a>
-</nav>
+			<nav>
+				<ul>
+					<li><a href="http://omsb.alchemycs.com/index.php" title="Medieval Sources Bibliography Home">Home</a></li>
+					<li><a href="http://omsb.alchemycs.com/sources.php" title="Search the Medieval Sources Bibliography">Search Sources</a></li>
+					<li><a href="http://omsb.alchemycs.com/authors.php" title="Search Medieval Authors">Search Authors</a></li>
+					<li><a href="http://omsb.alchemycs.com/about/" title="About the Medieval Sources Bibliography">About</a>
+						<ul>
+							<li><a href="http://omsb.alchemycs.com/about/codebook.php" title="Codebook">Codebook</a></li>
+							<li><a href="http://omsb.alchemycs.com/about/compilers.php" title="Compilers">Compilers</a></li>
+							<li><a href="http://omsb.alchemycs.com/about/contents.php" title="Contents">Contents</a></li>
+							<li><a href="http://omsb.alchemycs.com/about/acknowledgements.php" title="Acknowledgements">Acknowledgements</a></li>
+							<li><a href="http://omsb.alchemycs.com/about/feedback.php" title="Feedback">Leave Feedback</a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
 
-<div id="content">
+		</header>
+
+			<div id="main">

@@ -1,0 +1,406 @@
+/* RESET */
+/* ----------------------------------------- */
+
+/**
+ * Eric Meyer's Reset Stylesheet
+ *
+ * v2.0
+ * 2011-01-26
+ * Author: Eric Meyer - http://meyerweb.com/eric/tools/css/reset/
+ */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+
+
+/* FONTS */
+/* ----------------------------------------- */
+
+@font-face {
+    font-family: 'Chantelli';
+    src: url('fonts/Chantelli_Antiqua-webfont.eot');
+    src: url('fonts/Chantelli_Antiqua-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/Chantelli_Antiqua-webfont.woff') format('woff'),
+         url('fonts/Chantelli_Antiqua-webfont.ttf') format('truetype'),
+         url('fonts/Chantelli_Antiqua-webfont.svg#ChantelliAntiquaRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src: url('fonts/OpenSans-Regular-webfont.eot');
+    src: url('fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-Regular-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Regular-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Regular-webfont.svg#OpenSansRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'OpenSansItalic';
+    src: url('fonts/OpenSans-Italic-webfont.eot');
+    src: url('fonts/OpenSans-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-Italic-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Italic-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Italic-webfont.svg#OpenSansItalic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'OpenSansBold';
+    src: url('fonts/OpenSans-Bold-webfont.eot');
+    src: url('fonts/OpenSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-Bold-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Bold-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'OpenSansBoldItalic';
+    src: url('fonts/OpenSans-BoldItalic-webfont.eot');
+    src: url('fonts/OpenSans-BoldItalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-BoldItalic-webfont.woff') format('woff'),
+         url('fonts/OpenSans-BoldItalic-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-BoldItalic-webfont.svg#OpenSansBoldItalic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+/* GENERAL */
+/* ----------------------------------------- */
+
+html, body {
+height: 100%;
+font-family: 'OpenSans', sans-serif;
+font-size: 14px;
+line-height: 20px;
+background: url('http://omsb.alchemycs.com/images/paperbg.jpg');
+color: #371b03;
+}
+
+#wrapper {
+min-height: 100%;
+width: 90%;
+max-width: 1200px;
+min-width: 700px;
+margin: 0 auto;
+}
+
+#shadow {
+min-height: 100%;
+box-shadow: inset 0 0 30px #371b03;
+}
+
+#content {
+overflow:auto;
+padding-bottom: 30px;
+}  
+
+footer {
+position: relative;
+margin-top: -30px; 
+height: 30px;
+clear:both;
+} 
+
+/*Opera Fix for sticky footer*/
+body:before {/* thanks to Maleika (Kohoutec)*/
+content:"";
+height:100%;
+float:left;
+width:0;
+margin-top:-32767px;/* thank you Erik J - negate effect of float*/
+}
+
+p {
+margin-bottom: 20px;
+}
+
+h1, h2, h3, h4, h5 {
+font-family: 'Chantelli', serif;
+text-align: center;
+}
+
+h1 {
+font-size: 36px;
+line-height: 46px;
+margin-bottom: 30px;
+}
+
+h2 {
+font-size: 30px;
+line-height: 36px;
+margin-bottom: 26px;
+}
+
+h3 {
+font-size: 26px;
+line-height: 32px;
+margin-bottom: 20px;
+}
+
+h4 {
+font-size: 20px;
+line-height: 26px;
+margin-bottom: 16px;
+text-align: left;
+}
+
+h5 {
+font-size: 16px;
+line-height: 20px;
+margin-bottom: 14px;
+text-align: left;
+}
+
+b, strong {
+font-family: 'OpenSansBold';
+}
+
+i {
+font-family: 'OpenSansItalic';
+}
+
+a {
+color: #074C88;
+text-decoration: none;
+}
+
+a:hover {
+color: #0A6CC2 !important;
+}
+
+a:visited {
+color: #4B044E;
+}
+
+article li {
+list-style-type: disc;
+margin-left: 3em;
+}
+
+/* HEADER */
+/* ----------------------------------------- */
+
+hgroup {
+text-align: center;
+margin-top: 30px;
+margin-bottom: 10px;
+}
+
+hgroup h1 {
+background: url('http://omsb.alchemycs.com/images/logo.png') no-repeat;
+width: 500px;
+height: 130px;
+text-indent: 100%;
+white-space: nowrap;
+overflow: hidden; 
+margin: 0 auto;
+}
+
+hgroup h2 {
+font-size: 22px;
+}
+
+
+
+
+/* NAVIGATION */
+/* ----------------------------------------- */
+
+header nav {
+height: 40px;
+line-height: 40px;
+border-bottom: 1px solid #371b03;
+border-top: 1px solid #371b03;
+-webkit-box-shadow: 0px 10px 10px -10px #371b03;
+box-shadow: 0px 10px 10px -10px #371b03;
+margin-bottom: 30px;
+text-align: center;
+font-size: 16px;
+}
+
+header nav li a {
+display: inline-block;
+line-height: 40px;
+}
+
+header nav li {
+display: inline;
+padding: 0 20px;
+position: relative;
+}
+
+header nav li ul {
+display: none;
+position: absolute;
+left: 0;
+background: url('http://omsb.alchemycs.com/images/paperbg.jpg');
+border: 1px solid #371b03;
+-webkit-box-shadow: 0px 2px 8px 2px #371b03;
+box-shadow: 0px 2px 8px 2px #371b03;
+}
+
+header nav li:hover ul {
+display: block;
+}
+
+header nav li ul li {
+display: block;
+line-height: 26px;
+text-align: left;
+}
+
+header nav li ul li a {
+display: inline-block;
+line-height: 26px;
+}
+
+
+/* HOME PAGE */
+/* ----------------------------------------- */
+
+#credits {
+text-align: center;
+margin-bottom: 20px;
+}
+
+#credits p {
+margin-bottom: 0;
+}
+
+#credits .editors {
+font-size: 12px;
+}
+
+article#home {
+float: left;
+width: 65%;
+}
+
+aside#home {
+float: right;
+width: 30%;
+margin-right: 10px;
+-webkit-box-shadow: 0px 2px 8px 2px #371b03;
+box-shadow: 0px 2px 8px 2px #371b03;
+-moz-box-sizing: border-box;
+-webkit-box-sizing: border-box;
+box-sizing: border-box; 
+padding: 10px;
+}
+
+aside#home li {
+margin-bottom: 10px;
+}
+
+aside#home li.action {
+font-size: 18px;
+font-family: 'OpenSansBold';
+}
+
+
+/* SOURCE DETAILS */
+/* ----------------------------------------- */
+
+label {
+font-family: 'OpenSansBold';
+}
+
+.citation {
+font-size: 16px;
+}
+
+article.source {
+border: 2px solid #371b03;
+padding: 10px;
+margin-bottom: 20px;
+}
+
+article.source p {
+margin-bottom: 10px;
+}
+
+article.source ul.apparatus li,
+article.source ul.translation li {
+display: inline;
+margin-left: 5px;
+}
+
+article.source ul.apparatus li:after,
+article.source ul.translation li:after {
+content: ',';
+}
+
+article.source ul.apparatus li:last-child:after,
+article.source ul.translation li:last-child:after {
+content: '';
+}
+
+
+/* FOOTER */
+/* ----------------------------------------- */
+
+footer {
+clear: both;
+text-align: center;
+font-size: 12px;
+border-top: 1px solid #371b03;
+-webkit-box-shadow: 0px 10px 10px -10px #371b03;
+box-shadow: 0px -10px 10px -10px #371b03;
+}

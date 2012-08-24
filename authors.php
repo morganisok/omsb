@@ -1,8 +1,16 @@
-<?php 
-include 'header.php';
-include 'connect.php'; 
+<?php include 'header.php';
+include 'connect.php';
 require_once 'paginator.class.php';
+
+if (!$_POST){
+
 ?>
+
+    <form action="authors.php" method="post">
+     Search: <input type="text" name="term" /><br />
+    <input type="submit" name="submit" value="Submit" />
+    </form>
+
 
 <script type="text/javascript" language="JavaScript">
 function confirmAction(){
@@ -12,10 +20,14 @@ function confirmAction(){
 
 </script>
 
+<?php
+} else {  # we have a search term
+?>
 
 <h2>Author Search Results</h2>
 
-<?php $searchterm = $_POST['term']; ?>
+<?php
+$searchterm = $_POST['term']; ?>
 
 <p>You searched for: 
 <?php echo $searchterm; ?>
@@ -65,5 +77,6 @@ while ($row = mysqli_fetch_array($sql)){
 ?>
 
 <?php include 'footer.php';
+}
 ?>
 

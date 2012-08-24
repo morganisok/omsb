@@ -22,14 +22,14 @@ $bio = $author['bio'];
 ?>
 
 
-
-<p><span class="name"><?php echo $name; ?></span>
+<article class="author">
+<h4><span class="name"><?php echo $name; ?></span>
 	<?php if ($alias) {
 				echo '(';
 				echo $alias;
 				echo ')';
 			} ?>
-	<?php if ($title) { echo $title; } ?></p>
+	<?php if ($title) { echo $title; } ?></h4>
 <p><?php echo $datemod; 
 	echo "&nbsp;";
 	echo $from; ?> - <?php echo $to; ?></p>
@@ -39,26 +39,32 @@ $bio = $author['bio'];
 </div>
 
 <div class="works">
-	<h4>OMSB Records by <?php echo $name; ?></h4>
+	<h5>OMSB Records by <?php echo $name; ?></h5>
 
-<?php
+	<ul>
+		<?php
+		$sql = mysqli_query($db_server, "select source_id from authorships where author_id=$id;");
+		while ($row = mysqli_fetch_array($sql)){
 
-#  need to look up author_id in authorship table & return all source ids
+		    $sql2 = mysqli_query($db_server, "select editor,title,id,publication,pub_date from sources where id=$row[0];");
+		    $works = mysqli_fetch_array($sql2);
 
-$sql = mysqli_query($db_server, "select source_id from authorships where author_id=$id;");
-while ($row = mysqli_fetch_array($sql)){
+		    $editor = $works['editor'];
+		    $title = $works['title'];
+		    $id = $works['id'];
+		    $pub = $works['publication'];
+		    $date = $works['pub_date']; ?>
 
-    $sql2 = mysqli_query($db_server, "select editor,title from sources where id=$row[0];");
-    $temp2 = mysqli_fetch_array($sql2);
+		    <li>
+		    	<?php echo $editor; ?>, <a href="http://omsb.alchemycs.com/display-source.php?id=<?php echo $id; ?>"><?php echo $title; ?></a>
+		    	(<?php echo $pub; ?>, <?php echo $date; ?>).
+		    </li>
 
-    echo "<pre>";
-    print_r($temp2);
-    echo "</pre>";
-}
-#$name = $author['name'];
-#  need to loop over each source id & pull info from source_id table
+		<?php }
 
-?>
+		?>
+	</ul>
+</article>
 
 </div>
 

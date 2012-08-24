@@ -45,73 +45,145 @@ $source = mysqli_fetch_array($sql);
 	$text_name = $source['text_name'];
 	$cataloger = $source['cataloger'];
 ?>
-		
-<ul>
-	<li><b>MyID:</b>				<?php echo $my_id; ?></li>
-	<li><b>editor:</b>				<?php echo $editor; ?></li>
-	<li><b>title:</b>				<?php echo $title; ?></li>
-	<li><b>publication:</b>			<?php echo $publication; ?></li>
-	<li><b>pub_date:</b>			<?php echo $pub_date; ?></li>
-	<li><b>isbn:</b>				<?php echo $isbn; ?></li>
-	<li><b>text_pages:</b>			<?php echo $text_pages; ?></li>
-	<li><b>trans_english:</b>		<?php echo $trans_english; ?></li>
-	<li><b>trans_french:</b>		<?php echo $trans_french; ?></li>
-	<li><b>trans_other:</b>			<?php echo $trans_other; ?></li>
-	<li><b>trans_none:</b>			<?php echo $trans_none; ?></li>
-	<li><b>date_begin:</b>			<?php echo $date_begin; ?></li>
-	<li><b>date_end:</b>			<?php echo $date_end; ?></li>
-	<li><b>archive:</b>				<?php echo $archive; ?></li>
-	<li><b>link:</b>				<?php echo $link; ?></li>
-	<li><b>app_index:</b>			<?php echo $app_index; ?></li>
-	<li><b>app_glossary:</b>		<?php echo $app_glossary; ?></li>
-	<li><b>app_appendix:</b>		<?php echo $app_appendix; ?></li>
-	<li><b>app_bibliography:</b>	<?php echo $app_bibliography; ?></li>
-	<li><b>app_facsimile:</b>		<?php echo $app_facsimile; ?></li>
-	<li><b>app_intro:</b>			<?php echo $app_intro; ?></li>
-	<li><b>comments:</b>			<?php echo $textile->TextileThis($comments); ?></li>
-	<li><b>intro_summary:</b>		<?php echo $textile->TextileThis($intro_summary); ?></li>
-	<li><b>addenda:</b>				<?php echo $addenda; ?></li>
-	<li><b>live:</b>				<?php echo $live; ?></li>
-	<li><b>created_at:</b>			<?php echo $created_at; ?></li>
-	<li><b>updated_at:</b>			<?php echo $updated_at; ?></li>
-	<li><b>user_id:</b>				<?php echo $user_id; ?></li>
-	<li><b>trans_comment:</b>		<?php echo $trans_comment; ?></li>
-	<li><b>text_name:</b>			<?php echo $text_name; ?></li>
-	<li><b>cataloger:</b>			<?php echo $cataloger; ?></li>
-	<li><b>Countries:</b>
+	
+<!-- public view for not logged in users -->
+
+<article class="source">
+	<p class="citation">
+		<?php echo $editor; ?>,
+		<i><?php echo $title; ?></i>
+		(<?php echo $publication; ?>,<?php echo $pub_date; ?>). 
+		<?php if($isbn) { ?>
+			ISBN: 
+			<?php echo $isbn; ?>
+			<a href="http://worldcat.org/isbn/<?php echo $isbn; ?>" target="_blank">Find this book in a library</a>
+		<?php } ?>
+		<?php if($link) { ?>
+			<a href="<?php echo $link; ?>" target="_blank">Read this source online</a>
+		<?php } ?>
+	</p>
+
+	<?php if($text_name) { ?>
+		<p><label>Text name(s):</label> <?php echo $text_name; ?></p>
+	<?php } ?>
+
+	<?php if($text_pages) { ?>
+		<p><label>Number of pages of primary source text:</label> <?php echo $text_pages; ?></p>
+	<?php } ?>
+
+	<p><label>Author(s):</label>
 		<ul>
-		<?php $countries = mysqli_query($db_server, "select name from countries where source_id=$id;");
-		while ($row = mysqli_fetch_array($countries)){
+		<?php $authors = mysqli_query($db_server, "select author_id from authorships where source_id=$id;");
+		$authorsquery = "select name from authors where id in (";
+		while ($row = mysqli_fetch_array($authors)){
+			$authorsquery .= "$row[0],";
+		}
+		$authorsquery = substr($authorsquery,0,-1);
+		$authorsquery .= ");";
+		$authorsname = mysqli_query($db_server, $authorsquery);
+		while ($row = mysqli_fetch_array($authorsname)){
 			echo "<li> $row[0] </li>";
-		} ?>
+			// TODO: NEED TO GET AUTHOR ID AND MAKE A LINK
+		}
+		?>
 		</ul>
-	</li>
-	<li><b>Languages:</b>
+	</p>
+
+	<?php if($date_begin || $date_end) { ?>
+		<p><label>Dates:</label> <?php echo $date_begin; ?> - <?php echo $date_end; ?></p>
+	<?php } ?>
+
+	<?php if($archive) { ?>
+		<p><label>Archival Reference:</label> <?php echo $archive; ?></p>
+	<?php } ?>	
+
+	<p><label>Original Language(s):</label>
 		<ul>
 		<?php $languages = mysqli_query($db_server, "select name from languages where source_id=$id;");
 		while ($row = mysqli_fetch_array($languages)){
 			echo "<li> $row[0] </li>";
 		} ?>
 		</ul>
-	</li>
-	<li><b>Types:</b>
+	</p>
+
+	<p><label>Translation:</label>
+		<ul class="translation">
+		<?php if($trans_none) { echo "<li>Original language included</li>"; }
+			if($trans_english) { echo "<li>Translated into English</li>"; }
+			if($trans_french) { echo "<li>Translated into French</li>"; }
+			if($trans_other) { echo "<li>Translated into another language</li>"; } 
+			?>
+		</ul>
+	</p>
+
+	<?php if($trans_comment) { ?>
+		<p><label>Translation Comments:</label> <?php echo $trans_comment; ?></p>
+	<?php } ?>
+
+	<p><label>Geopolitical Region(s):</label>
+		<ul>
+		<?php $countries = mysqli_query($db_server, "select name from countries where source_id=$id;");
+		while ($row = mysqli_fetch_array($countries)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul>
+	</p>
+
+	<?php if($county) { ?>
+		<p><label>County/Region:</label> <?php echo $county; ?></p>
+	<?php } ?>
+
+	<p><label>Record Type(s):</label>
 		<ul>
 		<?php $types = mysqli_query($db_server, "select name from types where source_id=$id;");
 		while ($row = mysqli_fetch_array($types)){
 			echo "<li> $row[0] </li>";
 		} ?>
 		</ul>
-	</li>
-	<li><b>Subjects:</b>
+	</p>
+	<p><label>Subject Heading(s):</label>
 		<ul>
 		<?php $subjects = mysqli_query($db_server, "select name from subjects where source_id=$id;");
 		while ($row = mysqli_fetch_array($subjects)){
 			echo "<li> $row[0] </li>";
+			// some day it might be nice to make all of the subjects link to a search for the subject (might as well do other stuff too)
 		} ?>
-		</ul>	
-	</li>
-	<li><b>Authors:</b>
-		<ul>
+		</ul>
+	</p>
+	<p><label>Apparatus:</label>
+		<ul class="apparatus">
+		<?php if($app_index) { echo "<li>Index</li>"; } 
+			if($app_glossary) { echo "<li>Glossary</li>"; }
+			if($app_appendix) { echo "<li>Appendix</li>"; }
+			if($app_bibliography) { echo "<li>Bibliography</li>"; }
+			if($app_facsimile) { echo "<li>Facsimile</li>"; }
+			if($app_intro) { echo "<li>Introduction</li>"; }
+			?>
+		</ul>
+	</p>
+	<div class="comments"><label>Comments:</label><?php echo $textile->TextileThis($comments); ?></div>
+	<div class="intro-summary"><label>Introduction Summary:</label><?php echo $textile->TextileThis($intro_summary); ?></div>
+	<p><label>Cataloger:</label><?php echo $cataloger; ?></p>
+
+</article>
+
+<!-- private view for logged in users -->
+
+
+<article class="source private">
+
+	<h5>Publication Information</h5>
+	<p><label>Modern Editor/Translator:</label><?php echo $editor; ?></p>
+	<p><label>Book/Article Title:</label> <?php echo $title; ?></p>
+	<p><label>Publication Information:</label> <?php echo $publication; ?>, <?php echo $pub_date; ?></p>
+	<p><label>ISBN:</label> <?php echo $isbn; ?></p>
+	<p><label>Number of pages of primary source text:</label> <?php echo $text_pages; ?></p>
+	<p><label>Hyperlink:</label> <?php echo $link; ?></p>
+
+	<h5>Original Text Information</h5>
+	<p><label>Text name(s):</label> <?php echo $text_name; ?></p>
+	<p><label>Medieval Author(s):</label>
+				<ul>
 		<?php $authors = mysqli_query($db_server, "select author_id from authorships where source_id=$id;");
 		$authorsquery = "select name from authors where id in (";
 		while ($row = mysqli_fetch_array($authors)){
@@ -124,9 +196,74 @@ $source = mysqli_fetch_array($sql);
 			echo "<li> $row[0] </li>";
 		}
 		?>
-		</ul>	
-	</li>
-</ul>
+		</ul></p>
+	<p><label>Dates:</label> <?php echo $date_begin; ?> - <?php echo $date_end; ?></p>
+	<p><label>Archival Reference: </label> <?php echo $archive; ?></p>
+	<p><label>Original Language(s):</label>
+		<ul>
+		<?php $languages = mysqli_query($db_server, "select name from languages where source_id=$id;");
+		while ($row = mysqli_fetch_array($languages)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul></p>
+	<p><label>Translation: </label>
+		<ul class="translation">
+		<?php if($trans_none) { echo "<li>Original language included</li>"; }
+			if($trans_english) { echo "<li>Translated into English</li>"; }
+			if($trans_french) { echo "<li>Translated into French</li>"; }
+			if($trans_other) { echo "<li>Translated into another language</li>"; } 
+			?>
+		</ul></p>
+	<p><label>Translation Comments:</label> <?php echo $trans_comment; ?></p>
+
+	<h5>Region Information</h5>
+	<p><label>Geopolitical Region(s): </label>
+		<ul>
+		<?php $countries = mysqli_query($db_server, "select name from countries where source_id=$id;");
+		while ($row = mysqli_fetch_array($countries)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul></p>
+	<p><label>County/Region:</label> <?php echo $county; ?></p>
+
+	<h5>Finding Aids</h5>
+	<p><label>Record Types:</label>
+		<ul>
+		<?php $types = mysqli_query($db_server, "select name from types where source_id=$id;");
+		while ($row = mysqli_fetch_array($types)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul></p>
+	<p><label>Subject Headings:</label>
+				<ul>
+		<?php $subjects = mysqli_query($db_server, "select name from subjects where source_id=$id;");
+		while ($row = mysqli_fetch_array($subjects)){
+			echo "<li> $row[0] </li>";
+		} ?>
+		</ul>	</p>
+
+<h5>Apparatus</h5>
+	<p><label>Apparatus:</label>
+		<ul class="apparatus">
+		<?php if($app_index) { echo "<li>Index</li>"; } 
+			if($app_glossary) { echo "<li>Glossary</li>"; }
+			if($app_appendix) { echo "<li>Appendix</li>"; }
+			if($app_bibliography) { echo "<li>Bibliography</li>"; }
+			if($app_facsimile) { echo "<li>Facsimile</li>"; }
+			if($app_intro) { echo "<li>Introduction</li>"; }
+			?>
+		</ul></p>
+	<div class="comments"><label>Comments:</label> <?php echo $textile->TextileThis($comments); ?> </div>
+	<div class="intro-summary"><label>Introduction Summary:</label> <?php echo $textile->TextileThis($intro_summary); ?></div>
+	<p><label>Cataloger:</label>
+	<p><label>My ID:</label> <?php echo $my_id; ?></p>
+	<p><label>Notes: </label> <?php echo $addenda; ?></p>
+	<p><?php if($live) {
+		echo "This record is viewable by the public";
+	} else {
+		echo "This record is hidden from the public";
+	} ?></p>
+	<p><label>Cataloger: </label><?php echo $cataloger; ?></p>
 
 
 <?php include 'footer.php'; ?>

@@ -9,36 +9,40 @@ if (!$_GET){           ####  we display the form to get a search term  ####
     <input type="submit" value="Submit" />
     </form>
 
-
 	<script type="text/javascript" language="JavaScript">
 	function confirmAction(){
       var confirmed = confirm("Are you sure? This will remove this author forever.");
       return confirmed;
 	}
-
 	</script>
 
 	<?php
 } else {  # we have a search term
 	?>
 
-
 <?php
 if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ####
 
 	echo "<h2>Author Search Results</h2>";
 
-	$searchterm = $_GET['search']; ?>
+	$searchterm = mysqli_real_escape_string($db_server, $_GET['search']); ?>
 
 	<p>You searched for: 
-	<?php echo $searchterm; ?>
+	<?php echo $_GET['search']; ?>
 	</p>
 
+	<?php
+	$result = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name $pages->limit;");
+
+	if ( !$result->num_rows ) 
+         print ("Could not find any authors by that name.");
+	else {
+	?>
 
 	<h4>Search Results:</h4>
 	<!-- Pagination Stuff -->
-	<?php $sql = mysqli_query($db_server, "select count(*) from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';");
-		$db_count = mysqli_fetch_array($sql);
+	<?php $result = mysqli_query($db_server, "select count(*) from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';");
+		$db_count = mysqli_fetch_array($result);
 		$pages = new Paginator;
 		$pages->items_total = $db_count[0];
 		$pages->mid_range = 7;
@@ -47,9 +51,9 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 		echo $pages->display_items_per_page(); ?>
 	<!-- End Pagination Stuff -->
 
-	<?php $sql = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name $pages->limit;");
+	<?php
 
-	while ($row = mysqli_fetch_array($sql)){
+	while ($row = mysqli_fetch_array($result)){
 
 		$id = $row['id'];
 		$name = $row['name'];
@@ -74,11 +78,9 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 		</ul>
 	
 <?php
+	} # end good search term
 	} # end while
 } else {           ####  not searching, we will display an author  ####
-
-
-
 
 require_once('classTextile.php'); 
 $textile = new Textile(); ?>
@@ -86,10 +88,10 @@ $textile = new Textile(); ?>
 <h2>Author Details</h2>
 
 <?php 
-$id=$_GET['id'];
-$sql = mysqli_query($db_server, "select * from authors where id=$id;");
+$id = mysqli_real_escape_string($db_server, $_GET['id']);
+$result = mysqli_query($db_server, "select * from authors where id=$id;");
 
-$author = mysqli_fetch_array($sql);
+$author = mysqli_fetch_array($result);
 $name = $author['name'];
 $alias = $author['alias'];
 $title = $author['title'];
@@ -99,6 +101,10 @@ $date_begin = $author['date_begin'];
 $date_end = $author['date_end'];
 $bio = $author['bio'];
 ?>
+
+<?php if ( !$result->num_rows ) {
+  			print ("Could not find that author."); 
+		} else { ?>
 
 
 <article class="author">
@@ -123,8 +129,8 @@ $bio = $author['bio'];
 
         <ul>
                 <?php
-                $sql = mysqli_query($db_server, "select source_id from authorships where author_id=$id;");
-                while ($row = mysqli_fetch_array($sql)){
+                $result = mysqli_query($db_server, "select source_id from authorships where author_id=$id;");
+                while ($row = mysqli_fetch_array($result)){
 
                     $sql2 = mysqli_query($db_server, "select editor,title,id,publication,pub_date from sources where id=$row[0];");
                     $works = mysqli_fetch_array($sql2);
@@ -144,9 +150,10 @@ $bio = $author['bio'];
 
                 ?>
         </ul>
+    </div>
 </article>
 
-</div>
+<?php } ?>
 
 <?php
 

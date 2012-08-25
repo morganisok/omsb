@@ -15,6 +15,7 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
                 "alias" => "Alias",
                 "title" => "Title",
                 "date_type" => "date_type",
+                "date_circa" => "date_circa",
                 "date_begin" => "date_begin",
                 "date_end" => "date_end",
                 "bio" => "bio"
@@ -46,6 +47,7 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
                 }
                 else
 							display_form($_POST, "No changes made.", "Submit Changes");
+					echo "<a href=\"authors.php?id=$id\">View Author Record</a>";
 
 	} else {                    ####  we don't have an ID because we are adding new author  ####
 

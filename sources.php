@@ -9,13 +9,6 @@ if (!$_GET){           ####  we display the form to get a search term  ####
     <input type="submit" value="Submit" />
     </form>
 
-	<script type="text/javascript" language="JavaScript">
-	function confirmAction(){
-      var confirmed = confirm("Are you sure? This will remove this source forever!");
-      return confirmed;
-	}
-	</script>
-
 	<?php
 } else {  # we have a search term
 	?>
@@ -65,6 +58,12 @@ if (!$_GET){           ####  we display the form to get a search term  ####
 				<?php echo $title; ?></a> 
 
 				<p class="maintenance">
+						<script type="text/javascript" language="JavaScript">
+						function confirmAction(){
+					      var confirmed = confirm("Are you sure? This will remove this source forever!");
+					      return confirmed;
+						}
+						</script>
 					<a href="http://omsb.alchemycs.com/admin-source.php?id=<?php echo $id; ?>">Edit</a> | 
 					<a href="http://omsb.alchemycs.com/admin-source.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
 				</p>
@@ -339,6 +338,12 @@ if (!$_GET){           ####  we display the form to get a search term  ####
 		} ?></p>
 		<p><label>Cataloger: </label><?php echo $cataloger; ?></p>
 		<p class="maintenance">
+				<script type="text/javascript" language="JavaScript">
+				function confirmAction(){
+			      var confirmed = confirm("Are you sure? This will remove this source forever!");
+			      return confirmed;
+				}
+				</script>
 			<a href="http://omsb.alchemycs.com/admin-source.php?id=<?php echo $id; ?>">Edit</a> | 
 			<a href="http://omsb.alchemycs.com/admin-source.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
 		</p>

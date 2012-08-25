@@ -352,11 +352,20 @@ box-sizing: border-box;
 padding: 10px;
 }
 
-/* ABOUT PAGE */
+/* ABOUT PAGES */
 /* ----------------------------------------- */
 
 aside#about li {
 margin-bottom: 10px;
+}
+
+table {
+margin: 0 auto;
+}
+
+table td {
+padding: 4px 8px;
+border-bottom: 1px solid #908174;
 }
 
 

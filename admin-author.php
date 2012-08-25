@@ -111,9 +111,10 @@ if ( $_GET ) {         ####  we have $_GET data -- edit or delete author ####
 		$id=mysqli_real_escape_string($db_server, $_GET['delete']);
 		$result = mysqli_query($db_server, "select * from authors where id=$id;");
 
-		if ( !$result->num_rows )
-  			print ("Could not find any authors by that name.");
-		else {
+		if ( !$result->num_rows ) {
+  			print ("Could not find that author. <br>");
+  			print ("<a href=\"authors.php\">Go to Search Page</a>.");
+		} else {
 
 			$author = mysqli_fetch_array($result);
 			$name = $author['name'];
@@ -135,9 +136,10 @@ if ( $_GET ) {         ####  we have $_GET data -- edit or delete author ####
 		$id=mysqli_real_escape_string($db_server, $_GET['id']);
 		$result = mysqli_query($db_server, "select * from authors where id=$id;");
 
-		if ( !$result->num_rows )
-  			print ("Could not find that author."); 
-		else {
+		if ( !$result->num_rows ) {
+  			print ("Could not find that author. <br>"); 
+  			print ("<a href=\"authors.php\">Go to Search Page</a>.");
+		} else {
 			$author = mysqli_fetch_array($result);
 			$name = $author['name'];
 			$alias = $author['alias'];

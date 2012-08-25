@@ -4,8 +4,14 @@
 
       <h2>Contents: Series and Texts Entered</h2>
 
-<p>The following is a list of series and publishers whose works have been
+      <p>The following is a list of series and publishers whose works have been
 entered into the database.</p>
+
+	<p>Jump to: <a href="#printed">Printed Sources</a> |  <a href="#online">Online Sources</a>
+
+      <a name="printed"></a><h3>Printed Sources</h3>
+
+
 
 <p><b>Anglo-Saxon Texts</b><br>
 Ed. Andy Orchard, Boydell and Brewer series, 1999-.Editions of Anglo-Saxon
@@ -146,7 +152,7 @@ Published for the Dept. of History, University of Pennsylvania, 1894-1907.
 
 
 
-<h2>Online Sources</h2>
+<a name="online"></a><h3>Online Sources</h3>
 <p>The following websites contain many primary sources, all of which have been entered separately into the database.  In 
 addition to these, dozens of websites containing one or a few texts are also in the database.</p>
 

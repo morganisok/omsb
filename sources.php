@@ -25,34 +25,43 @@ if (!$_GET){           ####  we display the form to get a search term  ####
 
 	echo "<h2>Search Results</h2>";
 
-	$searchterm = $_GET['search']; ?>
+	$searchterm = mysqli_real_escape_string($db_server, $_GET['search']); ?>
 
 	<p>You searched for: 
-	<?php echo $searchterm; ?>
+	<?php echo $_GET['search']; ?>
 	</p>
+
+	<?php $result = mysqli_query($db_server, "select * from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%';");
+	if ( !$result->num_rows ) {
+		print ("Could not find any sources by that name."); ?>
+		<form action="sources.php" method="get">
+		Search: <input type="text" name="search" /><br />
+		<input type="submit" value="Submit" />
+		</form> <?php
+	} else {
+	?>
 
 	<h4>Search Results:</h4>
 	<!-- Pagination Stuff -->
-	<?php $sql = mysqli_query($db_server, "select count(*) from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%';");
-		$db_count = mysqli_fetch_array($sql);
+	<?php $result = mysqli_query($db_server, "select count(*) from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%';");
+		$db_count = mysqli_fetch_array($result);
 		$pages = new Paginator;
 		$pages->items_total = $db_count[0];
 		$pages->mid_range = 7;
 		$pages->paginate();
 		echo $pages->display_pages(); 
-		echo $pages->display_items_per_page(); ?>
-	<!-- End Pagination Stuff -->
+		echo $pages->display_items_per_page();
+		$result = mysqli_query($db_server, "select * from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%' order by sources.editor $pages->limit;");
+	#<!-- End Pagination Stuff -->
 
-	<?php $sql = mysqli_query($db_server, "select * from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%' order by sources.editor $pages->limit;");
-
-	while ($row = mysqli_fetch_array($sql)){
+	while ($row = mysqli_fetch_array($result)){
 
 		$id = $row['id'];
 		$editor = $row['editor'];
 		$title = $row['title']; ?>
 
 		<ul>
-			<li><?php echo $editor; ?>, <a href="http://omsb.alchemycs.com/display-source.php?id=<?php echo $id; ?>">
+			<li><?php echo $editor; ?>, <a href="http://omsb.alchemycs.com/sources.php?id=<?php echo $id; ?>">
 				<?php echo $title; ?></a> 
 
 				<p class="maintenance">
@@ -62,7 +71,9 @@ if (!$_GET){           ####  we display the form to get a search term  ####
 			</li>
 		</ul>
 		
-	<?php } # end while
+	 	<?php
+		 } # end while
+	 }  # end if for good search results
 } else {           ####  not searching, we will display a source  ####
 
 	require_once('classTextile.php'); 
@@ -71,10 +82,10 @@ if (!$_GET){           ####  we display the form to get a search term  ####
 	<h2>Source Details</h2>
 
 	<?php 
-	$id=$_GET['id'];
-	$sql = mysqli_query($db_server, "select * from sources where id=$id;");
+	$id = mysqli_real_escape_string($db_server, $_GET['id']);
+	$result = mysqli_query($db_server, "select * from sources where id=$id;");
 
-	$source = mysqli_fetch_array($sql);
+	$source = mysqli_fetch_array($result);
 		$my_id = $source['my_id'];
 		$editor = $source['editor'];
 		$title = $source['title'];

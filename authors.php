@@ -31,12 +31,14 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 	<?php echo $_GET['search']; ?>
 	</p>
 
-	<?php
-	$result = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name $pages->limit;");
-
-	if ( !$result->num_rows ) 
-         print ("Could not find any authors by that name.");
-	else {
+	<?php $result = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';");
+	if ( !$result->num_rows ) {
+		print ("Could not find any authors by that name."); ?>
+		<form action="authors.php" method="get">
+		Search: <input type="text" name="search" /><br />
+		<input type="submit" value="Submit" />
+		</form> <?php
+	} else {
 	?>
 
 	<h4>Search Results:</h4>
@@ -48,10 +50,9 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 		$pages->mid_range = 7;
 		$pages->paginate();
 		echo $pages->display_pages(); 
-		echo $pages->display_items_per_page(); ?>
-	<!-- End Pagination Stuff -->
-
-	<?php
+		echo $pages->display_items_per_page();
+		$result = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name $pages->limit;");
+#	<!-- End Pagination Stuff -->
 
 	while ($row = mysqli_fetch_array($result)){
 
@@ -77,9 +78,9 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 			</li>
 		</ul>
 	
-<?php
+		<?php
+		}# end while
 	} # end good search term
-	} # end while
 } else {           ####  not searching, we will display an author  ####
 
 require_once('classTextile.php'); 
@@ -103,7 +104,11 @@ $bio = $author['bio'];
 ?>
 
 <?php if ( !$result->num_rows ) {
-  			print ("Could not find that author."); 
+  			print ("Could not find that author."); ?>
+         <form action="authors.php" method="get">
+         Search: <input type="text" name="search" /><br />
+         <input type="submit" value="Submit" />
+         </form> <?php 
 		} else { ?>
 
 

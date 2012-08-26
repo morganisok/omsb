@@ -4,9 +4,10 @@ require_once 'paginator.class.php';
 
 if (!$_GET){           ####  we display the form to get a search term  ####
 ?>
+	<h2>Search for Medieval Authors</h2>
     <form action="authors.php" method="get">
-     Search: <input type="text" name="search" /><br />
-    <input type="submit" value="Submit" />
+    <li class="half"><label>Search:</label> <input type="text" name="search" placeholder="type an author's name"/></li>
+    <input type="submit" class="button" value="Search" />
     </form>
 
 	<?php
@@ -26,16 +27,17 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 
 	<?php $result = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';");
 	if ( !$result->num_rows ) {
-		print ("Could not find any authors by that name."); ?>
-		<form action="authors.php" method="get">
-		Search: <input type="text" name="search" /><br />
-		<input type="submit" value="Submit" />
-		</form> <?php
+		print ("Could not find that author.  Please try a different search term."); ?>
+		    <form action="authors.php" method="get">
+		    <li class="half"><label>Search:</label> <input type="text" name="search" placeholder="type an author's name"/></li>
+		    <input type="submit" class="button" value="Search" />
+		    </form> <?php
 	} else {
 	?>
 
 	<h4>Search Results:</h4>
 	<!-- Pagination Stuff -->
+	<div class="pages">
 	<?php $result = mysqli_query($db_server, "select count(*) from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';");
 		$db_count = mysqli_fetch_array($result);
 		$pages = new Paginator;
@@ -44,10 +46,11 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 		$pages->paginate();
 		echo $pages->display_pages(); 
 		echo $pages->display_items_per_page();
-		$result = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name $pages->limit;");
-#	<!-- End Pagination Stuff -->
+		$result = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name $pages->limit;"); ?>
+		</div>
+	<!-- End Pagination Stuff -->
 
-	while ($row = mysqli_fetch_array($result)){
+	<?php while ($row = mysqli_fetch_array($result)){
 
 		$id = $row['id'];
 		$name = $row['name'];
@@ -103,11 +106,11 @@ $bio = $author['bio'];
 ?>
 
 <?php if ( !$result->num_rows ) {
-  			print ("Could not find that author."); ?>
-         <form action="authors.php" method="get">
-         Search: <input type="text" name="search" /><br />
-         <input type="submit" value="Submit" />
-         </form> <?php 
+  			print ("Could not find that author.  Please try a different search term"); ?>
+		    <form action="authors.php" method="get">
+		    <li class="half"><label>Search:</label> <input type="text" name="search" placeholder="type an author's name"/></li>
+		    <input type="submit" class="button" value="Search" />
+		    </form> <?php 
 		} else { ?>
 
 

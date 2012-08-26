@@ -6,7 +6,7 @@ if (!$_GET){           ####  we display the form to get a search term  ####
 ?>
     <form action="sources.php" method="get">
      Search: <input type="text" name="search" /><br />
-    <input type="submit" value="Submit" />
+    <input type="submit" class="button" value="Submit" />
     </form>
 
 	<?php

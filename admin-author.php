@@ -1,5 +1,17 @@
-<?php include('header.php');
-        include ('connect.php'); 
+<?php
+include('header.php');
+include('connect.php'); 
+
+require_once('ulogin/config/all.inc.php');
+require_once('ulogin/main.inc.php');
+if (!sses_running())
+   sses_start();
+
+function isAppLoggedIn(){
+   return isset($_SESSION['uid']) && isset($_SESSION['username']) && isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn']===true);
+}
+
+if (isAppLoggedIn()){
 
 
 if (!$_POST && !$_GET) {      ####  new author form  ####
@@ -15,7 +27,6 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
                 "alias" => "Alias",
                 "title" => "Title",
                 "date_type" => "date_type",
-                "date_circa" => "date_circa",
                 "date_begin" => "date_begin",
                 "date_end" => "date_end",
                 "bio" => "bio"
@@ -47,7 +58,6 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
                 }
                 else
 							display_form($_POST, "No changes made.", "Submit Changes");
-					echo "<a href=\"authors.php?id=$id\">View Author Record</a>";
 
 	} else {                    ####  we don't have an ID because we are adding new author  ####
 
@@ -96,7 +106,6 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
                 if(mysqli_affected_rows($db_server) > 0) {
                      $_POST['id'] = mysqli_insert_id($db_server);
 							display_form($_POST, "{$_POST['name']} has been added.", "Submit Changes");
-
 							echo "<a href=\"authors.php?id={$_POST['id']}\">View Author Record</a>.";
                 }
                 else
@@ -157,6 +166,10 @@ if ( $_GET ) {         ####  we have $_GET data -- edit or delete author ####
 	} # end if -- edit or delete
 }  # end _GET data
 
+} else {
+  echo "You are not logged in.";
+}
+
 ####  function to display the form  ####
 function display_form($data, $legend, $button){
 ?>
@@ -183,7 +196,7 @@ function display_form($data, $legend, $button){
                                 <textarea id="bio" name="bio" rows="5" placeholder="Biographical information"><?php echo $data['bio'];?></textarea></li>
                 </ul>
         </fieldset>
-        <input type='submit' value='<?php echo $button;?>' />
+        <input type='submit' class="button" value='<?php echo $button;?>' />
 	</form>
 
 <?php

@@ -47,7 +47,7 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 		echo $pages->display_pages(); 
 		echo $pages->display_items_per_page();
 		$result = mysqli_query($db_server, "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%' order by authors.name $pages->limit;"); ?>
-		</div>
+	</div>
 	<!-- End Pagination Stuff -->
 
 	<?php while ($row = mysqli_fetch_array($result)){
@@ -67,16 +67,18 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 					echo ')';
 				} ?>
 				<?php echo $date_begin; ?> - <?php echo $date_end; ?>
-				<p class="maintenance">
-					<script type="text/javascript" language="JavaScript">
-					function confirmAction(){
-				      var confirmed = confirm("Are you sure? This will remove this author forever.");
-				      return confirmed;
-					}
-					</script>
-					<a href="http://omsb.alchemycs.com/admin-author.php?id=<?php echo $id; ?>">Edit</a> | 
-					<a href="http://omsb.alchemycs.com/admin-author.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
-				</p>
+				<?php if($isloggedin) { ?>
+					<p class="maintenance">
+						<script type="text/javascript" language="JavaScript">
+						function confirmAction(){
+					      var confirmed = confirm("Are you sure? This will remove this author forever.");
+					      return confirmed;
+						}
+						</script>
+						<a href="http://omsb.alchemycs.com/admin-author.php?id=<?php echo $id; ?>">Edit</a> | 
+						<a href="http://omsb.alchemycs.com/admin-author.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
+					</p>
+				<?php } ?>
 			</li>
 		</ul>
 	

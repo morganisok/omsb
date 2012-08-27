@@ -3,13 +3,18 @@
 
 
 if (!$_POST && !$_GET) {      ####  new source form  ####
-	display_form(0, "Add a New Source", "Create New Source");
+	display_form($db_server,0, "Add a New Source", "Create New Source");
 }
 
 if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
+echo "<pre>";
+#print_r($_POST);
+echo "</pre>";
 	if ( $_POST['id'] ) {          ####  we already have an ID so we are editing  ####
+echo "We are in edit.";
 		$id=$_POST['id'];
         $labels = array( 
+			"id" => "id",
 			"my_id" => "my_id",
 			"editor" => "editor",
 			"title" => "title",
@@ -39,6 +44,7 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
 		//	"created_at" => "created_at",
 		//	"updated_at" => "updated_at",
 			"trans_comment" => "trans_comment",
+			"subjects" => "subjects",
 			"text_name" => "text_name",
 			"cataloger" => "cataloger",
 		);
@@ -51,10 +57,10 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
                         mysqli_real_escape_string($db_server, $good_data[$field]);
                 }
             $query = "UPDATE sources set
-            			my_id				= '$good_data[my_id]',
+            		my_id				= '$good_data[my_id]',
 						editor				= '$good_data[editor]',
 						title				= '$good_data[title]',
-						publication			= '$good_data[publication]',
+						publication		= '$good_data[publication]',
 						pub_date			= '$good_data[pub_date]',
 						isbn				= '$good_data[isbn]',
 						text_pages			= '$good_data[text_pages]',
@@ -81,21 +87,36 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
 						trans_comment		= '$good_data[trans_comment]',
 						text_name			= '$good_data[text_name]',
 						cataloger			= '$good_data[cataloger]'
-						## NEED TO ADD JOIN TABLES ##
-					where id=$id;";
+						where id=$id;";
+					## NEED TO ADD JOIN TABLES ##
+
                 $result = mysqli_query($db_server,$query)
                         or die ("Couldn't execute query:"
                                 .mysqli_error($db_server));
+#print_r($query);
+
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
+
+join_table ("countries",   $_POST, $db_server, "update");
+join_table ("languages",   $_POST, $db_server, "update");
+join_table ("types",       $_POST, $db_server, "update");
+join_table ("subjects",    $_POST, $db_server, "update");
+join_table ("authorships", $_POST, $db_server, "update");
+
                 if(mysqli_affected_rows($db_server) > 0)
                 {
-							display_form($_POST, "{$_POST['title']} has been updated.", "Submit Changes");
+							display_form($db_server,$_POST, "{$_POST['title']} has been updated.", "Submit Changes");
                 }
                 else
-							display_form($_POST, "No changes made.", "Submit Changes");
+							display_form($db_server,$_POST, "No changes made.", "Submit Changes");
 
-		} else {                    ####  we don't have an ID because we are adding new author  ####
+		} else {                    ####  we don't have an ID because we are adding new source  ####
+echo "We are updating a new source.";
 
 		$labels = array( 
+					"id" => "id",
 					"my_id" => "my_id",
 					"editor" => "editor",
 					"title" => "title",
@@ -137,6 +158,7 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
                         mysqli_real_escape_string($db_server, $good_data[$field]);
                 }
                 		$query = "INSERT INTO sources (
+							id,
 							my_id,
 							editor,
 							title,
@@ -169,6 +191,7 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
 							cataloger
 							)
 							VALUES (
+								'$_POST[id]',
 								'$_POST[my_id]',
 								'$_POST[editor]',
 								'$_POST[title]', 
@@ -207,88 +230,102 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
 				.mysqli_error($db_server));
 		if(mysqli_affected_rows($db_server) > 0)
 		{
-			display_form($_POST, "{$_POST['title']} has been added.", "Submit Changes");
+			$_POST['id'] = mysqli_insert_id($db_server);
+			$source_id = $_POST['id'];
+			display_form($db_server,$_POST, "{$_POST['title']} has been added.", "Submit Changes");
 			echo "<a href=\"sources.php?id={$_POST['id']}\">View Source</a>.";
 
-				// Insert Geopolitical Regions into database
-						$country=$_POST['country'];
-						if ($country){
-							$query2 = "insert into countries (source_id, name) VALUES";
-						 foreach ($country as $r){
-						 	$query2 .= "($source_id,\"$r\")";
-						 	if (next($country)==true) $query2 .= ",";
-						 }
-						 	 	$query2 .= ";";
-							$result = mysqli_query($db_server,$query2)
-								or die ("Couldn't execute query:"
-									.mysqli_error($db_server));
-						 }
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
 
 
-				// Insert Languagess into database
-						$language=$_POST['language'];
-						if ($language){
-							$query3 = "insert into languages (source_id, name) VALUES";
-						 foreach ($language as $l){
-						 	$query3 .= "($source_id,\"$l\")";
-						 	if (next($language)==true) $query3 .= ",";
-						 }
-						 	 	$query3 .= ";";
-							$result = mysqli_query($db_server,$query3)
-								or die ("Couldn't execute query:"
-									.mysqli_error($db_server));
-						 }
+join_table("countries", $_POST, $db_server, "insert");
+join_table("languages", $_POST, $db_server, "insert");
+join_table("types", $_POST, $db_server, "insert");
+join_table("subjects", $_POST, $db_server, "insert");
+join_table("authorships", $_POST, $db_server, "insert");
 
-				// Insert Record Types into database
-						$type=$_POST['type'];
-						if ($type){
-							$query4 = "insert into types (source_id, name) VALUES";
-						 foreach ($type as $t){
-						 	$query4 .= "($source_id,\"$t\")";
-						 	if (next($type)==true) $query4 .= ",";
-						 }
-						 	 	$query4 .= ";";
-							$result = mysqli_query($db_server,$query4)
-								or die ("Couldn't execute query:"
-									.mysqli_error($db_server));
-						 }
+#				// Insert Geopolitical Regions into database
+#						$countries=$_POST['countries'];
+#						if ($countries){
+#							$query2 = "insert into countries (source_id, name) VALUES ";
+#						 foreach ($countries as $c){
+#						 	$query2 .= "($source_id,\"$c\")";
+#						 	if (next($countries)==true) $query2 .= ",";
+#						 }
+#						 	 	$query2 .= ";";
+#							$result = mysqli_query($db_server,$query2)
+#								or die ("Couldn't execute query:"
+#									.mysqli_error($db_server));
+#						 }
 
 
-				// Insert Subjects into database
-						$subject=$_POST['subject'];
-						if ($subject){
-							$query5 = "insert into subjects (source_id, name) VALUES";
-						 foreach ($subject as $s){
-						 	$query5 .= "($source_id,\"$s\")";
-						 	if (next($subject)==true) $query5 .= ",";
-						 }
-						 	 	$query5 .= ";";
-							$result = mysqli_query($db_server,$query5)
-								or die ("Couldn't execute query:"
-									.mysqli_error($db_server));		
-						 }
+#				// Insert Languagess into database
+#						$language=$_POST['language'];
+#						if ($language){
+#							$query3 = "insert into languages (source_id, name) VALUES ";
+#						 foreach ($language as $l){
+#						 	$query3 .= "($source_id,\"$l\")";
+#						 	if (next($language)==true) $query3 .= ",";
+#						 }
+#						 	 	$query3 .= ";";
+#							$result = mysqli_query($db_server,$query3)
+#								or die ("Couldn't execute query:"
+#									.mysqli_error($db_server));
+#						 }
 
-				// Insert Authors into database
-						$author=$_POST['author'];
-						if ($author){
-							$query6 = "insert into authorships (source_id, author_id) VALUES";
-						 foreach ($author as $a){
-						 	$query6 .= "($source_id,\"$a\")";
-						 	if (next($author)==true) $query6 .= ",";
-						 }
-						 	 	$query6 .= ";";
-							$result = mysqli_query($db_server,$query6)
-								or die ("Couldn't execute query:"
-									.mysqli_error($db_server));								
-						 }
+#				// Insert Record Types into database
+#						$type=$_POST['type'];
+#						if ($type){
+#							$query4 = "insert into types (source_id, name) VALUES ";
+#						 foreach ($type as $t){
+#						 	$query4 .= "($source_id,\"$t\")";
+#						 	if (next($type)==true) $query4 .= ",";
+#						 }
+#						 	 	$query4 .= ";";
+#							$result = mysqli_query($db_server,$query4)
+#								or die ("Couldn't execute query:"
+#									.mysqli_error($db_server));
+#						 }
+
+
+#				// Insert Subjects into database
+#						$subject=$_POST['subject'];
+#						if ($subject){
+#							$query5 = "insert into subjects (source_id, name) VALUES ";
+#						 foreach ($subject as $s){
+#						 	$query5 .= "($source_id,\"$s\")";
+#						 	if (next($subject)==true) $query5 .= ",";
+#						 }
+#						 	 	$query5 .= ";";
+#							$result = mysqli_query($db_server,$query5)
+#								or die ("Couldn't execute query:"
+#									.mysqli_error($db_server));		
+#						 }
+
+#				// Insert Authors into database
+#						$author=$_POST['author'];
+#						if ($author){
+#							$query6 = "insert into authorships (source_id, author_id) VALUES ";
+#						 foreach ($author as $a){
+#						 	$query6 .= "($source_id,\"$a\")";
+#						 	if (next($author)==true) $query6 .= ",";
+#						 }
+#						 	 	$query6 .= ";";
+#							$result = mysqli_query($db_server,$query6)
+#								or die ("Couldn't execute query:"
+#									.mysqli_error($db_server));								
+#						 }
 		}
 		else
-			display_form($_POST, "No source added", "Submit Changes");
+			display_form($db_server, $_POST, "No source added", "Submit Changes");
 	}
 } 
 
 
 if ( $_GET ) {         ####  we have $_GET data -- edit or delete source ####
+echo "We are having GET data.";
 	if ( $_GET['delete'] ) {    ## we are going to delete this source really quickly! ##
 		echo "<h2>Delete Source</h2>";
 
@@ -317,6 +354,8 @@ if ( $_GET ) {         ####  we have $_GET data -- edit or delete source ####
 
 	} else {                    ####  we have _GET['id'] -- we are going to edit the source  #####0
 
+echo "We are updating the DB.";
+
 		$id=mysqli_real_escape_string($db_server, $_GET['id']);
 		$result = mysqli_query($db_server, "select * from sources where id=$id;");
 
@@ -325,6 +364,7 @@ if ( $_GET ) {         ####  we have $_GET data -- edit or delete source ####
   			print ("<a href=\"sources.php\">Go to Search Page</a>.");
 		} else {
 			$source = mysqli_fetch_array($result);
+				$id = $source['id'];
 				$my_id = $source['my_id'];
 				$editor = $source['editor'];
 				$title = $source['title'];
@@ -359,18 +399,30 @@ if ( $_GET ) {         ####  we have $_GET data -- edit or delete source ####
 				$cataloger = $source['cataloger'];
 				## ADD JOIN TABLES
 
-				display_form($source, "Edit Source", "Submit Changes");
+echo "<pre>";
+print_r($source);
+echo "</pre>";
+
+join_table("countries",   $source, $db_server, "update");
+join_table("languages",   $source, $db_server, "update");
+join_table("types",       $source, $db_server, "update");
+join_table("subjects",    $source, $db_server, "update");
+join_table("authorships", $source, $db_server, "update");
+
+
+				display_form($db_server, $source, "Edit Source", "Submit Changes");
 				}  # end valid search result
 		} # end if -- edit or delete
 	}  # end _GET data
 
 ####  function to display the form  ####
-function display_form($data, $legend, $button){
+function display_form($db_server, $data, $legend, $button){
 ?>
 	<form id="sources"  action='admin-source.php' method='POST'>
 		<h2><?php echo $legend; ?></h2>
 		<fieldset>
 			<legend>Cataloger Information</legend>
+  				<input id="id" name="id" type="hidden" value=<?php echo $data['id'];?>></li>
 				<li class="half"><label for="my_id">MyID</label>
 					<input id="my_id" name="my_id" value="<?php echo $data['my_id'];?>" type="text" placeholder="00.00" autofocus></li>
 				<li class="half"><label for="cataloger">Cataloger Initials</label>
@@ -410,15 +462,15 @@ function display_form($data, $legend, $button){
 				<li class="half"><label for="archive">Archival Reference</label>
 					<textarea id="archive" name="archive" value="<?php echo $data['archive'];?>" rows="4" placeholder="Archive, record office or library where original documents are located; include shelf no/class/call no. if known."></textarea></li>
 				<li class="half"><label for="author">Medieval Author</label>
-					<select name="author[]" multiple="multiple">
-						<?php $authors = mysqli_query($db_server, "select name,id from authors order by name;");
-							while ($row = mysqli_fetch_array($authors)){ ?>
+					<?php $authors = mysqli_query($db_server, "select name,id from authors order by name;"); ?>
+					<select name="authorships[]" multiple="multiple">
+							<?php while ($row = mysqli_fetch_array($authors)){ ?>
 								<option value="<?php echo $row[1]; ?>"><?php echo $row[0]; ?></option>
 							<?php } ?>
 					</select>
 				</li>
 				<li class="half"><label for "language">Original Language:</label>
-					<select name="language[]" multiple="multiple">
+					<select name="languages[]" multiple="multiple">
 						<option value="Anglo-Norman">Anglo-Norman</option>
 						<option value="Arabic">Arabic</option>
 						<option value="Azestan">Azestan</option>
@@ -463,8 +515,8 @@ function display_form($data, $legend, $button){
 			<legend>Region Information</legend>
 				<li class="half"><label for="region">County/Town/Parish/Village</label>
 					<input id="region" name="region" value="<?php echo $data['region'];?>" type="text"></li>
-				<li class="half"><label for "country">Geopolitical Region:</label>
-					<select name="country[]" multiple="multiple">
+				<li class="half"><label for "countries">Geopolitical Region:</label>
+					<select name="countries[]" multiple="multiple">
 						 <option value="Africa">Africa</option>
 						 <option value="Algeria">Algeria</option>
 						 <option value="Armenia">Armenia</option>
@@ -520,7 +572,7 @@ function display_form($data, $legend, $button){
 		<fieldset>
 			<legend>Finding Aids</legend>
 				<li class="half"><label for="type">Record Type</label>
-					<select name="type[]" multiple="multiple">
+					<select name="types[]" multiple="multiple">
 						<option value="Account Roll">Account Roll</option>
 						<option value="Account Roll - Bailiff/Reeve">Account Roll - Bailiff/Reeve</option>
 						<option value="Account Roll - Building">Account Roll - Building</option>
@@ -599,7 +651,7 @@ function display_form($data, $legend, $button){
 					</select>
 				</li>
 				<li class="half"><label for="subject">Subject</label>
-					<select name="subject[]" multiple="multiple">
+					<select name="subjects[]" multiple="multiple">
 						<option value="Agriculture">Agriculture</option>
 						<option value="Apocalypticism">Apocalypticism</option>
 						<option value="Architecture and Buildings">Architecture and Buildings</option>
@@ -709,6 +761,50 @@ function display_form($data, $legend, $button){
 		<input type="submit" class="button" value="<?php echo $button;?>" />
 	</form>
 <?php
+}
+
+function join_table($table, $data, $db_server, $action){
+echo "<pre>1";
+print_r($table);
+echo "1</pre>";
+echo "<pre>2";
+print_r($data[$table]);
+echo "2</pre>";
+	if ( $table == 'authorships' )
+		$name = "author_id";
+	else
+		$name = "name";
+print ("dammit");
+print( next($data[$table]));
+print( next($data[$table]));
+$data2 = $data[$table];
+print( next($data[$table]));
+print ("dammit2:");
+	if ($data[$table]){
+		if ( $action == 'update' ){
+			$query = "delete from $table where source_id = $data[id];";
+			$result = mysqli_query($db_server,$query)
+				or die ("Couldn't execute delete:"
+				.mysqli_error($db_server));
+echo "<pre>3";
+print_r($query);
+echo "3</pre>";
+		}
+		$query = "insert into $table (source_id, $name) VALUES ";
+		foreach ($data[$table] as $f){
+		$query .= "(".$data[id].",\"$f\")";
+		if (next($data[$table])==true) $query .= ",";
+		}
+		$query .= ";";
+#echo "<br>";
+echo "<pre>4";
+print_r($query);
+echo "4</pre>";
+#echo "<br>";
+		$result = mysqli_query($db_server,$query)
+			or die ("Couldn't execute insert:"
+			.mysqli_error($db_server));
+	}
 }
 
 include ('footer.php'); ?>

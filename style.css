@@ -414,6 +414,10 @@ form li.third {
 width: 32%;
 }
 
+form li.fourth {
+width: 23%;
+}
+
 form li.checkbox {
 border: 1px solid #908174;
 margin-right: 10px;
@@ -442,6 +446,35 @@ border-radius: 4px;
 
 input.button:hover {
 box-shadow: inset 0 0 30px #908174;
+}
+
+#format {
+display: none;
+	-webkit-transition: all 4s ease-in-out;
+	-moz-transition: all 4s ease-in-out;
+	-o-transition: all 4s ease-in-out;
+	transition: all 4s ease-in-out;
+}
+
+#format table {
+margin: 0;
+}
+
+#format table th {
+text-align: left;
+font-family: 'OpenSansBold';
+}
+
+#format ul li {
+list-style-type: disc;
+float: none;
+margin-left: 1em;
+}
+
+#format ol li {
+list-style-type: decimal;
+float: none;
+margin-left: 1em;
 }
 
 /* SEARCH RESULTS */

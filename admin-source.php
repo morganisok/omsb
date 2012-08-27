@@ -1,5 +1,10 @@
-<?php include('header.php');
-        include ('connect.php'); 
+<?php
+	include('header.php');
+	include ('connect.php'); 
+	include "languages.php";
+	include "countries.php";
+	include "types.php";
+	include "subjects.php";
 
 
 if (!$_POST && !$_GET) {      ####  new source form  ####
@@ -7,11 +12,11 @@ if (!$_POST && !$_GET) {      ####  new source form  ####
 }
 
 if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
-echo "<pre>";
+#echo "<pre>";
 #print_r($_POST);
-echo "</pre>";
+#echo "</pre>";
 	if ( $_POST['id'] ) {          ####  we already have an ID so we are editing  ####
-echo "We are in edit.";
+#echo "We are in edit.";
 		$id=$_POST['id'];
         $labels = array( 
 			"id" => "id",
@@ -95,9 +100,9 @@ echo "We are in edit.";
                                 .mysqli_error($db_server));
 #print_r($query);
 
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
+#echo "<pre>";
+#print_r($_POST);
+#echo "</pre>";
 
 join_table ("countries",   $_POST, $db_server, "update");
 join_table ("languages",   $_POST, $db_server, "update");
@@ -465,16 +470,42 @@ function display_form($db_server, $data, $legend, $button){
 					<?php $authors = mysqli_query($db_server, "select name,id from authors order by name;"); ?>
 					<select name="authorships[]" multiple="multiple">
 						<?php
+
+						$authors_query = mysqli_query($db_server, "select name,id from authors order by name;");
 						$i = 0;
-						while ($row = mysqli_fetch_array($authors)){ ?>
-							<option value="<?php echo $row[1]; ?>"><?php echo $row[0]; ?></option>
-<?php
+						while ($row = mysqli_fetch_array($authors_query)){
+							$author_array[$i] = array( $row[1], $row[0] );
 							$i++;
-						} ?>
+						}
+
+						$author_selected_query = mysqli_query($db_server, "select author_id from authorships where source_id=2146116005;");
+						$i = 0;
+						while ($row = mysqli_fetch_array($author_selected_query)){
+							$author_selected_lookup_query = mysqli_query($db_server, "select name from authors where id=$row[0];");
+							$val = mysqli_fetch_array($author_selected_lookup_query);
+							$author_selected[$i] = array( $row[0], $val[0] );
+							$i++;
+						}
+
+						$author_new = array_merge($author_selected, $author_array);
+						$author_new = array_map("unserialize", array_unique(array_map("serialize", $author_new)));
+
+						$i = 0;
+						while ( $i < count($author_new) ){
+							if ( $i < count($author_selected) )
+								print ("                <option selected=\"selected\" value=\"".$author_new[$i][0]."\">".$author_new[$i][1]."</option>\n");
+							else
+								print ("                <option value=\"".$author_new[$i][0]."\">".$author_new[$i][1]."</option>\n");
+							$i++;
+						}
+
+						?>
+
+
 					</select>
 				</li>
 <?php
-$d = get_table_array("languages", $data[id], $db_server);
+#$d = get_table_array("languages", $data['id'], $db_server);
 #echo "<pre>";
 #echo "---|";
 #print_r($d);
@@ -485,18 +516,28 @@ $d = get_table_array("languages", $data[id], $db_server);
 
 
 
-include "languages.php";
-include "countries.php";
-include "types.php";
-include "subjects.php";
 ?>
 				<li class="half"><label for "languages">Original Language:</label>
 					<select name="languages[]" multiple="multiple">
-						<?php $i = 0;
-							while ( $i < count($language_array) ){
-								print ("						<option value=\"".$language_array[$i]."\">".$language_array[$i]."</option>\n");
-								$i++;
-							} ?>
+                  <?php $i=0;   ####    getting the data from the DB table
+                  $result = mysqli_query($db_server, "select name from languages where source_id=$data[id];");
+                  while ($row = mysqli_fetch_array($result)){
+                     $language_selected[$i] = $row[0];
+                     $i++;
+                  }
+                  if ( !$language_selected )
+                     $language_new = $language_array;
+                  else
+                     $language_new = array_unique( array_merge($language_selected, $language_array) );
+ 
+                  $i = 0;  ####    outputting from the total array ####
+                  while ( $i < count($language_new) ){
+                     if ( $i < count($language_selected) )
+                        print ("                <option selected=\"selected\" value=\"".$language_new[$i]."\">".$language_new[$i]."</option>\n");
+                     else
+                        print ("                <option value=\"".$language_new[$i]."\">".$language_new[$i]."</option>\n");
+                     $i++;
+                  } ?>
 					</select>
 				</li>
 		</fieldset>
@@ -505,23 +546,24 @@ include "subjects.php";
 				<li class="half"><label for="region">County/Town/Parish/Village</label>
 					<input id="region" name="region" value="<?php echo $data['region'];?>" type="text"></li>
 				<li class="half"><label for "countries">Geopolitical Region:</label>
-						<?php $i=0;
+					<select name="countries[]" multiple="multiple">
+						<?php $i=0;   ####    getting the data from the DB table
 						$result = mysqli_query($db_server, "select name from countries where source_id=$data[id];");
                   while ($row = mysqli_fetch_array($result)){
-							$selected[$i] = $row[0];
+							$country_selected[$i] = $row[0];
 							$i++;
 						}
-print("<pre>11");
-print_r(count($selected));
-print("11</pre>");
-?>
-					<select name="countries[]" multiple="multiple">
-						<?php $i = 0;
-$country_new = array_unique( array_merge($selected, $country_array) );
+						if ( !$country_selected )
+							$country_new = $country_array;
+						else
+							$country_new = array_unique( array_merge($country_selected, $country_array) );
 
-
+						$i = 0;  ####    outputting from the total array ####
 						while ( $i < count($country_new) ){
-							print ("						<option value=\"".$country_new[$i]."\">".$country_new[$i]."</option>\n");
+							if ( $i < count($country_selected) )
+								print ("						<option selected=\"selected\" value=\"".$country_new[$i]."\">".$country_new[$i]."</option>\n");
+							else
+								print ("						<option value=\"".$country_new[$i]."\">".$country_new[$i]."</option>\n");
 							$i++;
 						} ?>
 					</select>
@@ -531,20 +573,48 @@ $country_new = array_unique( array_merge($selected, $country_array) );
 			<legend>Finding Aids</legend>
 				<li class="half"><label for="type">Record Type</label>
 					<select name="types[]" multiple="multiple">
-						<?php $i = 0;
-							while ( $i < count($type_array) ){
-								print ("						<option value=\"".$type_array[$i]."\">".$type_array[$i]."</option>\n");
-								$i++;
-							} ?>
+                  <?php $i=0;   ####    getting the data from the DB table
+                  $result = mysqli_query($db_server, "select name from types where source_id=$data[id];");
+                  while ($row = mysqli_fetch_array($result)){
+                     $type_selected[$i] = $row[0];
+                     $i++;
+                  }
+                  if ( !$type_selected )
+                     $type_new = $type_array;
+                  else
+                     $type_new = array_unique( array_merge($type_selected, $type_array) );
+  
+                  $i = 0;  ####    outputting from the total array ####
+                  while ( $i < count($type_new) ){
+                     if ( $i < count($type_selected) )
+                        print ("                <option selected=\"selected\" value=\"".$type_new[$i]."\">".$type_new[$i]."</option>\n");
+                     else
+                        print ("                <option value=\"".$type_new[$i]."\">".$type_new[$i]."</option>\n");
+                     $i++;
+                  } ?>
 					</select>
 				</li>
 				<li class="half"><label for="subject">Subject</label>
 					<select name="subjects[]" multiple="multiple">
-						<?php $i = 0;
-							while ( $i < count($subject_array) ){
-								print ("						<option value=\"".$subject_array[$i]."\">".$subject_array[$i]."</option>\n");
-								$i++;
-							} ?>
+                  <?php $i=0;   ####    getting the data from the DB table
+                  $result = mysqli_query($db_server, "select name from subjects where source_id=$data[id];");
+                  while ($row = mysqli_fetch_array($result)){
+                     $subject_selected[$i] = $row[0];
+                     $i++;
+                  }
+                  if ( !$subject_selected )
+                     $subject_new = $subject_array;
+                  else
+                     $subject_new = array_unique( array_merge($subject_selected, $subject_array) );
+ 
+                  $i = 0;  ####    outputting from the total array ####
+                  while ( $i < count($subject_new) ){
+                     if ( $i < count($subject_selected) )
+                        print ("                <option selected=\"selected\" value=\"".$subject_new[$i]."\">".$subject_new[$i]."</option>\n");
+                     else
+                        print ("                <option value=\"".$subject_new[$i]."\">".$subject_new[$i]."</option>\n");
+                     $i++;
+                  } ?>
 					</select>
 				</li>
 		</fieldset>
@@ -556,6 +626,42 @@ $country_new = array_unique( array_merge($selected, $country_array) );
 				<li class="checkbox"><input name="app_bibliography" value="1" type="checkbox" <?php if ( $data['app_bibliography'] ) echo "checked";?>>Bibliography</li>
 				<li class="checkbox"><input name="app_facsimile" value="1" type="checkbox" <?php if ( $data['app_facsimile'] ) echo "checked";?>>Facsimile</li>
 				<li class="checkbox"><input name="app_intro" value="1" type="checkbox" <?php if ( $data['app_intro'] ) echo "checked";?>>Introduction</li>
+				<p><a href="#" onclick="toggle_visibility('format');">Text formatting instructions for Comments and Introduction Summary >></a></p>
+                                        <script type="text/javascript">
+                                        <!--
+                                            function toggle_visibility(id) {
+                                               var e = document.getElementById(id);
+                                               if(e.style.display == 'block')
+                                                  e.style.display = 'none';
+                                               else
+                                                  e.style.display = 'block';
+                                            }
+                                        //-->
+                                        </script>
+                                <div id="format">
+                                    <h4>Basic Formatting:</h4>
+                                    <table>
+                                      <tr>
+                                        <th>You type:</td>
+                                        <th>Looks like:</td>
+                                      </tr><tr>
+                                        <td>_italics_</td>
+                                        <td><i>italics</i></td>
+                                      </tr><tr>
+                                        <td>*bold*</td>
+                                        <td><b>bold</b></td>
+                                      </tr><tr>
+                                        <td>"Google":http://google.com</td>
+                                        <td><a href="http://google.com">Google</a></td>
+                                      </tr><tr>
+                                        <td>* an item <br /> * another item <br />  * and another </td>
+                                        <td><ul><li>an item</li><li>another item</li><li>and another</li></ul></td>
+                                      </tr><tr>
+                                        <td># item one <br /> # item two <br /> # item three </td>
+                                        <td><ol><li>item one</li><li>item two</li><li>item three</li></ol></td>
+                                      </tr>
+                                    </table>
+                                </div>
 				<li class="whole"><label for="comments">Comments</label>
 					<textarea id="comments" name="comments" value="<?php echo $data['comments'];?>" rows="10"></textarea></li>
 				<li class="whole"><label for="intro_summary">Introduction Summary</label>

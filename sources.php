@@ -635,7 +635,7 @@ function search_form() { ?>
     </form>
 <?php } ?>
 <h2>Search</h2>
-
+<h4>This search form is not currently functional.  It will be functional by the end of August.  Sorry for the inconvenience.</h4>
 <?php if (!$_GET){           ####  we display the form to get a search term  ####
 	search_form();
 } else {  # we have a search term

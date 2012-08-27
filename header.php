@@ -36,6 +36,7 @@
 							<li><a href="http://omsb.alchemycs.com/about/contents.php" title="Contents">Contents</a></li>
 							<li><a href="http://omsb.alchemycs.com/about/acknowledgements.php" title="Acknowledgements">Acknowledgements</a></li>
 							<li><a href="http://omsbnews.alchemycs.com/feedback/" title="Feedback">Leave Feedback</a></li>
+							<li><a href="http://omsbnews.alchemycs.com/bug-library/" title="Report a Bug">Report a Bug</a></li>
 						</ul>
 					</li>
 				</ul>

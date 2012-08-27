@@ -1,18 +1,7 @@
 <?php
 include('header.php');
 include('connect.php'); 
-
-require_once('ulogin/config/all.inc.php');
-require_once('ulogin/main.inc.php');
-if (!sses_running())
-   sses_start();
-
-function isAppLoggedIn(){
-   return isset($_SESSION['uid']) && isset($_SESSION['username']) && isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn']===true);
-}
-
-if (isAppLoggedIn()){
-
+require_once('auth.php');
 
 if (!$_POST && !$_GET) {      ####  new author form  ####
 	display_form(0, "Add a New Author", "Create New Author");

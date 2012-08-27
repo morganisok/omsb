@@ -30,11 +30,12 @@
 					<li><a href="http://omsb.alchemycs.com/authors.php" title="Search Medieval Authors">Search Authors</a></li>
 					<li><a href="http://omsb.alchemycs.com/about/" title="About the Medieval Sources Bibliography">About</a>
 						<ul>
+							<li><a href="http://omsbnews.alchemycs.com" title="News">News</a></li>
 							<li><a href="http://omsb.alchemycs.com/about/codebook.php" title="Codebook">Codebook</a></li>
 							<li><a href="http://omsb.alchemycs.com/about/compilers.php" title="Compilers">Compilers</a></li>
 							<li><a href="http://omsb.alchemycs.com/about/contents.php" title="Contents">Contents</a></li>
 							<li><a href="http://omsb.alchemycs.com/about/acknowledgements.php" title="Acknowledgements">Acknowledgements</a></li>
-							<li><a href="http://omsb.alchemycs.com/about/feedback.php" title="Feedback">Leave Feedback</a></li>
+							<li><a href="http://omsbnews.alchemycs.com/feedback/" title="Feedback">Leave Feedback</a></li>
 						</ul>
 					</li>
 				</ul>

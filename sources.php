@@ -1,10 +1,11 @@
 <?php include 'header.php';
 include 'connect.php';
 require_once 'paginator.class.php';
+require_once 'auth.php';
 
 function search_form() { ?>
 	<form action="sources.php" method="get">
-		<?php if ($isloggedin) { ?>
+		<?php if(isAppLoggedIn()) { ?>
 			<!-- Form for logged in users -->
 					<fieldset>
 						<legend>Cataloger Information</legend>
@@ -634,6 +635,7 @@ function search_form() { ?>
     </form>
 <?php } ?>
 <h2>Search</h2>
+
 <?php if (!$_GET){           ####  we display the form to get a search term  ####
 	search_form();
 } else {  # we have a search term
@@ -653,7 +655,7 @@ function search_form() { ?>
 	<?php $result = mysqli_query($db_server, "select * from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%';");
 	if ( !$result->num_rows ) {
 		print ("Could not find any sources that match your search terms."); 
-		search_form;
+		search_form();
 	} else {
 	?>
 
@@ -681,7 +683,7 @@ function search_form() { ?>
 		<ul>
 			<li><?php echo $editor; ?>, <a href="http://omsb.alchemycs.com/sources.php?id=<?php echo $id; ?>">
 				<?php echo $title; ?></a> 
-				<?php if($isloggedin) { ?>
+				<?php if(isAppLoggedIn()) { ?>
 					<p class="maintenance">
 							<script type="text/javascript" language="JavaScript">
 							function confirmAction(){
@@ -746,7 +748,7 @@ function search_form() { ?>
 	?>
 
 
-	<?php if($isloggedin) { ?>		
+	<?php if(isAppLoggedIn()) { ?>		
 	<!-- private view for logged in users -->
 			<article class="source private">
 

@@ -325,7 +325,6 @@ join_table("authorships", $_POST, $db_server, "insert");
 
 
 if ( $_GET ) {         ####  we have $_GET data -- edit or delete source ####
-echo "We are having GET data.";
 	if ( $_GET['delete'] ) {    ## we are going to delete this source really quickly! ##
 		echo "<h2>Delete Source</h2>";
 
@@ -354,7 +353,7 @@ echo "We are having GET data.";
 
 	} else {                    ####  we have _GET['id'] -- we are going to edit the source  #####0
 
-echo "We are updating the DB.";
+echo "We are editing an old source.";
 
 		$id=mysqli_real_escape_string($db_server, $_GET['id']);
 		$result = mysqli_query($db_server, "select * from sources where id=$id;");
@@ -399,18 +398,19 @@ echo "We are updating the DB.";
 				$cataloger = $source['cataloger'];
 				## ADD JOIN TABLES
 
-echo "<pre>";
-print_r($source);
-echo "</pre>";
+#echo "<pre>";
+#print_r($source);
+#echo "</pre>";
 
-join_table("countries",   $source, $db_server, "update");
-join_table("languages",   $source, $db_server, "update");
-join_table("types",       $source, $db_server, "update");
-join_table("subjects",    $source, $db_server, "update");
-join_table("authorships", $source, $db_server, "update");
+				join_table("countries",   $source, $db_server, "update");
+				join_table("languages",   $source, $db_server, "update");
+				join_table("types",       $source, $db_server, "update");
+				join_table("subjects",    $source, $db_server, "update");
+				join_table("authorships", $source, $db_server, "update");
 
 
 				display_form($db_server, $source, "Edit Source", "Submit Changes");
+
 				}  # end valid search result
 		} # end if -- edit or delete
 	}  # end _GET data
@@ -469,6 +469,7 @@ function display_form($db_server, $data, $legend, $button){
 							<?php } ?>
 					</select>
 				</li>
+<?php print_r("<pre>".$data."</pre>"); ?>
 				<li class="half"><label for "language">Original Language:</label>
 					<select name="languages[]" multiple="multiple">
 						<option value="Anglo-Norman">Anglo-Norman</option>
@@ -764,47 +765,64 @@ function display_form($db_server, $data, $legend, $button){
 }
 
 function join_table($table, $data, $db_server, $action){
-echo "<pre>1";
-print_r($table);
-echo "1</pre>";
-echo "<pre>2";
-print_r($data[$table]);
-echo "2</pre>";
+#echo "<pre>";   print_r($table);          echo "</pre>";
+#echo "<pre>";   print_r($data[$table]);   echo "</pre>";
 	if ( $table == 'authorships' )
 		$name = "author_id";
 	else
 		$name = "name";
-print ("dammit");
-print( next($data[$table]));
-print( next($data[$table]));
-$data2 = $data[$table];
-print( next($data[$table]));
-print ("dammit2:");
+$data2 = $data[$table];  # jpk, no idea why we need this, but the next() below fails if we don't have it!!
 	if ($data[$table]){
 		if ( $action == 'update' ){
+# TODO -- pull data from mysql table, compare 2 arrays & return(); if needed
+# arraydiff is broken if first elements are the same.
+#			$result = mysqli_query($db_server,"select $name from $table where source_id = $data[id];");
+#			$i=0;
+#			while ($row = mysqli_fetch_array($result)){
+#				$temp[$i]=$row[0];
+#				$i++;
+#			}
+#			$diff = array_diff($temp, $data[$table]);
+#echo "count: ";
+#			print_r(count($diff));
+#echo "<br>";
+#			if ( count($diff) ) {
+#				echo "arrays are different.";
+#			} else {
+#				echo "arrays are the same.";
+#				return;
+#			}
+
 			$query = "delete from $table where source_id = $data[id];";
 			$result = mysqli_query($db_server,$query)
 				or die ("Couldn't execute delete:"
 				.mysqli_error($db_server));
-echo "<pre>3";
-print_r($query);
-echo "3</pre>";
+echo "<pre>del q: "; print_r($query); echo " #</pre>";
 		}
 		$query = "insert into $table (source_id, $name) VALUES ";
 		foreach ($data[$table] as $f){
-		$query .= "(".$data[id].",\"$f\")";
-		if (next($data[$table])==true) $query .= ",";
+			$query .= "(".$data[id].",\"$f\")";
+			if (next($data[$table])==true) $query .= ",";
 		}
 		$query .= ";";
-#echo "<br>";
-echo "<pre>4";
-print_r($query);
-echo "4</pre>";
-#echo "<br>";
+echo "<pre>ins q: "; print_r($query); echo " #</pre>";
 		$result = mysqli_query($db_server,$query)
 			or die ("Couldn't execute insert:"
 			.mysqli_error($db_server));
 	}
 }
+
+
+function arrayDiffEmulation($arrayFrom, $arrayAgainst) {
+	$arrayAgainst = array_flip($arrayAgainst);
+	foreach ($arrayFrom as $key => $value) {
+		if(isset($arrayAgainst[$value])) {
+			unset($arrayFrom[$key]);
+		}
+	}
+	return $arrayFrom;
+}
+
+
 
 include ('footer.php'); ?>

@@ -1,6 +1,7 @@
 <?php include 'header.php';
 include 'connect.php';
 require_once 'paginator.class.php';
+require_once 'auth.php';
 
 if (!$_GET){           ####  we display the form to get a search term  ####
 ?>
@@ -67,7 +68,7 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 					echo ')';
 				} ?>
 				<?php echo $date_begin; ?> - <?php echo $date_end; ?>
-				<?php if($isloggedin) { ?>
+				<?php if(isAppLoggedIn()) { ?>
 					<p class="maintenance">
 						<script type="text/javascript" language="JavaScript">
 						function confirmAction(){

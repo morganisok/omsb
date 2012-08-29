@@ -164,7 +164,7 @@ if(isAppLoggedIn()) {
 ####  function to display the form  ####
 function display_form($data, $legend, $button){
 ?>
-	<form id="admin-author"  action='admin-author.php' method='POST'>
+	<form id="admin-author"  action='admin-author.php<?php if ( $data['id'] ) echo "?id=$data[id]";?>' method='POST'>
         <fieldset>
                 <legend><?php echo $legend?></legend>
                 <ul>

@@ -178,8 +178,8 @@ class ulSessionManager
 	{
 		// Set session expiry
 		if (!defined('UL_SESSION_EXPIRE'))
-		{	// If nothing is set, expire in 20 minutes
-			$_SESSION['sses']['EXPIRES'] = time() + 1200;
+		{	// If nothing is set, expire in 60 minutes
+			$_SESSION['sses']['EXPIRES'] = time() + 3600;
 		}
 		else if (UL_SESSION_EXPIRE < 0)
 		{

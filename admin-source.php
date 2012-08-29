@@ -1,10 +1,5 @@
-<?php
-	include('header.php');
-	include ('connect.php'); 
-	include "languages.php";
-	include "countries.php";
-	include "types.php";
-	include "subjects.php";
+<?php include('header.php');
+        include ('connect.php'); 
 
 
 if (!$_POST && !$_GET) {      ####  new source form  ####
@@ -62,32 +57,33 @@ if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
                         mysqli_real_escape_string($db_server, $good_data[$field]);
                 }
             $query = "UPDATE sources set
-            		my_id				= '$good_data[my_id]',
+            		my_id					= '$good_data[my_id]',
 						editor				= '$good_data[editor]',
-						title				= '$good_data[title]',
-						publication		= '$good_data[publication]',
-						pub_date			= '$good_data[pub_date]',
-						isbn				= '$good_data[isbn]',
+						title					= '$good_data[title]',
+						publication			= '$good_data[publication]',
+						pub_date				= '$good_data[pub_date]',
+						isbn					= '$good_data[isbn]',
 						text_pages			= '$good_data[text_pages]',
 						trans_english		= '$good_data[trans_english]',
 						trans_french		= '$good_data[trans_french]',
 						trans_other			= '$good_data[trans_other]',
 						trans_none			= '$good_data[trans_none]',
 						date_begin			= '$good_data[date_begin]',
-						date_end			= '$good_data[date_end]',
+						date_end				= '$good_data[date_end]',
 						region				= '$good_data[region]',
 						archive				= '$good_data[archive]',
-						link				= '$good_data[link]',
+						link					= '$good_data[link]',
 						app_index			= '$good_data[app_index]',
 						app_glossary		= '$good_data[app_glossary]',
 						app_appendix		= '$good_data[app_appendix]',
 						app_bibliography	= '$good_data[app_bibliography]',
 						app_facsimile		= '$good_data[app_facsimile]',
 						app_intro			= '$good_data[app_intro]',
-						comments			= '$good_data[comments]',
+						comments				= '$good_data[comments]',
 						intro_summary		= '$good_data[intro_summary]',
 						addenda				= '$good_data[addenda]',
-						live				= '$good_data[live]',
+						live					= '$good_data[live]',
+						updated_at			= '".date("Y-m-d H:i:s")."',
 						user_id				= '$good_data[user_id]',
 						trans_comment		= '$good_data[trans_comment]',
 						text_name			= '$good_data[text_name]',
@@ -116,9 +112,10 @@ join_table ("authorships", $_POST, $db_server, "update");
                 }
                 else
 							display_form($db_server,$_POST, "No changes made.", "Submit Changes");
+			echo "<a href=\"sources.php?id={$_POST['id']}\">View Source</a>.<br>";
 
 		} else {                    ####  we don't have an ID because we are adding new source  ####
-echo "We are updating a new source.";
+#echo "We are updating a new source.";
 
 		$labels = array( 
 					"id" => "id",
@@ -190,6 +187,8 @@ echo "We are updating a new source.";
 							intro_summary,
 							addenda,
 							live,
+							created_at,
+							updated_at,
 							user_id,
 							trans_comment,
 							text_name,
@@ -223,6 +222,8 @@ echo "We are updating a new source.";
 								'$_POST[intro_summary]',
 								'$_POST[addenda]', 
 								'$_POST[live]', 
+								'".date("Y-m-d H:i:s")."',
+								'".date("Y-m-d H:i:s")."',
 								'$_POST[user_id]',
 								'$_POST[trans_comment]',
 								'$_POST[text_name]',
@@ -237,12 +238,13 @@ echo "We are updating a new source.";
 		{
 			$_POST['id'] = mysqli_insert_id($db_server);
 			$source_id = $_POST['id'];
-			display_form($db_server,$_POST, "{$_POST['title']} has been added.", "Submit Changes");
-			echo "<a href=\"sources.php?id={$_POST['id']}\">View Source</a>.";
+#			display_form($db_server,$_POST, "{$_POST['title']} has been added.", "Submit Changes");
+			echo "<a href=\"sources.php?id={$_POST['id']}\">View Source</a>.<br>";
+			echo "<a href=\"admin-source.php?id={$_POST['id']}\">Edit Source</a>.";
 
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
+#echo "<pre>";
+#print_r($_POST);
+#echo "</pre>";
 
 
 join_table("countries", $_POST, $db_server, "insert");
@@ -358,7 +360,7 @@ if ( $_GET ) {         ####  we have $_GET data -- edit or delete source ####
 
 	} else {                    ####  we have _GET['id'] -- we are going to edit the source  #####0
 
-echo "We are editing an old source.";
+#echo "We are editing an old source.";
 
 		$id=mysqli_real_escape_string($db_server, $_GET['id']);
 		$result = mysqli_query($db_server, "select * from sources where id=$id;");
@@ -423,7 +425,7 @@ echo "We are editing an old source.";
 ####  function to display the form  ####
 function display_form($db_server, $data, $legend, $button){
 ?>
-	<form id="sources"  action='admin-source.php' method='POST'>
+	<form id="sources"  action='admin-source.php<?php if ( $data['id'] ) echo "?id=$data[id]";?>' method='POST'>
 		<h2><?php echo $legend; ?></h2>
 		<fieldset>
 			<legend>Cataloger Information</legend>
@@ -453,7 +455,7 @@ function display_form($db_server, $data, $legend, $button){
 		<fieldset>
 			<legend>Original Text Information</legend>
 				<li class="whole"><label for="text_name">Text Name</label>
-					<textarea id="text_name" name="text_name" value="<?php echo $data['text_name'];?>" rows="5" placeholder="Name of the text and any variants in name or spelling"></textarea></li>
+					<textarea id="text_name" name="text_name" rows="5" placeholder="Name of the text and any variants in name or spelling"><?php echo $data['text_name'];?></textarea></li>
 				<li class="half"><label for="date_begin">Earliest Date</label>
 					<input id="date_begin" name="date_begin" value="<?php echo $data['date_begin'];?>" type="text"></li>
 				<li class="half"><label for="date_end">Latest Date</label>
@@ -463,11 +465,11 @@ function display_form($db_server, $data, $legend, $button){
 				<li class="checkbox"><input name="trans_french" value="1" type="checkbox"<?php if ( $data['trans_french'] ) echo "checked";?>>Translated into French</li>
 				<li class="checkbox"><input name="trans_other" value="1" type="checkbox"<?php if ( $data['trans_other'] ) echo "checked";?>>Translated into another language</li>
 				<li class="half"><label for="trans_comment">Translation Comments</label>
-					<textarea id="trans_comment" name="trans_comment" value="<?php echo $data['trans_comment'];?>" rows="4" placeholder="Other information about the translation, such as whether it appears on facing page of original text, whether translations are only offered for some of the text, or whether a translation of poetry is in verse or prose."></textarea></li>
+					<textarea id="trans_comment" name="trans_comment" rows="4" placeholder="Other information about the translation, such as whether it appears on facing page of original text, whether translations are only offered for some of the text, or whether a translation of poetry is in verse or prose."><?php echo $data['trans_comment'];?></textarea></li>
 				<li class="half"><label for="archive">Archival Reference</label>
-					<textarea id="archive" name="archive" value="<?php echo $data['archive'];?>" rows="4" placeholder="Archive, record office or library where original documents are located; include shelf no/class/call no. if known."></textarea></li>
+					<textarea id="archive" name="archive" rows="4" placeholder="Archive, record office or library where original documents are located; include shelf no/class/call no. if known."><?php echo
+$data['archive'];?></textarea></li>
 				<li class="half"><label for="author">Medieval Author</label>
-					<?php $authors = mysqli_query($db_server, "select name,id from authors order by name;"); ?>
 					<select name="authorships[]" multiple="multiple">
 						<?php
 
@@ -478,7 +480,7 @@ function display_form($db_server, $data, $legend, $button){
 							$i++;
 						}
 
-						$author_selected_query = mysqli_query($db_server, "select author_id from authorships where source_id=2146116005;");
+						$author_selected_query = mysqli_query($db_server, "select author_id from authorships where source_id=$data[id];");
 						$i = 0;
 						while ($row = mysqli_fetch_array($author_selected_query)){
 							$author_selected_lookup_query = mysqli_query($db_server, "select name from authors where id=$row[0];");
@@ -487,8 +489,21 @@ function display_form($db_server, $data, $legend, $button){
 							$i++;
 						}
 
-						$author_new = array_merge($author_selected, $author_array);
-						$author_new = array_map("unserialize", array_unique(array_map("serialize", $author_new)));
+						if(!$author_selected) {
+							$author_new = $author_array;
+						} else { 
+							$author_new = array_merge($author_selected, $author_array);
+							$author_new = array_map("unserialize", array_unique(array_map("serialize", $author_new)));
+						}
+
+
+#echo "<pre>";
+#echo "---|";
+##print_r("$data[id];");
+#print_r($author_new);
+#echo "|---";
+##print_r($data[id]);
+
 
 						$i = 0;
 						while ( $i < count($author_new) ){
@@ -516,6 +531,10 @@ function display_form($db_server, $data, $legend, $button){
 
 
 
+include "languages.php";
+include "countries.php";
+include "types.php";
+include "subjects.php";
 ?>
 				<li class="half"><label for "languages">Original Language:</label>
 					<select name="languages[]" multiple="multiple">
@@ -663,11 +682,11 @@ function display_form($db_server, $data, $legend, $button){
                                     </table>
                                 </div>
 				<li class="whole"><label for="comments">Comments</label>
-					<textarea id="comments" name="comments" value="<?php echo $data['comments'];?>" rows="10"></textarea></li>
+					<textarea id="comments" name="comments" rows="10"><?php echo $data['comments'];?></textarea></li>
 				<li class="whole"><label for="intro_summary">Introduction Summary</label>
-					<textarea id="intro_summary" name="intro_summary" value="<?php echo $data['intro_summary'];?>" rows="10"></textarea></li>
+					<textarea id="intro_summary" name="intro_summary" rows="10"><?php echo $data['intro_summary'];?></textarea></li>
 				<li class="whole"><label for="addenda">Notes</label>
-					<textarea id="addenda" name="addenda" value="<?php echo $data['addenda'];?>" rows="5" placeholder="These are private notes and will not be seen by the public."></textarea></li>
+					<textarea id="addenda" name="addenda" rows="5" placeholder="These are private notes and will not be seen by the public."><?php echo $data['addenda'];?></textarea></li>
 				<li class="checkbox"><input name="live" value="1" type="checkbox" <?php if ( $data['live'] ) echo "checked";?>>Make record public</li>
 
 		<input type="submit" class="button" value="<?php echo $button;?>" />
@@ -721,32 +740,17 @@ $data2 = $data[$table];  # jpk, no idea why we need this, but the next() below f
 			$result = mysqli_query($db_server,$query)
 				or die ("Couldn't execute delete:"
 				.mysqli_error($db_server));
-echo "<pre>del q: "; print_r($query); echo " #</pre>";
+#echo "<pre>del q: "; print_r($query); echo " #</pre>";
 		}
-		$query = "insert into $table (source_id, $name) VALUES ";
+		$query = "insert into $table (source_id, $name, created_at, updated_at) VALUES ";
 		foreach ($data[$table] as $f){
-			$query .= "(".$data[id].",\"$f\")";
+			$query .= "(".$data[id].",\"$f\",\"".date("Y-m-d H:i:s")."\",\"".date("Y-m-d H:i:s")."\")";
 			if (next($data[$table])==true) $query .= ",";
 		}
 		$query .= ";";
-echo "<pre>ins q: "; print_r($query); echo " #</pre>";
+#echo "<pre>ins q: "; print_r($query); echo " #</pre>";
 		$result = mysqli_query($db_server,$query)
 			or die ("Couldn't execute insert:"
 			.mysqli_error($db_server));
 	}
 }
-
-
-function arrayDiffEmulation($arrayFrom, $arrayAgainst) {
-	$arrayAgainst = array_flip($arrayAgainst);
-	foreach ($arrayFrom as $key => $value) {
-		if(isset($arrayAgainst[$value])) {
-			unset($arrayFrom[$key]);
-		}
-	}
-	return $arrayFrom;
-}
-
-
-
-include ('footer.php'); ?>

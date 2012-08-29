@@ -1,6 +1,7 @@
 <?php include 'header.php';
 include 'connect.php';
-require_once 'paginator.class.php'; ?>
+require_once 'paginator.class.php'; 
+require_once 'auth.php'; ?>
 
 <h2>Search</h2>
 <?php if (!$_GET){           ####  we display the form to get a search term  #### ?>
@@ -61,7 +62,7 @@ require_once 'paginator.class.php'; ?>
 		<ul>
 			<li><?php echo $editor; ?>, <a href="http://omsb.alchemycs.com/sources.php?id=<?php echo $id; ?>">
 				<?php echo $title; ?></a> 
-				<?php if($isloggedin) { ?>
+				<?php if(isAppLoggedIn()) { ?>
 					<p class="maintenance">
 							<script type="text/javascript" language="JavaScript">
 							function confirmAction(){
@@ -126,7 +127,7 @@ require_once 'paginator.class.php'; ?>
 	?>
 
 
-	<?php if($isloggedin) { ?>		
+	<?php if(isAppLoggedIn()) { ?>		
 	<!-- private view for logged in users -->
 			<article class="source private">
 
@@ -222,6 +223,7 @@ require_once 'paginator.class.php'; ?>
 					echo "This record is hidden from the public";
 				} ?></p>
 				<p><label>Cataloger: </label><?php echo $cataloger; ?></p>
+				<?php if(isAppLoggedIn()) { ?>
 				<p class="maintenance">
 						<script type="text/javascript" language="JavaScript">
 						function confirmAction(){
@@ -232,6 +234,7 @@ require_once 'paginator.class.php'; ?>
 					<a href="http://omsb.alchemycs.com/admin-source.php?id=<?php echo $id; ?>">Edit</a> | 
 					<a href="http://omsb.alchemycs.com/admin-source.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
 				</p>
+				<?php } ?>
 	<?php } else { ?>
 
 	<!-- public view for not logged in users -->

@@ -76,8 +76,8 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 					      return confirmed;
 						}
 						</script>
-						<a href="http://omsb.alchemycs.com/admin-author.php?id=<?php echo $id; ?>">Edit</a> | 
-						<a href="http://omsb.alchemycs.com/admin-author.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
+						<a href="http://omsb.alchemycs.com/admin-authors.php?id=<?php echo $id; ?>">Edit</a> | 
+						<a href="http://omsb.alchemycs.com/admin-authors.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
 					</p>
 				<?php } ?>
 			</li>

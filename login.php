@@ -135,7 +135,7 @@ if (isAppLoggedIn()){
 		<?php echo ($msg);?>
 		<h2>Login</h2>
 		<p>Welcome, <?php echo($_SESSION['username']);?>!</p>
-		<p><a href="http://omsb.alchemycs.com/admin-source.php">Add a new source.</a></p>
+		<p><a href="http://omsb.alchemycs.com/admin-sources.php">Add a new source.</a></p>
 		<!-- <p><a href="#">View your records.</a></p> -->
 		<form action="login.php" method="POST"><input type="hidden" name="action" value="logout" class="button"><input type="submit" class="button" value="Logout"></form>
 		<form action="login.php" method="POST"><input type="hidden" name="action" value="delete"><input type="submit" class="button" value="Delete account"></form>

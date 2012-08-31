@@ -6,7 +6,7 @@ require_once 'auth.php'; ?>
 <h2>Search</h2>
 <?php if (!$_GET){           ####  we display the form to get a search term  #### ?>
 	<p>This search form is not fully functional yet - right now, it will look in the text name and title fields for the search terms you enter below.</p>
-	<form action="sources.php" method="get">
+	<form action="/sources.php" method="get">
 		<li class="whole"><label>Title:</label>
 		<input type="text" name="search" placeholder="search in text name or title" /></li>
     <input type="submit" class="button" value="Search" />
@@ -30,7 +30,7 @@ require_once 'auth.php'; ?>
 	if ( !$result->num_rows ) {
 		print ("Could not find any sources that match your search terms."); ?>
 		<p>This search form is not fully functional yet - right now, it will look in the text name and title fields for the search terms you enter below.</p>
-		<form action="sources.php" method="get">
+		<form action="/sources.php" method="get">
 		<li class="whole"><label>Title:</label>
 		<input type="text" name="search" placeholder="search in text name or title" /></li>
     <input type="submit" class="button" value="Search" />
@@ -60,7 +60,7 @@ require_once 'auth.php'; ?>
 		$title = $row['title']; ?>
 
 		<ul>
-			<li><?php echo $editor; ?>, <a href="http://omsb.alchemycs.com/sources.php?id=<?php echo $id; ?>">
+			<li><?php echo $editor; ?>, <a href="/sources.php?id=<?php echo $id; ?>">
 				<?php echo $title; ?></a> 
 				<?php if(isAppLoggedIn()) { ?>
 					<p class="maintenance">
@@ -70,8 +70,8 @@ require_once 'auth.php'; ?>
 						      return confirmed;
 							}
 							</script>
-						<a href="http://omsb.alchemycs.com/admin-source.php?id=<?php echo $id; ?>">Edit</a> | 
-						<a href="http://omsb.alchemycs.com/admin-source.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
+						<a href="/admin-sources.php?id=<?php echo $id; ?>">Edit</a> | 
+						<a href="/admin-sources.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
 					</p>
 				<?php } ?>
 			</li>
@@ -183,7 +183,7 @@ require_once 'auth.php'; ?>
 						echo "<li> $row[0] </li>";
 					} ?>
 					</ul></p>
-				<p><label>County/Region:</label> <?php echo $county; ?></p>
+				<p><label>County/Region:</label> <?php echo $region; ?></p>
 
 				<h5>Finding Aids</h5>
 				<p><label>Record Types:</label>
@@ -231,8 +231,8 @@ require_once 'auth.php'; ?>
 					      return confirmed;
 						}
 						</script>
-					<a href="http://omsb.alchemycs.com/admin-source.php?id=<?php echo $id; ?>">Edit</a> | 
-					<a href="http://omsb.alchemycs.com/admin-source.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
+					<a href="/admin-sources.php?id=<?php echo $id; ?>">Edit</a> | 
+					<a href="/admin-sources.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
 				</p>
 				<?php } ?>
 	<?php } else { ?>
@@ -320,8 +320,8 @@ require_once 'auth.php'; ?>
 					</ul>
 				</p>
 
-				<?php if($county) { ?>
-					<p><label>County/Region:</label> <?php echo $county; ?></p>
+				<?php if($region) { ?>
+					<p><label>County/Region:</label> <?php echo $region; ?></p>
 				<?php } ?>
 
 				<p><label>Record Type(s):</label>

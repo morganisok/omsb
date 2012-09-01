@@ -1,5 +1,8 @@
 <?php include('header.php');
-        include ('connect.php'); 
+include ('connect.php'); 
+require_once('auth.php');
+
+if(isAppLoggedIn()) { 
 
 
 if (!$_POST && !$_GET) {      ####  new source form  ####
@@ -352,6 +355,12 @@ if ( $_GET ) {         ####  we have $_GET data -- edit or delete source ####
 		} # end if -- edit or delete
 	}  # end _GET data
 
+} 
+else { ?>
+	<p>Sorry, you must <a href="/login.php">log in</a> to view this page.</p>
+<?php }
+
+
 ####  function to display the form  ####
 function display_form($db_server, $data, $legend, $button){
 	#<form id="sources"  action='/admin-sources.php<?php if ( $data['id'] ) echo "?id=$data[id]";?
@@ -378,7 +387,7 @@ function display_form($db_server, $data, $legend, $button){
 				<li class="third"><label for="pub_date">Publication Date</label>
 					<input id="pub_date" name="pub_date" value="<?php echo $data['pub_date'];?>" type="text" maxlength="20"></li>	
 				<li class="third"><label for="isbn">ISBN</label>
-					<input id="isbn" name="isbn" value="<?php echo $data['isbn'];?>" type="text" maxlength="13"></li>	
+					<input id="isbn" name="isbn" value="<?php echo $data['isbn'];?>" type="text" placeholder="include only numbers and letters, no dashes or spaces" maxlength="13"></li>	
 				<li class="third"><label for="text_pages">Text Pages</label>
 					<input id="text_pages" name="text_pages" value="<?php echo $data['text_pages'];?>" type="text" maxlength="5"></li>
 				<li class="whole"><label for="link">Link</label>

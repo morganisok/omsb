@@ -34,6 +34,7 @@ if(isAppLoggedIn()) {
                                     name       = '$good_data[name]',
                                     alias      = '$good_data[alias]',
                                     title      = '$good_data[title]', 
+                                    updated_at = '".date("Y-m-d H:i:s")."',
                                     date_type  = '$good_data[date_type]',
                                     date_circa = '$good_data[date_circa]',
                                     date_begin = '$good_data[date_begin]',
@@ -157,14 +158,14 @@ if(isAppLoggedIn()) {
     	} # end if -- edit or delete
     }  # end _GET data
 
-} else {
-  echo "You are not logged in.";
-}
+} else { ?>
+    <p>Sorry, you must <a href="/login.php">log in</a> to view this page.</p>
+<?php }
 
 ####  function to display the form  ####
 function display_form($data, $legend, $button){
 ?>
-	<form id="admin-author"  action='admin-authors.php<?php if ( $data['id'] ) echo "?id=$data[id]";?>' method='POST'>
+		<form id="admin-author"  action='admin-authors.php<?php if ( $data['id'] ) echo "?id=$data[id]";?>' method='POST'>
         <fieldset>
                 <legend><?php echo $legend?></legend>
                 <ul>

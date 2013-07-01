@@ -31,7 +31,7 @@ function appLogin($uid, $username, $ulogin){
 function appLoginFail($uid, $username, $ulogin){
 	// Note, in case of a failed login, $uid, $username or both
 	// might not be set (might be NULL).
-	echo 'login failed<br>';
+	echo '<p class="error">Login failed.  Please try again.</p>';
 }
 
 function appLogout(){
@@ -135,7 +135,8 @@ if (isAppLoggedIn()){
 		<?php echo ($msg);?>
 		<h2>Login</h2>
 		<p>Welcome, <?php echo($_SESSION['username']);?>!</p>
-		<p><a href="http://omsb.alchemycs.com/admin-sources.php">Add a new source.</a></p>
+		<p><a href="admin-sources.php">Add a new source.</a></p>
+		<p><a href="admin-notes.php">View sources with Notes.</a></p>
 		<!-- <p><a href="#">View your records.</a></p> -->
 		<form action="login.php" method="POST"><input type="hidden" name="action" value="logout" class="button"><input type="submit" class="button" value="Logout"></form>
 		<form action="login.php" method="POST"><input type="hidden" name="action" value="delete"><input type="submit" class="button" value="Delete account"></form>

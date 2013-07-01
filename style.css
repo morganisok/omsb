@@ -22,35 +22,35 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup, 
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
-	display: block;
+    display: block;
 }
 body {
-	line-height: 1;
+    line-height: 1;
 }
 ol, ul {
-	list-style: none;
+    list-style: none;
 }
 blockquote, q {
-	quotes: none;
+    quotes: none;
 }
 blockquote:before, blockquote:after,
 q:before, q:after {
-	content: '';
-	content: none;
+    content: '';
+    content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 
@@ -129,7 +129,7 @@ height: 100%;
 font-family: 'OpenSans', sans-serif;
 font-size: 14px;
 line-height: 20px;
-background: url('http://omsb.alchemycs.com/images/paperbg.jpg');
+background: url('/images/paperbg.jpg');
 color: #371b03;
 }
 
@@ -213,7 +213,7 @@ b, strong {
 font-family: 'OpenSansBold';
 }
 
-i {
+i, em {
 font-family: 'OpenSansItalic';
 }
 
@@ -235,6 +235,12 @@ list-style-type: disc;
 margin-left: 3em;
 }
 
+.error {
+background: rgba(209, 108, 108, .5);
+padding: 5px;
+border: 1px solid rgb(209, 108, 108);
+}
+
 /* HEADER */
 /* ----------------------------------------- */
 
@@ -245,7 +251,7 @@ margin-bottom: 10px;
 }
 
 hgroup h1 {
-background: url('http://omsb.alchemycs.com/images/logo.png') no-repeat;
+background: url('/images/logo.png') no-repeat;
 width: 500px;
 height: 130px;
 text-indent: 100%;
@@ -291,7 +297,7 @@ header nav li ul {
 display: none;
 position: absolute;
 left: 0;
-background: url('http://omsb.alchemycs.com/images/paperbg.jpg');
+background: url('/images/paperbg.jpg');
 border: 1px solid #371b03;
 -webkit-box-shadow: 0px 2px 8px 2px #371b03;
 box-shadow: 0px 2px 8px 2px #371b03;
@@ -368,6 +374,13 @@ padding: 4px 8px;
 border-bottom: 1px solid #908174;
 }
 
+tr.not {
+background: rgba(55, 27, 3, 0.3);
+}
+
+span.field {
+text-transform: uppercase;
+}
 
 /* FORMS */
 /* ----------------------------------------- */
@@ -493,6 +506,12 @@ text-align: center;
 .pages a.current {
 font-weight: bold;
 border: 1px solid #371b03;
+}
+
+.notes {
+    border: 1px solid #371b03;
+    padding: 5px;
+    background: rgba(55, 27, 3, 0.3);
 }
 
 /* SOURCE DETAILS */

@@ -9,7 +9,7 @@
 // fetch your website, without the protocol specifier (don't use 'http(s)://').
 // For development on the local machine, use 'localhost'.
 // Takes the same format as the 'domain' parameter of the PHP setcookie function.
-define('UL_DOMAIN', 'omsb.alchemycs.com');
+define('UL_DOMAIN', 'medievalsourcesbibliography.org');
 
 // Set to the path of the "ulogin" directory containing the source files.
 // Do not use a trailing slash.
@@ -143,7 +143,7 @@ define('UL_SESSION_AUTOSTART', true);
 // To disable automatic expiry, set it to a sufficiently
 // large value (eg. 86400 = 1 day).
 // Only positive values are valid.
-define('UL_SESSION_EXPIRE', 1200);
+define('UL_SESSION_EXPIRE', 28800);
 
 // Probability that the session id will be regenerated
 // when a session is started. Zero will disable automatic

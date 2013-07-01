@@ -66,6 +66,17 @@ $ulogin = new uLogin('appLogin', 'appLoginFail');
 // we are logged in or not.
 
 if (isAppLoggedIn()){
+	if ($action=='changepasswd') {
+#		echo "you can change passwords";
+		$uid=$ulogin->Uid($_POST['user'] );
+		if ( $ulogin->SetPassword($uid, $_POST['pwd']) ){
+			echo "password changed!";
+		} else {
+			echo "sorry--we couldn't change your password.";
+		}
+
+
+	} else 
 	if ($action=='delete')	{	// We've been requested to delete the account
 
 		// Delete account
@@ -80,12 +91,6 @@ if (isAppLoggedIn()){
 		// Logout
 		appLogout();
 		$msg = 'logged out';
-	} else if ($action=='create'){	// We were requested to try to create a new acount.
-		// New account
-		if ( !$ulogin->CreateUser( $_POST['user'],  $_POST['pwd']) )
-			$msg = 'account creation failure';
-		else
-			$msg = 'account created';
 	}
 } else {
 	// We've been requested to log in
@@ -123,40 +128,67 @@ if (isAppLoggedIn()){
 		else
 			$msg = 'autologin ok';
 
-	} 
+	} else if ($action=='create'){	// We were requested to try to create a new acount.
+		// New account
+		if ( !$ulogin->CreateUser( $_POST['user'],  $_POST['pwd']) )
+			$msg = 'account creation failure';
+		else
+			$msg = 'account created';
+	}
 }
 
 // Now we handle the presentation, based on whether we are logged in or not.
 // Nothing fancy, except where we create the 'login'-nonce towards the end
 // while generating the login form.
 
-if (isAppLoggedIn() && $_SESSION['username'] == 'morgan' ){
-	?>	
-	<?php echo ($msg);?>
-	<h2>Register New User</h2>
+if (isAppLoggedIn() && $_SESSION['username'] == 'morgan'){
+	?>
+		<?php echo ($msg);?>
+		<h2>Change Password</h2>
+		<p>Welcome, <?php echo($_SESSION['username']);?>!</p>
 
-	<form action="register.php" method="POST" id="login">
+	<form action="passwd.php" method="POST" id="login">
 		<fieldset>
-			<legend>Enter your user information</legend>
+			<legend>Change Password</legend>
 				<li class="whole"><label for="username">Username:</label>
 					<input type="text" name="user">
 				</li>
 				<li class="whole"><label for="password">Password:</label>
 					<input type="password" name="pwd">
 				</li>
-				<input type="hidden" name="action" value="create">
+				<input type="hidden" name="action" value="changepasswd">
 				<input type="hidden" id="nonce" name="nonce" value="<?php echo ulNonce::Create('login');?>">
-				<input type="submit" value="Create User" class="button">
+				<input type="submit" value="Change Password" class="button">
 		</fieldset>
 	</form>
 
 	<?php
+} else if (isAppLoggedIn() ){
+	?>
+		<?php echo ($msg);?>
+		<h2>Change Password</h2>
+		<p>Welcome, <?php echo($_SESSION['username']);?>!</p>
+
+	<form action="passwd.php" method="POST" id="login">
+		<fieldset>
+			<legend>Change Password</legend>
+				<li class="whole"><label for="password">Password:</label>
+					<input type="password" name="pwd">
+				</li>
+				<input type="hidden" name="user" value="<?php echo($_SESSION['username']);?>">
+				<input type="hidden" name="action" value="changepasswd">
+				<input type="hidden" id="nonce" name="nonce" value="<?php echo ulNonce::Create('login');?>">
+				<input type="submit" value="Change Password" class="button">
+		</fieldset>
+	</form>
+
+	<?php
+
 } else {
 ?>
-
-		<h2>Register New User</h2>
-		<p>Please ask for assistance in registering for a new account.</p>
-
+	<?php echo ($msg);?>
+	<h2>Change Password</h2>
+	Sorry--you are not authorized to changed passwords.
 <?php
 }
 ?>

@@ -1,86 +1,14 @@
 <?php include 'header.php';
 include 'connect.php';
-require_once 'paginator.class.php'; 
-require_once 'auth.php'; ?>
+require_once 'paginator.class.php';
+require_once 'auth.php';
 
-<h2>Search</h2>
-<?php if (!$_GET){           ####  we display the form to get a search term  #### ?>
-	<p>This search form is not fully functional yet - right now, it will look in the text name and title fields for the search terms you enter below.</p>
-	<form action="/sources.php" method="get">
-		<li class="whole"><label>Title:</label>
-		<input type="text" name="search" placeholder="search in text name or title" /></li>
-    <input type="submit" class="button" value="Search" />
-    </form>
 
-<?php } else {  # we have a search term
-	?>
-
-	<?php
-	if ( $_GET['search'] ) {   ####  we have a search term, not a display source  ####
-
-	echo "<h2>Search Results</h2>";
-
-	$searchterm = mysqli_real_escape_string($db_server, $_GET['search']); ?>
-
-	<p>You searched for: 
-	<?php echo $_GET['search']; ?>
-	</p>
-
-	<?php $result = mysqli_query($db_server, "select * from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%';");
-	if ( !$result->num_rows ) {
-		print ("Could not find any sources that match your search terms."); ?>
-		<p>This search form is not fully functional yet - right now, it will look in the text name and title fields for the search terms you enter below.</p>
-		<form action="/sources.php" method="get">
-		<li class="whole"><label>Title:</label>
-		<input type="text" name="search" placeholder="search in text name or title" /></li>
-    <input type="submit" class="button" value="Search" />
-    </form>
-	<?php } else {
-	?>
-
-	<h4>Search Results:</h4>
-	<!-- Pagination Stuff -->
-	<div class="pages">
-	<?php $result = mysqli_query($db_server, "select count(*) from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%';");
-		$db_count = mysqli_fetch_array($result);
-		$pages = new Paginator;
-		$pages->items_total = $db_count[0];
-		$pages->mid_range = 7;
-		$pages->paginate();
-		echo $pages->display_pages(); 
-		echo $pages->display_items_per_page();
-		$result = mysqli_query($db_server, "select * from sources where sources.title like '%$searchterm%' or sources.text_name like '%$searchterm%' order by sources.editor $pages->limit;"); ?>
-	</div>
-	<!-- End Pagination Stuff -->
-
-	<?php while ($row = mysqli_fetch_array($result)){
-
-		$id = $row['id'];
-		$editor = $row['editor'];
-		$title = $row['title']; ?>
-
-		<ul>
-			<li><?php echo $editor; ?>, <a href="/sources.php?id=<?php echo $id; ?>">
-				<?php echo $title; ?></a> 
-				<?php if(isAppLoggedIn()) { ?>
-					<p class="maintenance">
-							<script type="text/javascript" language="JavaScript">
-							function confirmAction(){
-						      var confirmed = confirm("Are you sure? This will remove this source forever!");
-						      return confirmed;
-							}
-							</script>
-						<a href="/admin-sources.php?id=<?php echo $id; ?>">Edit</a> | 
-						<a href="/admin-sources.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
-					</p>
-				<?php } ?>
-			</li>
-		</ul>
-		
-	 	<?php
-		 } # end while
-	 }  # end if for good search results
-} else {           ####  not searching, we will display a source  ####
+if (!$_GET){           ####  we display the blank form to get a search term  ####
+	echo "<h2>Search</h2>";
+	search_form($db_server);
+} else {  # we have GET data from the URL
+	if ( $_GET['id'] ) {   ####  we have a _GET['id']--display that id's info  ####
 
 	require_once('classTextile.php'); 
 	$textile = new Textile(); ?>
@@ -90,6 +18,14 @@ require_once 'auth.php'; ?>
 	<?php 
 	$id = mysqli_real_escape_string($db_server, $_GET['id']);
 	$result = mysqli_query($db_server, "select * from sources where id=$id;");
+
+	if ( !$result->num_rows ) {
+		print ("Could not find that source.  Please try a different search term"); ?>
+		<form action="sources.php" method="get">
+		<li class="half"><label>Search:</label> <input type="text" name="search" placeholder="type a search text"/></li>
+		<input type="submit" class="button" value="Search" />
+		</form> <?php 
+	} else {
 
 	$source = mysqli_fetch_array($result);
 		$my_id = $source['my_id'];
@@ -223,7 +159,6 @@ require_once 'auth.php'; ?>
 					echo "This record is hidden from the public";
 				} ?></p>
 				<p><label>Cataloger: </label><?php echo $cataloger; ?></p>
-				<?php if(isAppLoggedIn()) { ?>
 				<p class="maintenance">
 						<script type="text/javascript" language="JavaScript">
 						function confirmAction(){
@@ -234,9 +169,7 @@ require_once 'auth.php'; ?>
 					<a href="/admin-sources.php?id=<?php echo $id; ?>">Edit</a> | 
 					<a href="/admin-sources.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
 				</p>
-				<?php } ?>
 	<?php } else { ?>
-
 	<!-- public view for not logged in users -->
 
 			<article class="source">
@@ -357,11 +290,386 @@ require_once 'auth.php'; ?>
 				<p><label>Cataloger:</label><?php echo $cataloger; ?></p>
 
 			</article>
-	<?php } 
+	<?php	}
+		}
+	} else {		####    end display _GET['id'] information    ####
+		######      we have a search from url's $_GET; we are going to display the results from the search    ######
+		include 'sql_array.php';
 
-} # end if
-?>
+		echo "<h2>Search Results</h2>";
+		####    here we begin our query--we leave off after sources to be able to add more tables to select from   ####
+		$query = "SELECT sources.id,sources.editor,sources.title from sources";
+	   
+		$terms = array_filter($_GET);   ##  stripping out the un-valued elements
+   		$tables = "";
+   		$join_queries = "";
+   		$reg_queries = "";
+#		print_r($terms);
+		####    we have to address these join tables queries first    ####
+		if ( $terms['author'] || $terms['countries'] || $terms['language'] || $terms['subject'] || $terms['type'] ) {
+			foreach ( $terms as $key => $val ){
+				switch($key) {
+					case 'author':
+						$join['author'] = $terms['author'];
+					    unset($terms['author']);
+						break;
+					case 'countries':
+						$join['countries'] = $terms['countries'];
+					    unset($terms['countries']);
+						break;
+					case 'language':
+						$join['language'] = $terms['language'];
+					    unset($terms['language']);
+						break;
+					case 'subject':
+						$join['subject'] = $terms['subject'];
+					    unset($terms['subject']);
+						break;
+					case 'type':
+						$join['type'] = $terms['type'];
+					    unset($terms['type']);
+						break;
+				}
+				}
+		}
+
+		$i=0;
+		foreach( $join as $key => $val){	  ##  looping over the $_GET array
+	   		$j=0;	
+	   		if ( count($val) > 1 )
+	   			$join_queries .= "(";
+   			if ( is_array($val) ) {
+				foreach( $val as $key2 => $val2){	##  looping over the sub-arrays from $_GET (eg--from the join tables)
+					$j++;	
+		   			sql_query($key,$val2,$query);   #### STOP jpk ## TODO: deal with AND issues 
+					if ( $j <> count($val)) $join_queries .= " OR ";
+			   	}
+		   		$i++;	
+				if ( $i <> count($join)) $join_queries .= " aND ";
+		   	} else {
+		   		echo "something bad";
+		   	}
+	   		if ( count($val) > 1 )
+	   			$join_queries .= ")";
+
+		}
+		$i=0;
+		foreach( $terms as $key => $val){	  ##  looping over the $_GET array
+#echo "terms: ".count($terms)." (".$key.")\n";
+#echo "i:     ".$i."\n";
+#echo "-- terms:\n";
+#print_r($terms);
+#echo "--\n";
+
+	   		$i++;	
+	   		$j=0;	
+   			if ( is_array($val) ) {
+   				echo "something else bad";
+
+				foreach( $val as $key2 => $val2){	##  looping over the sub-arrays from $_GET (eg--from the join tables)
+
+					$j++;	
+		   			sql_query($key,$val2,$query);   #### STOP jpk ## TODO: deal with AND issues 
+					if ( $j <> count($val)) $join_queries .= " OR ";
+			   	}
+#				if ( $i+1 <> count($terms)) $join_queries .= " aND ";
+#		   		$i++;	
+		   	} else {
+#echo $key."=".$val."<br>";
+				if ( $key != "page" && $key != "ipp" ) {
+		   			sql_query($key,$val,$query);
+					if ( $i <> count($terms)) $reg_queries .= " AnD ";
+#		   			$tmpquery .= "sources.".$key." like '%".$val."%' ";
+#  					echo $key; 
+#  					echo $val;
+#			   		$i++;	
+				}
+			}
+		}
+#		}
+		if ( !(empty($join_queries) && empty($reg_queries)) )
+			$query .= $tables." where ";
+#		echo "count of join: ".count($join); 
+#		if ( count($join) > 1 )
+#			$query .= "(".$join_queries.")";
+#		else
+			$query .= $join_queries;
+
+		if ( !empty ($join_queries) && !empty ($reg_queries))
+			$query .= " AND ";
+		if ( !empty ($reg_queries))
+			$query .= $reg_queries;
+#		$query .= " where ".$tmpquery;
+#		if( $page && $ipp )
+#			$query .= " LIMIT ".($page-1)*$ipp.",".$ipp;
+		$query .= ";";
+#	 	echo $_SERVER[PHP_SELF];
+#	 	echo $_SERVER['QUERY_STRING'];
+#		print_r($terms);
+#		echo "--";
+
+
+
+
+#	   print_r($_GET);
+#	   print_r(array_keys($_GET));
+
+	   $searchterm = mysqli_real_escape_string($db_server, $query);
+#	   $searchterm = mysqli_real_escape_string($db_server, $_GET['title']);
+	   ?>
+
+
+		<p>You searched for:<br>
+			<?php
+#		foreach( $_GET as $key => $val){	
+#				if( !empty($val) ){
+#					if ( $key != "page" && $key != "ipp" )
+#						echo $key."=".$val."<br>"; 
+#				}
+#		}
+			echo $searched;
+		# echo $_GET['title']; ?>
+		</p>
+
+		<?php $result = mysqli_query($db_server, $query);
+		if ( !$result->num_rows ) {   # we have bad search results
+		  print ("Could not find any sources that match your search terms.");
+		  search_form($db_server);
+		} else {	###    we have results back from the SQL--display them now    ###
+		?>
+
+		<h4>Search Results:</h4>
+		<!-- Pagination Stuff -->
+		<div class="pages">
+
+			<?php
+			$result = mysqli_query($db_server, $query);
+			$db_count = mysqli_num_rows($result);
+			echo $db_count." total results";
+#			$count_query = "SELECT count(sources.id) from sources ".$tmpquery.";";
+			#echo $count_query;
+#			$db_count = mysqli_fetch_array($result);
+			$pages = new Paginator;
+			$pages->items_total = $db_count;
+			$pages->mid_range = 7;
+			$pages->paginate();
+			echo $pages->display_pages();
+			echo $pages->display_items_per_page();
+			$pages->limit;
+			$query = substr_replace($query ,"",-1);
+			$query .= $pages->limit.";";
+#			echo "<br>".$query."<br>";
+			$result = mysqli_query($db_server, $query);
+#			$result = mysqli_query($db_server, $query);
+			?>
+	   </div>
+	   <!-- End Pagination Stuff -->
+
+	   <?php while ($row = mysqli_fetch_array($result)){
+	      $id = $row['id'];
+	      $editor = $row['editor'];
+	      $title = $row['title']; ?>
+
+	      <ul>
+	         <li><?php echo $editor; ?>, <a href="/sources.php?id=<?php echo $id; ?>">
+	            <?php echo $title; ?></a>
+	            <?php if(isAppLoggedIn()) { ?>
+	               <p class="maintenance">
+	                     <script type="text/javascript" language="JavaScript">
+	                     function confirmAction(){
+	                        var confirmed = confirm("Are you sure? This will remove this source forever!");
+	                        return confirmed;
+	                     }
+	                     </script>
+	                  <a href="/admin-sources.php?id=<?php echo $id; ?>">Edit</a> |
+	                  <a href="/admin-sources.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
+	               </p>
+	            <?php } ?>
+	         </li>
+	      </ul>
+
+	      <?php
+	       }	 ##   end of while loop going over results   ##
+	    }	###    end of if for valid sql results & displaying them    ###
+	}		#####     end of displaying search results    #####
+}?>
 
 <?php include 'footer.php';
-}
+
+############################################### function search_form ##########################################
+function search_form($db_server) {
+	include "languages.php";
+	include "countries.php";
+	include "types.php";
+	include "subjects.php";
+?>
+
+	<form action="/sources.php" method="get">
+
+		<?php if(isAppLoggedIn()) { ?>
+			<!-- Form for logged in users -->
+					<fieldset>
+						<legend>Cataloger Information</legend>
+							<li class="half"><label for="my_id">MyID</label>
+								<input id="my_id" name="my_id" type="text" autofocus></li>
+							<li class="half"><label for="cataloger">Cataloger Initials</label>
+								<input id="cataloger" name="cataloger" type="text"></li>
+					</fieldset>
+					<fieldset>
+						<legend>Publication Information</legend>
+							<li class="whole"><label for="editor">Modern Editor/Translator</label>
+								<input id="editor" name="editor" type="text"></li>
+							<li class="whole"><label for="title">Title</label>
+								<input id="title" name="title" type="text"></li>
+							<li class="whole"><label for="publication">Publication Information</label>
+								<input id="publication" name="publication" type="text"></li>	
+							<li class="third"><label for="pub_date">Publication Date</label>
+								<input id="pub_date" name="pub_date" type="text"></li>	
+							<li class="third"><label for="isbn">ISBN</label>
+								<input id="isbn" name="isbn" type="text"></li>	
+							<li class="third"><label for="text_pages">Text Pages</label>
+								<input id="text_pages" name="text_pages" type="text"></li>
+							<li class="whole"><label for="link">Link</label>
+								<input id="link" name="link" type="text"></li>
+					</fieldset>
+					<fieldset>
+						<legend>Original Text Information</legend>
+							<li class="whole"><label for="text_name">Text Name</label>
+								<textarea id="text_name" name="text_name" rows="3"></textarea></li>
+							<li class="half"><label for="date_begin">Earliest Date</label>
+								<input id="date_begin" name="date_begin" type="text"></li>
+							<li class="half"><label for="date_end">Latest Date</label>
+								<input id="date_end" name="date_end" type="text"></li>
+							<li class="checkbox"><input name="trans_none" value="1" type="checkbox">Original language included</li>
+							<li class="checkbox"><input name="trans_english" value="1" type="checkbox">Translated into English</li>
+							<li class="checkbox"><input name="trans_french" value="1" type="checkbox">Translated into French</li>
+							<li class="checkbox"><input name="trans_other" value="1" type="checkbox">Translated into another language</li>
+							<li class="half"><label for="trans_comment">Translation Comments</label>
+								<textarea id="trans_comment" name="trans_comment" rows="3"></textarea></li>
+							<li class="half"><label for="archive">Archival Reference</label>
+								<textarea id="archive" name="archive" rows="3"></textarea></li>
+							<li class="half"><label for="author">Medieval Author</label>
+								<?php $authors = mysqli_query($db_server, "select name,id from authors order by name;"); ?>
+								<select name="author[]" multiple="multiple">
+										<?php while ($row = mysqli_fetch_array($authors)){ ?>
+											<option value="<?php echo $row[1]; ?>"><?php echo $row[0]; ?></option>
+										<?php } ?>
+								</select>
+							</li>
+							<li class="half"><label for "language">Original Language:</label>
+								<select name="language[]" multiple="multiple">
+									<?php
+									foreach ( $language_array as $tmp )
+										print ("                <option value=\"".$tmp."\">".$tmp."</option>\n");
+									?>
+								</select>
+							</li>
+					</fieldset>
+					<fieldset>
+						<legend>Region Information</legend>
+							<li class="half"><label for="region">County/Town/Parish/Village</label>
+								<input id="region" name="region" value="<?php echo $data['region'];?>" type="text"></li>
+							<li class="half"><label for "countries">Geopolitical Region:</label>
+								<select name="countries[]" multiple="multiple">
+									<?php
+									foreach ( $country_array as $tmp )
+										print ("                <option value=\"".$tmp."\">".$tmp."</option>\n");
+									?>
+								</select>
+							</li>
+					</fieldset>
+					<fieldset>
+						<legend>Finding Aids</legend>
+							<li class="half"><label for="type">Record Type</label>
+								<select name="type[]" multiple="multiple">
+									<?php
+									foreach ( $type_array as $tmp )
+										print ("                <option value=\"".$tmp."\">".$tmp."</option>\n");
+									?>
+								</select>
+							</li>
+							<li class="half"><label for="subject">Subject</label>
+								<select name="subject[]" multiple="multiple">
+									<?php
+									foreach ( $subject_array as $tmp )
+										print ("                <option value=\"".$tmp."\">".$tmp."</option>\n");
+									?>
+								</select>
+							</li>
+					</fieldset>
+					<fieldset>
+						<legend>Apparatus</legend>
+							<li class="checkbox"><input name="app_index" value="1" type="checkbox">Index</li>
+							<li class="checkbox"><input name="app_glossary" value="1" type="checkbox">Glossary</li>
+							<li class="checkbox"><input name="app_appendix" value="1" type="checkbox">Appendix</li>
+							<li class="checkbox"><input name="app_bibliography" value="1" type="checkbox">Bibliography</li>
+							<li class="checkbox"><input name="app_facsimile" value="1" type="checkbox">Facsimile</li>
+							<li class="checkbox"><input name="app_intro" value="1" type="checkbox">Introduction</li>
+							<li class="whole"><label for="comments">Comments</label>
+								<textarea id="comments" name="comments" rows="3"></textarea></li>
+							<li class="whole"><label for="intro_summary">Introduction Summary</label>
+								<textarea id="intro_summary" name="intro_summary" rows="3"></textarea></li>
+							<li class="whole"><label for="addenda">Notes</label>
+								<textarea id="addenda" name="addenda" rows="3"></textarea></li>
+							<li class="checkbox"><input name="live" value="1" type="checkbox">Public Records</li>
+					</fieldset>
+		<?php } else { ?>
+			<!-- Form for not logged in users -->
+					<fieldset>
+						<legend>Search for modern editions of medieval primary sources</legend>
+							<li class="whole"><label for="text_title">Text Name</label> <!-- this field needs to search in both text_name and title fields -->
+								<input id="text_title" name="text_title" placeholder="Medieval or modern title of the work"></li>
+							<li class="half"><label for="author">Medieval Author</label>
+								
+								<p>You can find all records by an author using the <a href="/authors.php">Medieval author search</a>.</p></li>
+							<li class="half"><label for="editor">Modern Editor/Translator</label>
+								<input id="editor" name="editor" type="text"></li>
+							<li class="checkbox"><input name="link" value="1" type="checkbox">Limit search to sources available online</li><!-- if this is checked, only return records where there is something in the link field -->
+							<li class="half"><label for="date_begin">Earliest Date</label>
+								<input id="date_begin" name="date_begin" type="text"></li>
+							<li class="half"><label for="date_end">Latest Date</label>
+								<input id="date_end" name="date_end" type="text"></li>
+							<li class="checkbox"><input name="trans_none" value="1" type="checkbox">Original language included</li>
+							<li class="checkbox"><input name="trans_english" value="1" type="checkbox">Translated into English</li>
+							<li class="checkbox"><input name="trans_french" value="1" type="checkbox">Translated into French</li>
+							<li class="checkbox"><input name="trans_other" value="1" type="checkbox">Translated into another language</li>
+							<li class="half"><label for "language">Original Language:</label>
+								<select name="language[]" multiple="multiple">
+									<?php
+									foreach ( $language_array as $tmp )
+										print ("                <option value=\"".$tmp."\">".$tmp."</option>\n");
+									?>
+								</select>
+							</li>
+							<li class="half"><label for="region">County/Town/Parish/Village</label>
+								<input id="region" name="region" value="<?php echo $data['region'];?>" type="text"></li>
+							<li class="half"><label for "countries">Geopolitical Region:</label>
+								<select name="countries[]" multiple="multiple">
+									<?php
+									foreach ( $country_array as $tmp )
+										print ("                <option value=\"".$tmp."\">".$tmp."</option>\n");
+									?>
+								</select>
+							</li>
+							<li class="half"><label for="type">Record Type</label>
+								<select name="type[]" multiple="multiple">
+									<?php
+									foreach ( $type_array as $tmp )
+										print ("                <option value=\"".$tmp."\">".$tmp."</option>\n");
+									?>
+								</select>
+							</li>
+							<li class="half"><label for="subject">Subject</label>
+								<select name="subject[]" multiple="multiple">
+									<?php
+									foreach ( $subject_array as $tmp )
+										print ("                <option value=\"".$tmp."\">".$tmp."</option>\n");
+									?>
+								</select>
+							</li>
+		<?php } ?>
+	<input type="submit" class="button" value="Search Sources" />
+    </form>
+
+<?php }  ### end function ###
 ?>

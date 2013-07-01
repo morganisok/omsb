@@ -9,50 +9,50 @@ if(isAppLoggedIn()) {
     	display_form(0, "Add a New Author", "Create New Author");
     }
 
-    if ( $_POST && !$_GET ) {      ####  we have only $_POST data -- update DB  ####
-    	if ( $_POST['id'] ) {          ####  we already have an ID so we are editing  ####
+    if ( $_POST ) {             ####  we already have an ID so we are editing  ####
+        if ( $_POST['id'] ) {             ####  we already have an ID so we are editing  ####
     		$id=$_POST['id'];
             $labels = array( 
-                    "id" => "id",
-                    "name" => "Name",
-                    "alias" => "Alias",
-                    "title" => "Title",
-                    "date_type" => "date_type",
-                    "date_begin" => "date_begin",
-                    "date_end" => "date_end",
-                    "bio" => "bio"
-                    );
+                "id" => "id",
+                "name" => "Name",
+                "alias" => "Alias",
+                "title" => "Title",
+                "date_type" => "date_type",
+                "date_circa" => "date_circa",
+                "date_begin" => "date_begin",
+                "date_end" => "date_end",
+                "bio" => "bio"
+                );
 
             foreach($labels as $field => $value)
             {
-            $good_data[ $field] = 
-                    strip_tags( trim( $_POST[$field] ) ) ;    
-                    $good_data[$field] = 
-                            mysqli_real_escape_string($db_server, $good_data[$field]);
-                    }
-                    $query = "UPDATE authors set
-                                    name       = '$good_data[name]',
-                                    alias      = '$good_data[alias]',
-                                    title      = '$good_data[title]', 
-                                    updated_at = '".date("Y-m-d H:i:s")."',
-                                    date_type  = '$good_data[date_type]',
-                                    date_circa = '$good_data[date_circa]',
-                                    date_begin = '$good_data[date_begin]',
-                                    date_end   = '$good_data[date_end]',
-                                    bio        = '$good_data[bio]'
-                             where id=$id;";
-                    $result = mysqli_query($db_server,$query)
-                            or die ("Couldn't execute query:"
-                                    .mysqli_error($db_server));
-                    if(mysqli_affected_rows($db_server) > 0)
-                    {
-    							display_form($_POST, "{$_POST['name']} has been updated.", "Submit Changes");
-                    }
-                    else
-    							display_form($_POST, "No changes made.", "Submit Changes");
+                $good_data[ $field] = 
+                strip_tags( trim( $_POST[$field] ) ) ;    
+                $good_data[$field] = 
+                        mysqli_real_escape_string($db_server, $good_data[$field]);
+            }
+            $query = "UPDATE authors set
+                name       = '$good_data[name]',
+                alias      = '$good_data[alias]',
+                title      = '$good_data[title]', 
+                updated_at = '".date("Y-m-d H:i:s")."',
+                date_type  = '$good_data[date_type]',
+                date_circa = '$good_data[date_circa]',
+                date_begin = '$good_data[date_begin]',
+                date_end   = '$good_data[date_end]',
+                bio        = '$good_data[bio]'
+                where id=$id;";
+            $result = mysqli_query($db_server,$query)
+                or die ("Couldn't execute query:"
+                    .mysqli_error($db_server));
+            if(mysqli_affected_rows($db_server) > 0)
+            {
+				display_form($_POST, "{$_POST['name']} has been updated.", "Submit Changes");
+            }
+            else
+				display_form($_POST, "No changes made.", "Submit Changes");
 
-    	} else {                    ####  we don't have an ID because we are adding new author  ####
-
+    	} else {             ####  we don't have an ID yet because we are inserting a new author & display that info  ####
     		$labels = array( 
                     "name" => "Name",
                     "alias" => "Alias",
@@ -67,97 +67,95 @@ if(isAppLoggedIn()) {
             foreach($labels as $field => $value)
             {
             $good_data[ $field] = 
-                    strip_tags( trim( $_POST[$field] ) ) ;                  
-                    $good_data[$field] = 
-                            mysqli_real_escape_string($db_server, $good_data[$field]);
-                    }
-                    $query = "INSERT INTO authors (
-                                    name, 
-                                    alias, 
-                                    title, 
-                                    date_type,
-                                    date_circa,
-                                    date_begin,
-                                    date_end,
-                                    bio
-                            )
-                            VALUES (
-                                    '$good_data[name]',
-                                    '$good_data[alias]',
-                                    '$good_data[title]', 
-                                    '$good_data[date_type]',
-                                    '$good_data[date_circa]',
-                                    '$good_data[date_begin]',
-                                    '$good_data[date_end]',
-                                    '$good_data[bio]'
-                            );";
+                strip_tags( trim( $_POST[$field] ) ) ;                  
+                $good_data[$field] = mysqli_real_escape_string($db_server, $good_data[$field]);
+            }
+            $query = "INSERT INTO authors (
+                name, 
+                alias, 
+                title, 
+                date_type,
+                date_circa,
+                date_begin,
+                date_end,
+                bio
+            )
+            VALUES (
+                '$good_data[name]',
+                '$good_data[alias]',
+                '$good_data[title]', 
+                '$good_data[date_type]',
+                '$good_data[date_circa]',
+                '$good_data[date_begin]',
+                '$good_data[date_end]',
+                '$good_data[bio]'
+            );";
 
-                    $result = mysqli_query($db_server,$query)
-                            or die ("Couldn't execute query:"
-                                    .mysqli_error($db_server));
-                    if(mysqli_affected_rows($db_server) > 0) {
-                         $_POST['id'] = mysqli_insert_id($db_server);
-    							display_form($_POST, "{$_POST['name']} has been added.", "Submit Changes");
-    							echo "<a href=\"authors.php?id={$_POST['id']}\">View Author Record</a>.";
-                    }
-                    else
-    #                        echo "No author added.";
-    							display_form($_POST, "No author added", "Submit Changes");
-    	}
-    } 
+            $result = mysqli_query($db_server,$query)
+                or die ("Couldn't execute query:"
+                    .mysqli_error($db_server));
+            if(mysqli_affected_rows($db_server) > 0) {
+                $_POST['id'] = mysqli_insert_id($db_server);
+    			display_form($_POST, "{$_POST['name']} has been added.", "Submit Changes");
+    			echo "<a href=\"authors.php?id={$_POST['id']}\">View Author Record</a>.";
+            }
+            else
+    			display_form($_POST, "No author added", "Submit Changes");
+	}
+    } elseif ( $_GET ) {
+#        if ( $_GET ) {         ####  we have $_GET data from URL -- edit or delete author ####
+        	if ( $_GET['delete'] ) {    ## we are going to delete this author ##
+        		echo "<h2>Delete Author</h2>";
 
+        		$id=mysqli_real_escape_string($db_server, $_GET['delete']);
+        		$result = mysqli_query($db_server, "select * from authors where id=$id;");
 
-    if ( $_GET ) {         ####  we have $_GET data -- edit or delete author ####
-    	if ( $_GET['delete'] ) {    ## we are going to delete this author really quickly! ##
-    		echo "<h2>Delete Author</h2>";
+        		if ( !$result->num_rows ) {
+          			print ("Could not find that author. <br>");
+          			print ("<a href=\"authors.php\">Go to Search Page</a>.");
+        		} else {
 
-    		$id=mysqli_real_escape_string($db_server, $_GET['delete']);
-    		$result = mysqli_query($db_server, "select * from authors where id=$id;");
+        			$author = mysqli_fetch_array($result);
+        			$name = $author['name'];
+        			?>
 
-    		if ( !$result->num_rows ) {
-      			print ("Could not find that author. <br>");
-      			print ("<a href=\"authors.php\">Go to Search Page</a>.");
-    		} else {
+        			<?php
+        			$result = mysqli_query($db_server, "delete from authors where id=$id;");
+        			if(mysqli_affected_rows($db_server) > 0) {
+        			?>
+        				<p><?php echo $name; ?> has been removed from the database.</p>
+        				<?php
+        			} else {
+        				print ("Sorry, we couldn't delete that author.");
+        			}  # end successful delete
+        		}  # end valid search result
 
-    			$author = mysqli_fetch_array($result);
-    			$name = $author['name'];
-    			?>
+        	} elseif( $_GET['id'] && !$_POST) {        ####  we have _GET['id'] & no _POST data -- just display edit author form with ID's info #####
+        		$id=mysqli_real_escape_string($db_server, $_GET['id']);
+        		$result = mysqli_query($db_server, "select * from authors where id=$id;");
 
-    			<?php
-    			$result = mysqli_query($db_server, "delete from authors where id=$id;");
-    			if(mysqli_affected_rows($db_server) > 0) {
-    			?>
-    				<p><?php echo $name; ?> has been removed from the database.</p>
-    				<?php
-    			} else {
-    				print ("Sorry, we couldn't delete that author.");
-    			}  # end successful delete
-    		}  # end valid search result
+        		if ( !$result->num_rows ) {
+          			print ("Could not find that author. <br>"); 
+          			print ("<a href=\"authors.php\">Go to Search Page</a>.");
+        		} else {
+        			$author = mysqli_fetch_array($result);
+        			$name = $author['name'];
+        			$alias = $author['alias'];
+        			$title = $author['title'];
+        			$date_type = $author['date_type'];
+        			$date_circa = $author['date_circa'];
+        			$date_begin = $author['date_begin'];
+        			$date_end = $author['date_end'];
+        			$bio = $author['bio'];
 
-    	} else {                    ####  we have _GET['id'] -- we are going to edit the author  #####0
-
-    		$id=mysqli_real_escape_string($db_server, $_GET['id']);
-    		$result = mysqli_query($db_server, "select * from authors where id=$id;");
-
-    		if ( !$result->num_rows ) {
-      			print ("Could not find that author. <br>"); 
-      			print ("<a href=\"authors.php\">Go to Search Page</a>.");
-    		} else {
-    			$author = mysqli_fetch_array($result);
-    			$name = $author['name'];
-    			$alias = $author['alias'];
-    			$title = $author['title'];
-    			$date_type = $author['date_type'];
-    			$date_circa = $author['date_circa'];
-    			$date_begin = $author['date_begin'];
-    			$date_end = $author['date_end'];
-    			$bio = $author['bio'];
-
-    			display_form($author, "Edit Author Details", "Submit Changes");
-    		}  # end valid search result
-    	} # end if -- edit or delete
-    }  # end _GET data
-
+        			display_form($author, "Edit Author Details", "Submit Changes");
+        		}  # end valid search result
+            } else {    #### we don't have a valid GET request!  ####
+                echo "You sent a request the server could not understand; please try again.";
+                echo "<!--No, I don't understand that banter at all!-->";
+        	} # end if -- edit or delete
+        }  # end _GET data
+#    }
 } else { ?>
     <p>Sorry, you must <a href="/login.php">log in</a> to view this page.</p>
 <?php }

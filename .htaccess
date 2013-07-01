@@ -1,0 +1,21 @@
+RewriteCond %{HTTP_HOST} ^omsb\.alchemycs\.com$ [NC]
+RewriteRule ^(.*)$ http://medievalsourcesbibliography.org/$1 [R=301,L]
+
+
+RewriteEngine On
+RewriteRule ^authors/(.+)$ http://medievalsourcesbibliography.org/authors.php?id=$1 [R=301,L]
+RewriteRule ^sources/(.+)$ http://medievalsourcesbibliography.org/sources.php?id=$1 [R=301,L]
+
+Redirect  301		/about/codebook		http://medievalsourcesbibliography.org/codebook.php
+Redirect  301		/about/compilers	http://medievalsourcesbibliography.org/about/compilers.php
+Redirect  301 		/about/contents		http://medievalsourcesbibliography.org/about/contents.php
+Redirect  301		/about/acknowledgements	http://medievalsourcesbibliography.org/about/acknowledgements.php
+Redirect  301		/about/feedback		http://medievalsourcesbibliography.org/news/feedback
+Redirect  301		/about/tips_date	http://medievalsourcesbibliography.org/about/tips_date.php
+Redirect  301		/about/languages	http://medievalsourcesbibliography.org/about/languages.php
+Redirect  301		/about/countries    http://medievalsourcesbibliography.org/about/countries.php
+Redirect  301		/about/tips_countries	http://medievalsourcesbibliography.org/about/tips_countries.php
+Redirect  301		/about/types		http://medievalsourcesbibliography.org/about/types.php
+Redirect  301		/about/subjects		http://medievalsourcesbibliography.org/about/subjects.php
+Redirect  301		/sources			http://medievalsourcesbibliography.org/sources.php
+Redirect  301	 	/authors			http://medievalsourcesbibliography.org/authors.php

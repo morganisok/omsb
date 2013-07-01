@@ -60,7 +60,7 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 		$date_end = $row['date_end']; ?>
 
 		<ul>
-			<li><a href="http://omsb.alchemycs.com/authors.php?id=<?php echo $id; ?>">
+			<li><a href="http://medievalsourcesbibliography.org/authors.php?id=<?php echo $id; ?>">
 				<?php echo $name; ?></a> 
 				<?php if ($alias) {
 					echo '(';
@@ -76,8 +76,8 @@ if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ##
 					      return confirmed;
 						}
 						</script>
-						<a href="http://omsb.alchemycs.com/admin-authors.php?id=<?php echo $id; ?>">Edit</a> | 
-						<a href="http://omsb.alchemycs.com/admin-authors.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
+						<a href="http://medievalsourcesbibliography.org/admin-authors.php?id=<?php echo $id; ?>">Edit</a> | 
+						<a href="http://medievalsourcesbibliography.org/admin-authors.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
 					</p>
 				<?php } ?>
 			</li>
@@ -152,7 +152,7 @@ $bio = $author['bio'];
                     $date = $works['pub_date']; ?>
 
                     <li>
-                        <?php echo $editor; ?>, <a href="http://omsb.alchemycs.com/display-source.php?id=<?php echo $id; ?>"><?php echo $title; ?></a>
+                        <?php echo $editor; ?>, <a href="http://medievalsourcesbibliography.org/sources.php?id=<?php echo $id; ?>"><?php echo $title; ?></a>
                         (<?php echo $pub; ?>, <?php echo $date; ?>).
                     </li>
 
@@ -168,9 +168,9 @@ $bio = $author['bio'];
 <?php
 
 } # end if
+}
 ?>
 
 <?php include 'footer.php';
-}
 ?>
 

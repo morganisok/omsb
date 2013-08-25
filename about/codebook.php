@@ -80,11 +80,11 @@ authors' dates, where they are known, are listed.  Users may enter
 medieval authors' names on the search form to perform a boolean search
 for a particular author.</p>
 
-<p><b>Earliest Date*</b> | <a href="/about/tips_date">Date Search Tips</a> <br />
+<p><b>Earliest Date*</b> | <a href="/about/tips-dates.php">Date Search Tips</a> <br />
 Earliest date covered by the work.  Further information on the dates of the individual documents should be included in the 
 <span class="field"> Comments</span> field.</p>
 
-<p><b>Latest Date*</b> | <a href="/about/tips_date">Date Search Tips</a> <br />
+<p><b>Latest Date*</b> | <a href="/about/tips-dates.php">Date Search Tips</a> <br />
 Latest date covered by the work.  Further information on the dates of the 
 individual documents should be included in the <span class="field"> Comments</span> field.</p>
 
@@ -93,7 +93,7 @@ Archive, record office or library where original documents are located;
 including class/call no. if known.  Abbreviations:  BL=British Library; 
 BN=Bibliotheque Nationale; PRO=Public Record Office, London.</p>
 
-<p><b>Original Language* </b> | <a href="/about/languages">List of Original Languages</a> <br />
+<p><b>Original Language* </b> | <a href="/about/list-languages.php">List of Original Languages</a> <br />
 Original medieval language of source.  Users can search for one or 
 more items from the list of original languages.</p>
 
@@ -122,8 +122,8 @@ some of the text, or whether a translation of poetry is in verse or
 prose.</p>
 
 <p><b>Geo-Political Region*</b> | 
-<a href="/about/countries">List of Geopolitical Regions</a> |
-<a href="/about/tips_countries">Search Tips</a> <br />
+<a href="/about/list-countries.php">List of Geopolitical Regions</a> |
+<a href="/about/tips-countries.php">Search Tips</a> <br />
 The modern and medieval country/countries/regions which the text 
 covers.</p>
 
@@ -135,12 +135,12 @@ places are covered) is given in the <span class="field">Comments</span>
 field.</p>
 
 <p><b>Record Type*</b> | 
-<a href="/about/types">List of Record Types</a> <br />
+<a href="/about/list-types.php">List of Record Types</a> <br />
 Type or genre of record. Users may search for one or more items from
 the list of record types.</p>
 
 <p><b>Subject Headings*</b> | 
-<a href="/about/subjects">List of Subject Headings</a> <br />
+<a href="/about/list-subjects.php">List of Subject Headings</a> <br />
 Users may search for one or more items from the list of subject 
 headings.</p>
 

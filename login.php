@@ -137,6 +137,7 @@ if (isAppLoggedIn()){
 		<p>Welcome, <?php echo($_SESSION['username']);?>!</p>
 		<p><a href="admin-sources.php">Add a new source.</a></p>
 		<p><a href="admin-notes.php">View sources with Notes.</a></p>
+		<p><a href="admin-links.php">View online sources.</a></p>
 		<!-- <p><a href="#">View your records.</a></p> -->
 		<form action="login.php" method="POST"><input type="hidden" name="action" value="logout" class="button"><input type="submit" class="button" value="Logout"></form>
 		<form action="login.php" method="POST"><input type="hidden" name="action" value="delete"><input type="submit" class="button" value="Delete account"></form>

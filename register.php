@@ -82,10 +82,23 @@ if (isAppLoggedIn()){
 		$msg = 'logged out';
 	} else if ($action=='create'){	// We were requested to try to create a new acount.
 		// New account
-		if ( !$ulogin->CreateUser( $_POST['user'],  $_POST['pwd']) )
-			$msg = 'account creation failure';
-		else
-			$msg = 'account created';
+		  require_once('recaptchalib.php');
+		  $privatekey = "6Le9huYSAAAAAJ0mg487tsocTUkNPUMNkVRI1dQP";
+		  $resp = recaptcha_check_answer ($privatekey,
+                                $_SERVER["REMOTE_ADDR"],
+                                $_POST["recaptcha_challenge_field"],
+                                $_POST["recaptcha_response_field"]);
+
+		  if (!$resp->is_valid) {
+		    // What happens when the CAPTCHA was entered incorrectly
+		    die ("The reCAPTCHA wasn't entered correctly. Go back and try it again." .
+		         "(reCAPTCHA said: " . $resp->error . ")");
+		  } else {
+				if ( !$ulogin->CreateUser( $_POST['user'],  $_POST['pwd']) )
+					$msg = 'account creation failure';
+				else
+					$msg = 'account created';
+		  }
 	}
 } else {
 	// We've been requested to log in
@@ -154,8 +167,51 @@ if (isAppLoggedIn() && $_SESSION['username'] == 'morgan' ){
 } else {
 ?>
 
-		<h2>Register New User</h2>
-		<p>Please ask for assistance in registering for a new account.</p>
+<?php
+if ($action=='create'){   // We were requested to try to create a new acount.
+      // New account
+        require_once('captcha/recaptchalib.php');
+        $privatekey = "6Le9huYSAAAAAJ0mg487tsocTUkNPUMNkVRI1dQP";
+        $resp = recaptcha_check_answer ($privatekey,
+                                $_SERVER["REMOTE_ADDR"],
+                                $_POST["recaptcha_challenge_field"],
+                                $_POST["recaptcha_response_field"]);
+
+        if (!$resp->is_valid) {
+          // What happens when the CAPTCHA was entered incorrectly
+          die ("The reCAPTCHA wasn't entered correctly. Go back and try it again." .
+               "(reCAPTCHA said: " . $resp->error . ")");
+        } else {
+            if ( !$ulogin->CreateUser( $_POST['user'],  $_POST['pwd']) )
+               $msg = 'Account creation failure.';
+            else
+               $msg = 'Account created. Please <a href="http://medievalsourcesbibliography.org/login.php">click here to login</a>.';
+        }
+	echo $msg;
+} else { ?> 
+<h2>Register New User</h2>
+	<form action="register.php" method="POST" id="login">
+		<fieldset>
+			<legend>Enter your user information</legend>
+				<li class="whole"><label for="username">Username:</label>
+					<input type="text" name="user">
+				</li>
+				<li class="whole"><label for="password">Password:</label>
+					<input type="password" name="pwd">
+				</li>
+				<input type="hidden" name="action" value="create">
+				<input type="hidden" id="nonce" name="nonce" value="<?php echo ulNonce::Create('login');?>">
+						<?php   require_once('captcha/recaptchalib.php');
+						  $publickey = "6Le9huYSAAAAAIx7yKN8MQie9VrPXu__6hQi4ZUC"; 
+						  echo '<p>'.recaptcha_get_html($publickey).'</p>'; ?>
+				<input type="submit" value="Create User" name="create_user" class="button">
+		</fieldset>
+	</form>
+
+
+<?php
+}
+?>
 
 <?php
 }

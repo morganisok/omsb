@@ -80,7 +80,7 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 				<p><label>Medieval Author(s):</label>
 							<ul>
 					<?php $authors = mysqli_query($db_server, "select author_id from authorships where source_id=$id;");
-					$authorsquery = "select name from authors where id in (";
+					$authorsquery = "select name, id from authors where id in (";
 					while ($row = mysqli_fetch_array($authors)){
 						$authorsquery .= "$row[0],";
 					}
@@ -88,7 +88,7 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 					$authorsquery .= ");";
 					$authorsname = mysqli_query($db_server, $authorsquery);
 					while ($row = mysqli_fetch_array($authorsname)){
-						echo "<li> $row[0] </li>";
+						echo "<li><a href=\"/authors.php?id=$row[1]\">$row[0]</a></li>";
 					}
 					?>
 					</ul></p>
@@ -198,7 +198,7 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 				<p><label>Author(s):</label>
 					<ul>
 					<?php $authors = mysqli_query($db_server, "select author_id from authorships where source_id=$id;");
-					$authorsquery = "select name from authors where id in (";
+					$authorsquery = "select name, id from authors where id in (";
 					while ($row = mysqli_fetch_array($authors)){
 						$authorsquery .= "$row[0],";
 					}
@@ -206,8 +206,7 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 					$authorsquery .= ");";
 					$authorsname = mysqli_query($db_server, $authorsquery);
 					while ($row = mysqli_fetch_array($authorsname)){
-						echo "<li> $row[0] </li>";
-						// TODO: NEED TO GET AUTHOR ID AND MAKE A LINK
+						echo "<li><a href=\"/authors.php?id=$row[1]\">$row[0]</a></li>";
 					}
 					?>
 					</ul>

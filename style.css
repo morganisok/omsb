@@ -486,6 +486,10 @@ float: none;
 margin-left: 1em;
 }
 
+#login li {
+    float: none;
+}
+
 /* SEARCH RESULTS */
 /* ----------------------------------------- */
 

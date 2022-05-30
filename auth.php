@@ -1,14 +1,64 @@
 <?php
-require_once('ulogin/config/all.inc.php');
-require_once('ulogin/uLogin.inc.php');
-require_once('ulogin/main.inc.php');
-if (!sses_running())
-   sses_start();
+require_once( dirname( __FILE__ ) . '/oauth-config.php' );
 
+$redirect_uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 
-function isAppLoggedIn(){
-   return isset($_SESSION['uid']) && isset($_SESSION['username']) && isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn']===true);
+$tmp = null;
+
+// If the user clicked the "log out" button, log them out.
+if ( isset( $_POST['action'] ) && 'logout' == $_POST['action'] ) {
+  session_start();
+	session_destroy();
 }
 
-#echo $isloggedin;
+session_start();
+
+// User is requesting a new session.
+if ( isset( $_GET['code'] ) && ! isset( $_SESSION['user'] ) ) {
+
+	$curl_post_data = array(
+		'grant_type'    => 'authorization_code',
+		'code'          => $_GET['code'],
+		'redirect_uri'  => $redirect_uri,
+		'client_id'     => $client_id,
+		'client_secret' => $client_secret
+	);
+
+	$curl = curl_init( $server_url . '/oauth/token/' );
+
+	curl_setopt( $curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
+	curl_setopt( $curl, CURLOPT_USERPWD, $client_id . ':' . $client_secret );
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, true );
+	curl_setopt( $curl, CURLOPT_POST, true );
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, $curl_post_data );
+	curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, false );
+	curl_setopt( $curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 GTB5' );
+	curl_setopt( $curl, CURLOPT_REFERER, 'http://www.example.com/1' );
+
+	$curl_response = curl_exec( $curl );
+	$code_response = json_decode( $curl_response );
+	curl_close( $curl );
+
+	$tmp = $code_response;
+
+	/*
+	 * If there is no error in the return, the following will request the user information from the server
+	 */
+	$curl = curl_init( $server_url . '/oauth/me/?access_token=' . $tmp->access_token );
+
+	curl_setopt( $curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
+	curl_setopt( $curl, CURLOPT_POST, false );
+	curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, false );
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, true );
+	curl_setopt( $curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 GTB5' );
+	curl_setopt( $curl, CURLOPT_REFERER, 'http://www.example.com/1' );
+
+	$curl_response  = curl_exec( $curl );
+	$token_response = json_decode( $curl_response );
+	curl_close( $curl );
+
+	$user = $token_response;
+
+	$_SESSION['user'] = $user;
+}
 ?>

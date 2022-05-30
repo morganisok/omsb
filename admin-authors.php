@@ -6,10 +6,23 @@ require_once('auth.php');
 if(isAppLoggedIn()) { 
 
     if (!$_POST && !$_GET) {      ####  new author form  ####
-    	display_form(0, "Add a New Author", "Create New Author");
+        if($_SESSION['username'] == 'morgan' || $_SESSION['username'] == 'elc') {
+    	   display_form(0, "Add a New Author", "Create New Author");
+        } else {
+            echo "Sorry, you do not have sufficient privileges to create new authors.";
+        }
     }
 
-    if ( $_POST ) {             ####  we already have an ID so we are editing  ####
+    if ( !empty($_POST) ) {             ####  we already have an ID so we are editing  ####
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";        
+        // must protect against 31336 hax0rz, zomg! (the 6 is on purpose--this won't stop sophisticated hacks)
+        foreach ($_POST as $key => $post_field) {
+            if(strlen($post_field) > 200 && ( $key != 'bio') )
+
+                die("You submitted a post search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+        }
         if ( $_POST['id'] ) {             ####  we already have an ID so we are editing  ####
     		$id=$_POST['id'];
             $labels = array( 
@@ -102,7 +115,12 @@ if(isAppLoggedIn()) {
             else
     			display_form($_POST, "No author added", "Submit Changes");
 	}
-    } elseif ( $_GET ) {
+    } elseif ( !empty($_GET) ) {
+        // must protect against 31336 hax0rz, zomg! (the 6 is on purpose--this won't stop sophisticated hacks)
+        foreach ($_GET as $get_field) {
+            if(strlen($get_field) > 120 )
+                die("You submitted a search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+        }
 #        if ( $_GET ) {         ####  we have $_GET data from URL -- edit or delete author ####
         	if ( $_GET['delete'] ) {    ## we are going to delete this author ##
         		echo "<h2>Delete Author</h2>";

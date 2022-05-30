@@ -1,5 +1,6 @@
-<?php include 'header.php';
-include 'connect.php';
+<?php
+require_once 'header.php';
+require_once 'connect.php';
 require_once 'paginator.class.php';
 require_once 'auth.php';
 

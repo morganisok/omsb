@@ -3,12 +3,16 @@ include 'connect.php';
 require_once 'paginator.class.php';
 require_once 'auth.php';
 
-
 if (!$_GET){           ####  we display the blank form to get a search term  ####
 	echo "<h2>Search</h2>";
 	search_form($db_server);
 } else {  # we have GET data from the URL
-	if ( $_GET['id'] ) {   ####  we have a _GET['id']--display that id's info  ####
+	// must protect against teh 31336 hax0rz. zomg.
+	foreach ($_GET as $get_field) {
+		if(strlen($get_field) > 120 )
+			die("You submitted a search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+	}
+	if ( isset($_GET['id']) ) {   ####  we have a _GET['id']--display that id's info  ####
 
 	require_once('classTextile.php'); 
 	$textile = new Textile(); ?>
@@ -150,7 +154,7 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 					</ul></p>
 				<div class="comments"><label>Comments:</label> <?php echo $textile->TextileThis($comments); ?> </div>
 				<div class="intro-summary"><label>Introduction Summary:</label> <?php echo $textile->TextileThis($intro_summary); ?></div>
-				<p><label>Cataloger:</label>
+				<p><label>Cataloger: </label><?php echo $cataloger; ?></p>
 				<p><label>My ID:</label> <?php echo $my_id; ?></p>
 				<p><label>Notes: </label> <?php echo $addenda; ?></p>
 				<p><?php if($live) {
@@ -158,7 +162,6 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 				} else {
 					echo "This record is hidden from the public";
 				} ?></p>
-				<p><label>Cataloger: </label><?php echo $cataloger; ?></p>
 				<p class="maintenance">
 						<script type="text/javascript" language="JavaScript">
 						function confirmAction(){
@@ -171,7 +174,7 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 				</p>
 	<?php } else { ?>
 	<!-- public view for not logged in users -->
-
+		<?php if( $live ) { // check if the source is viewable by the public ?> 
 			<article class="source">
 				<p class="citation">
 					<?php echo $editor; ?>,
@@ -289,7 +292,10 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 				<p><label>Cataloger:</label><?php echo $cataloger; ?></p>
 
 			</article>
-	<?php	}
+		<?php } else {
+			echo "Sorry, you must be logged in to view this source";
+			}		
+		}
 		}
 	} else {		####    end display _GET['id'] information    ####
 		######      we have a search from url's $_GET; we are going to display the results from the search    ######
@@ -298,6 +304,7 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 		echo "<h2>Search Results</h2>";
 		####    here we begin our query--we leave off after sources to be able to add more tables to select from   ####
 		$query = "SELECT sources.id,sources.editor,sources.title from sources";
+
 	   
 		$terms = array_filter($_GET);   ##  stripping out the un-valued elements
    		$tables = "";
@@ -401,12 +408,19 @@ if (!$_GET){           ####  we display the blank form to get a search term  ###
 #		$query .= " where ".$tmpquery;
 #		if( $page && $ipp )
 #			$query .= " LIMIT ".($page-1)*$ipp.",".$ipp;
+
+
+		if( !isAppLoggedIn() )  {
+			$query .= " AND sources.live=1 ";
+		}
+
+
+
 		$query .= ";";
 #	 	echo $_SERVER[PHP_SELF];
 #	 	echo $_SERVER['QUERY_STRING'];
 #		print_r($terms);
 #		echo "--";
-
 
 
 

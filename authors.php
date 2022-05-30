@@ -13,14 +13,18 @@ if (!$_GET){           ####  we display the form to get a search term  ####
 
 	<?php
 } else {  # we have a search term
-	?>
 
-<?php
 if ( $_GET['search'] ) {   ####  we have a search term, not a display author  ####
 
 	echo "<h2>Author Search Results</h2>";
 
-	$searchterm = mysqli_real_escape_string($db_server, $_GET['search']); ?>
+	if(strlen($_GET['search']) > 80 )
+		die("You submitted a search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+
+	$searchterm = mysqli_real_escape_string($db_server, $_GET['search']);
+
+
+	?>
 
 	<p>You searched for: 
 	<?php echo $_GET['search']; ?>
@@ -94,6 +98,12 @@ $textile = new Textile(); ?>
 <h2>Author Details</h2>
 
 <?php 
+
+
+if(strlen($_GET['id']) > 16 )
+	die("You submitted a search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+	
+
 $id = mysqli_real_escape_string($db_server, $_GET['id']);
 $result = mysqli_query($db_server, "select * from authors where id=$id;");
 

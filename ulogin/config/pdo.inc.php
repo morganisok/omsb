@@ -6,7 +6,7 @@
 
 // TODO: rename dbname back to ulogin
 // Connection string to use for connecting to a PDO database.
-define('UL_PDO_CON_STRING', 'mysql:host=127.0.0.1;dbname=omsb_auth_test');
+define('UL_PDO_CON_STRING', 'mysql:host=127.0.0.1;dbname=omsb_dev');
 
 // SQL query to execute at the start of each PDO connection.
 // For example, if you allow UTF-8 usernames and you are using MySQL,
@@ -33,34 +33,34 @@ define('UL_PDO_CON_INIT_QUERY', '');
 // Used to log users in.
 // Database user with SELECT access to the
 // logins table.
-define('UL_PDO_AUTH_USER', 'morgan');
-define('UL_PDO_AUTH_PWD', 'ffagan23');
+define('UL_PDO_AUTH_USER', 'omsb_dev');
+define('UL_PDO_AUTH_PWD', 'xif^CAc%H02Zt');
 
 // LOGIN UPDATE
 // Used to add new and modify login data.
 // Database user with SELECT, UPDATE and INSERT access to the
 // logins table.
-define('UL_PDO_UPDATE_USER', 'morgan');
-define('UL_PDO_UPDATE_PWD', 'ffagan23');
+define('UL_PDO_UPDATE_USER', 'omsb_dev');
+define('UL_PDO_UPDATE_PWD', 'xif^CAc%H02Zt');
 
 // LOGIN DELETE
 // Used to remove logins.
 // Database user with SELECT and DELETE access to the
 // logins table
-define('UL_PDO_DELETE_USER', 'morgan');
-define('UL_PDO_DELETE_PWD', 'ffagan23');
+define('UL_PDO_DELETE_USER', 'omsb_dev');
+define('UL_PDO_DELETE_PWD', 'xif^CAc%H02Zt');
 
 // SESSION
 // Database user with SELECT, UPDATE and DELETE permissions to the
 // sessions and nonces tables.
-define('UL_PDO_SESSIONS_USER', 'morgan');
-define('UL_PDO_SESSIONS_PWD', 'ffagan23');
+define('UL_PDO_SESSIONS_USER', 'omsb_dev');
+define('UL_PDO_SESSIONS_PWD', 'xif^CAc%H02Zt');
 
 // LOG
 // Used to log events and analyze previous activity.
 // Database user with SELECT, INSERT and DELETE access to the
 // logins-log table.
-define('UL_PDO_LOG_USER', 'morgan');
-define('UL_PDO_LOG_PWD', 'ffagan23');
+define('UL_PDO_LOG_USER', 'omsb_dev');
+define('UL_PDO_LOG_PWD', 'xif^CAc%H02Zt');
 
 ?>

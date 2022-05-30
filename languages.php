@@ -4,7 +4,6 @@ $language_array = array(
 "Anglo-Norman",
 "Arabic",
 "Armenian",
-"Americas",
 "Azestan",
 "Chinese",
 "Cornish",

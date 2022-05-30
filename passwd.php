@@ -52,6 +52,14 @@ $msg = '';
 // This is the action requested by the user
 $action = @$_POST['action'];
 
+
+// must protect against 31336 hax0rz, zomg! (the 6 is on purpose--this won't stop sophisticated hacks)
+foreach ($_POST as $post_field) {
+	if(strlen($post_field) > 120 )
+		die("You submitted a search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+}
+
+
 // This is the first uLogin-specific line in this file.
 // We construct an instance and pass a function handle to our
 // callback functions (we have just defined 'appLogin' and

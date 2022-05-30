@@ -1,16 +1,33 @@
 <?php
-include('header.php');
-include('connect.php'); 
-require_once('auth.php');
+require_once('header.php');
+require_once('connect.php'); 
+require_once('auth.php'); ?>
 
-if(isAppLoggedIn()) { 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type='text/javascript' src='http://medievalsourcesbibliography.org/js/chosen.jquery.min.js'></script>
+<link rel="stylesheet" href="js/chosen.css">
 
-	if (!$_POST && !$_GET) {      ####  new source form  ####
+<script type='text/javascript'>
+jQuery(document).ready(function($){
+    $(".chosen-select").chosen(); 
+});
+</script>
+
+<?php if(isAppLoggedIn()) { 
+	if (empty($_POST) && empty($_GET)) {      ####  new source form  ####
 		display_form($db_server,0, "Add a New Source", "Create New Source");
 	}
 
-	if ( $_POST ) {      ####  we have only $_POST data -- update DB  ####
+	if ( !empty($_POST) ) {      ####  we have only $_POST data -- update DB  ####
+		// must protect against 31336 hax0rz, zomg! (the 6 is on purpose--this won't stop sophisticated hacks)
+		foreach ($_POST as $key => $post_field) {
+			if(strlen($post_field) > 200 && ( $key != 'comments' && $key != 'intro_summary'  ) )
+				die("You submitted a post search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+		}
+
 		if ( $_POST['id'] ) {          ####  we already have an ID so we are editing  ####
+			if(strlen($_POST['id']) > 16 )
+				die("You submitted an ID search term that was too long.");
 			$id=$_POST['id'];
 	        $labels = array( 
 				"id" => "id",
@@ -237,6 +254,9 @@ if(isAppLoggedIn()) {
 					.mysqli_error($db_server));
 			if(mysqli_affected_rows($db_server) > 0)
 			{
+	    		if(strlen($_POST['id']) > 16 )
+					die("You submitted a search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+
 				$_POST['id'] = mysqli_insert_id($db_server);
 				$source_id = $_POST['id'];
 	#			display_form($db_server,$_POST, "{$_POST['title']} has been added.", "Submit Changes");
@@ -258,9 +278,17 @@ if(isAppLoggedIn()) {
 				display_form($db_server, $_POST, "No source added", "Submit Changes");
 		}
 	} elseif ( $_GET ) {         ####  we have $_GET data -- edit or delete source ####
+		// must protect against 31336 hax0rz, zomg! (the 6 is on purpose--this won't stop sophisticated hacks)
+		foreach ($_GET as $get_field) {
+			if(strlen($get_field) > 120 )
+				die("You submitted a get search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+		}
+		
 		if ( $_GET['delete'] ) {    ## we are going to delete this source really quickly! ##
 			echo "<h2>Delete Source</h2>";
 
+			if(strlen($_GET['delete']) > 80 )
+				die("You submitted a search term that was too long.");
 			$id=mysqli_real_escape_string($db_server, $_GET['delete']);
 			$result = mysqli_query($db_server, "select * from sources where id=$id;");
 
@@ -277,15 +305,18 @@ if(isAppLoggedIn()) {
 				$result = mysqli_query($db_server, "delete from sources where id=$id;");
 				if(mysqli_affected_rows($db_server) > 0) {
 				?>
-					<p><?php echo $title; ?> has been removed from the database.</p>
+					<p><?php echo htmlspecialchars($title); ?> has been removed from the database.</p>
 					<?php
 				} else {
 					print ("Sorry, we couldn't delete that source.");
 				}  # end successful delete
 			}  # end valid search result
 
-		} elseif( $_GET['id'] && !$_POST ) {                    ####  we have _GET['id'] & no _POST -- display edit source form with ID's info  #####0
+		} elseif( isset($_GET['id']) && !$_POST ) {                    ####  we have _GET['id'] & no _POST -- display edit source form with ID's info  #####0
 			#echo "We are editing an old source.";
+    		if(strlen($_GET['id']) > 16 )
+				die("You submitted an ID search term that was too long--please alert the web master and include the URL from your browser's location bar.");
+
 			$id=mysqli_real_escape_string($db_server, $_GET['id']);
 			$result = mysqli_query($db_server, "select * from sources where id=$id;");
 
@@ -358,6 +389,8 @@ else { ?>
 function display_form($db_server, $data, $legend, $button){
 	#<form id="sources"  action='/admin-sources.php<?php if ( $data['id'] ) echo "?id=$data[id]";?
 #:>' method='POST'>
+
+
 ?>
 	<form id="sources"  action='admin-sources.php<?php if ( $data['id'] ) echo "?id=$data[id]";?>' method='POST'>
 		<h2><?php echo $legend; ?></h2>
@@ -365,46 +398,47 @@ function display_form($db_server, $data, $legend, $button){
 			<legend>Cataloger Information</legend>
   				<input id="id" name="id" type="hidden" value=<?php echo $data['id'];?>></li>
 				<li class="half"><label for="my_id">MyID</label>
-					<input id="my_id" name="my_id" value="<?php echo $data['my_id'];?>" type="text" placeholder="00.00" autofocus></li>
+					<input id="my_id" name="my_id" value="<?php echo htmlspecialchars($data['my_id']);?>" type="text" placeholder="00.00" autofocus></li>
 				<li class="half"><label for="cataloger">Cataloger Initials</label>
-					<input id="cataloger" name="cataloger" value="<?php echo $data['cataloger'];?>" type="text"></li>
+					<input id="cataloger" name="cataloger" value="<?php echo htmlspecialchars($data['cataloger']);?>" type="text"></li>
 		</fieldset>
 		<fieldset>
 			<legend>Publication Information</legend>
 				<li class="whole"><label for="editor">Modern Editor/Translator</label>
-					<input id="editor" name="editor" value="<?php echo $data['editor'];?>" type="text" placeholder="Surname [comma, space] forename of authors or editors"  maxlength="255"></li>
+					<input id="editor" name="editor" value="<?php echo htmlspecialchars($data['editor']);?>" type="text" placeholder="Surname [comma, space] forename of authors or editors"  maxlength="255"></li>
 				<li class="whole"><label for="title">Title</label>
-					<input id="title" name="title" value="<?php echo $data['title'];?>" type="text" placeholder="Article or chapter title (in quotation marks), or book title" maxlength="255"></li>
+					<input id="title" name="title" value="<?php echo htmlspecialchars($data['title']);?>" type="text" placeholder="Article or chapter title (in quotation marks), or book title" maxlength="255"></li>
 				<li class="whole"><label for="publication">Publication Information</label>
-					<input id="publication" name="publication" value="<?php echo $data['publication'];?>" type="text" placeholder="series or journal name, publication city and publisher, etc." maxlength="255"></li>	
+					<input id="publication" name="publication" value="<?php echo htmlspecialchars($data['publication']);?>" type="text" placeholder="series or journal name, publication city and publisher, etc." maxlength="255"></li>	
 				<li class="third"><label for="pub_date">Publication Date</label>
-					<input id="pub_date" name="pub_date" value="<?php echo $data['pub_date'];?>" type="text" maxlength="20"></li>	
+					<input id="pub_date" name="pub_date" value="<?php echo htmlspecialchars($data['pub_date']);?>" type="text" maxlength="20"></li>	
 				<li class="third"><label for="isbn">ISBN</label>
-					<input id="isbn" name="isbn" value="<?php echo $data['isbn'];?>" type="text" placeholder="include only numbers and letters, no dashes or spaces" maxlength="13"></li>	
+					<input id="isbn" name="isbn" value="<?php echo htmlspecialchars($data['isbn']);?>" type="text" placeholder="include only numbers and letters, no dashes or spaces" maxlength="13"></li>	
 				<li class="third"><label for="text_pages">Text Pages</label>
-					<input id="text_pages" name="text_pages" value="<?php echo $data['text_pages'];?>" type="text" maxlength="5"></li>
+					<input id="text_pages" name="text_pages" value="<?php echo htmlspecialchars($data['text_pages']);?>" type="text" maxlength="5"></li>
 				<li class="whole"><label for="link">Link</label>
-					<input id="link" name="link" value="<?php echo $data['link'];?>" type="text" placeholder="URL of complete text, include http://" maxlength="255"></li>
+					<input id="link" name="link" value="<?php echo htmlspecialchars($data['link']);?>" type="text" placeholder="URL of complete text, include http://" maxlength="255"></li>
 		</fieldset>
 		<fieldset>
 			<legend>Original Text Information</legend>
 				<li class="whole"><label for="text_name">Text Name</label>
-					<textarea id="text_name" name="text_name" rows="5" placeholder="Name of the text and any variants in name or spelling"><?php echo $data['text_name'];?></textarea></li>
+					<textarea id="text_name" name="text_name" rows="5" placeholder="Name of the text and any variants in name or spelling"><?php echo htmlspecialchars($data['text_name']);?></textarea></li>
 				<li class="half"><label for="date_begin">Earliest Date</label>
-					<input id="date_begin" name="date_begin" value="<?php echo $data['date_begin'];?>" type="text" maxlength="4"></li>
+					<input id="date_begin" name="date_begin" value="<?php echo htmlspecialchars($data['date_begin']);?>" type="text" maxlength="4"></li>
 				<li class="half"><label for="date_end">Latest Date</label>
-					<input id="date_end" name="date_end" value="<?php echo $data['date_end'];?>" type="text" maxlength="4"></li>
-				<li class="checkbox"><input name="trans_none" value="1" type="checkbox" <?php if ( $data['trans_none'] ) echo "checked";?>>Original language included</li>
-				<li class="checkbox"><input name="trans_english" value="1" type="checkbox" <?php if ( $data['trans_english'] ) echo "checked";?>>Translated into English</li>
-				<li class="checkbox"><input name="trans_french" value="1" type="checkbox"<?php if ( $data['trans_french'] ) echo "checked";?>>Translated into French</li>
-				<li class="checkbox"><input name="trans_other" value="1" type="checkbox"<?php if ( $data['trans_other'] ) echo "checked";?>>Translated into another language</li>
+					<input id="date_end" name="date_end" value="<?php echo htmlspecialchars($data['date_end']);?>" type="text" maxlength="4"></li>
+				<li class="checkbox"><input name="trans_none" value="1" type="checkbox" <?php if ( htmlspecialchars($data['trans_none']) ) echo "checked";?>>Original language included</li>
+				<li class="checkbox"><input name="trans_english" value="1" type="checkbox" <?php if ( htmlspecialchars($data['trans_english']) ) echo "checked";?>>Translated into English</li>
+				<li class="checkbox"><input name="trans_french" value="1" type="checkbox"<?php if ( htmlspecialchars($data['trans_french']) ) echo "checked";?>>Translated into French</li>
+				<li class="checkbox"><input name="trans_other" value="1" type="checkbox"<?php if ( htmlspecialchars($data['trans_other']) ) echo "checked";?>>Translated into another language</li>
 				<li class="half"><label for="trans_comment">Translation Comments</label>
-					<textarea id="trans_comment" name="trans_comment" rows="4" placeholder="Other information about the translation, such as whether it appears on facing page of original text, whether translations are only offered for some of the text, or whether a translation of poetry is in verse or prose." maxlength="255"><?php echo $data['trans_comment'];?></textarea></li>
+					<textarea id="trans_comment" name="trans_comment" rows="4" placeholder="Other information about the translation, such as whether it appears on facing page of original text,
+whether translations are only offered for some of the text, or whether a translation of poetry is in verse or prose." maxlength="255"><?php echo htmlspecialchars($data['trans_comment']);?></textarea></li>
 				<li class="half"><label for="archive">Archival Reference</label>
 					<textarea id="archive" name="archive" rows="4" placeholder="Archive, record office or library where original documents are located; include shelf no/class/call no. if known." maxlength="255"><?php echo
-$data['archive'];?></textarea></li>
+htmlspecialchars($data['archive']);?></textarea></li>
 				<li class="half"><label for="author">Medieval Author</label>
-					<select name="authorships[]" multiple="multiple">
+					<select name="authorships[]" multiple class="chosen-select">
 						<?php
 
 						$authors_query = mysqli_query($db_server, "select name,id from authors order by name;");
@@ -471,7 +505,7 @@ include "types.php";
 include "subjects.php";
 ?>
 				<li class="half"><label for "languages">Original Language:</label>
-					<select name="languages[]" multiple="multiple">
+					<select name="languages[]" multiple="multiple" class="chosen-select">
                   <?php $i=0;   ####    getting the data from the DB table
                   $result = mysqli_query($db_server, "select name from languages where source_id=$data[id];");
                   while ($row = mysqli_fetch_array($result)){
@@ -499,7 +533,7 @@ include "subjects.php";
 				<li class="half"><label for="region">County/Town/Parish/Village</label>
 					<input id="region" name="region" value="<?php echo $data['region'];?>" type="text" maxlength="255"></li>
 				<li class="half"><label for "countries">Geopolitical Region:</label>
-					<select name="countries[]" multiple="multiple">
+					<select name="countries[]" multiple="multiple" class="chosen-select">
 						<?php $i=0;   ####    getting the data from the DB table
 						$result = mysqli_query($db_server, "select name from countries where source_id=$data[id];");
                   while ($row = mysqli_fetch_array($result)){
@@ -525,7 +559,7 @@ include "subjects.php";
 		<fieldset>
 			<legend>Finding Aids</legend>
 				<li class="half"><label for="type">Record Type</label>
-					<select name="types[]" multiple="multiple">
+					<select name="types[]" multiple="multiple" class="chosen-select">
                   <?php $i=0;   ####    getting the data from the DB table
                   $result = mysqli_query($db_server, "select name from types where source_id=$data[id];");
                   while ($row = mysqli_fetch_array($result)){
@@ -548,7 +582,7 @@ include "subjects.php";
 					</select>
 				</li>
 				<li class="half"><label for="subject">Subject</label>
-					<select name="subjects[]" multiple="multiple">
+					<select name="subjects[]" multiple="multiple" class="chosen-select">
                   <?php $i=0;   ####    getting the data from the DB table
                   $result = mysqli_query($db_server, "select name from subjects where source_id=$data[id];");
                   while ($row = mysqli_fetch_array($result)){
@@ -642,6 +676,8 @@ function get_table_array($table, $id, $db_server){
 }
 
 function join_table($table, $data, $db_server, $action){
+
+	
 #echo "<pre>";   print_r($table);          echo "</pre>";
 #echo "<pre>";   print_r($data[$table]);   echo "</pre>";
 	if ( $table == 'authorships' )

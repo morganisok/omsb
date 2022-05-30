@@ -9,11 +9,12 @@
 // fetch your website, without the protocol specifier (don't use 'http(s)://').
 // For development on the local machine, use 'localhost'.
 // Takes the same format as the 'domain' parameter of the PHP setcookie function.
-define('UL_DOMAIN', 'medievalsourcesbibliography.org');
+#define('UL_DOMAIN', 'medievalsourcesbibliography.org');
+define('UL_DOMAIN', 'omsb-dev.alchemycs.com');
 
 // Set to the path of the "ulogin" directory containing the source files.
 // Do not use a trailing slash.
-define('UL_INC_DIR', '/home/httpd/omsb/ulogin');
+define('UL_INC_DIR', '/home/httpd/omsb-dev/ulogin');
 
 // A random string. Make it as random as possible and keep it secure.
 // This is a crypthographic key that uLogin will use to generate some data

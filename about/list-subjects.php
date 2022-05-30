@@ -87,6 +87,12 @@ be under these subject headings by using other fields.</p>
 </tr>
 
 <tr class="not">
+	<td>Chivalry</td>
+	<td>Select <span class="field">Subject Heading</span>: <i>War - Chivalry</i></td>
+</tr>
+
+
+<tr class="not">
 	<td>Chronicles</td>
 	<td>Select <span class="field">Subject Heading</span>: <i>Historiography</i> or <span class="field">Record Type</span>: <i>Chronicles, Annals</i></td>
 </tr>
@@ -129,6 +135,11 @@ be under these subject headings by using other fields.</p>
 <tr>
 	<td>Conversion</td>
 	<td>Documents about the conversion of barbarians, Jews, or Muslims; missionary activity; sermons and theological works discussing the importance of conversion</td>
+</tr>
+
+<tr>
+	<td>Cosmology</td>
+	<td>Works on the origin and fate of the universe.</td>
 </tr>
 
 <tr class="not">
@@ -306,6 +317,8 @@ legislation (canons); theoretical works on canon law</td></tr>
 
 <tr><td>Law - Secular</td><td>Civil law: debt, minor trespasses, inheritance,
 contracts</td></tr>
+
+<tr><td>Literature - Allegory</td><td>Works in which ideas or concepts are represented/symbolized by characters or events (in literary, visual, or musical form)</td></tr>
 
 <tr><td>Literature - Arthurian</td><td>Any literature and documents, including
 historiographical texts, relating to King Arthur or people associated with

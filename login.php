@@ -5,9 +5,17 @@ include('header.php');
 
 if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] ) ) {
 	$user = ( $_SESSION['user'] );
-	echo 'Welcome ' . $user->user_login;
-
+	//echo '<pre>' . print_r($user,true) . '</pre>';
+	echo 'Welcome ' . $user->user_nicename;
 	?>
+	<ul class="user-actions">
+		<li><a href="admin-sources.php" title="Add a new source">Add a new source.</a></li>
+		<li><a href="admin-notes.php" title="View sources with notes">View sources with notes.</a></li>
+		<li><a href="admin-links.php" title="View online sources">View online sources.</a></li>
+		<?php if( in_array( 'administrator', $user->user_roles ) ) { ?>
+			<li><a href="admin-authors.php" title="Add a new author">Add a new author.</a></li>
+		<?php } ?>
+	</ul>
 	<form action="/login.php" method="post">
 			<input type="hidden" name="action" value="logout"/>
 			<button type="submit">Log Out</button>

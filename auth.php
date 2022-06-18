@@ -57,8 +57,6 @@ if ( isset( $_GET['code'] ) && ! isset( $_SESSION['user'] ) ) {
 	$token_response = json_decode( $curl_response );
 	curl_close( $curl );
 
-	$user = $token_response;
-
-	$_SESSION['user'] = $user;
+	$_SESSION['user'] = $token_response;
 }
 ?>

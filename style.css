@@ -408,10 +408,14 @@ margin-bottom: 20px;
 clear: both;
 }
 
+form ul {
+  display: flex;
+  flex-flow: row wrap;
+}
+
 form li {
 list-style-type: none;
 margin: 10px 0;
-float: left;
 }
 
 form li.whole {

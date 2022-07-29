@@ -59,4 +59,3 @@ if ( isset( $_GET['code'] ) && ! isset( $_SESSION['user'] ) ) {
 
 	$_SESSION['user'] = $token_response;
 }
-?>

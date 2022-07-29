@@ -30,7 +30,7 @@ class Search_Form {
   }
 
   public function display_search_form() {
-    if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] ) ) {
+    if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) ) ) {
       return $this->private_search_form();
     } else {
       return $this->public_search_form();

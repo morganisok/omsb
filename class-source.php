@@ -52,7 +52,7 @@ class Source {
 
     $source = $result->fetch_array( MYSQLI_ASSOC );
 
-    if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] ) ) {
+    if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) ) ) {
       return $this->private_source_detail( $source );
     } else {
       return $this->public_source_detail( $source );
@@ -126,16 +126,44 @@ class Source {
   * @param array $source Array of source details.
   */
   public function public_source_detail( $source ) {
+    $live = $source['live'] ? 'This record is visible to the public' : 'This record is hidden from the public';
 
+    if( ! $live ) {
+      return "<p class='error'>Sorry, you must be logged in to view this source.</p>";
+    }
+
+    $queries = $this->get_source_queries( $source['id'] );
+
+    return "<article class='source public'>
+      <p class='citation'>
+        {$source['editor']}, <i>{$source['title']} ({$source['publication']})</i>
+      </p>
+      <p><span class='label'>Text name(s):</span>&nbsp;{$source['text_name']}</p>
+      <p><span class='label'>Number of pages of primary source text:</span>&nbsp;{$source['text_pages']}</p>
+      <p><span class='label'>Author(s):</span>&nbsp;{$queries['authors']}</p>
+      <p><span class='label'>Dates:</span>&nbsp;{$source['date_begin']} - {$source['date_end']}</p>
+      <p><span class='label'>Archival Reference:</span>&nbsp;{$source['archive']}</p>
+      <p><span class='label'>Original Language(s):</span>&nbsp;{$queries['languages']}</p>
+      <p><span class='label'>Translation:</span>&nbsp;{$this->translations( $source )}</p>
+      <p><span class='label'>Translation Comments:</span>&nbsp;{$source['trans_comment']}</p>
+      <p><span class='label'>Geopolitical Region(s):</span>&nbsp;{$queries['countries']}</p>
+      <p><span class='label'>County/Region:</span>&nbsp;{$source['region']}</p>
+      <p><span class='label'>Record Types:</span>&nbsp;{$queries['types']}</p>
+      <p><span class='label'>Subject Headings:</span>&nbsp;{$queries['subjects']}</p>
+      <p><span class='label'>Apparatus:</span>&nbsp;{$this->apparatus( $source )}</p>
+      <p><span class='label'>Comments:</span>&nbsp;{$this->textile->parse( $source['comments'] )}</p>
+      <p><span class='label'>Introduction Summary:</span>&nbsp;{$this->textile->parse( $source['intro_summary'] )}</p>
+      <p><span class='label'>Cataloger:</span>&nbsp;{$source['cataloger']}</p>
+    </article>";
   }
 
   public function get_source_queries( $source_id ) {
     return [
-      'authors'   = $this->authors->get_source_author_details( $source_id );
-      'languages' = $this->languages->get_source_details( $source_id );
-      'countries' = $this->countries->get_source_details( $source_id );
-      'types'     = $this->types->get_source_details( $source_id );
-      'subjects'  = $this->subjects->get_source_details( $source_id );
+      'authors'   => $this->authors->get_source_author_details( $source_id ),
+      'languages' => $this->languages->get_source_details( $source_id ),
+      'countries' => $this->countries->get_source_details( $source_id ),
+      'types'     => $this->types->get_source_details( $source_id ),
+      'subjects'  => $this->subjects->get_source_details( $source_id ),
     ];
   }
 

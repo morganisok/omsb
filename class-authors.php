@@ -18,6 +18,9 @@ class Authors extends ListClass {
     $this->db         = new Database;
   }
 
+  /*
+  * Get a dropdown menu containing names of all the authors.
+  */
   public function get_author_select() {
     $author_query = mysqli_query( $this->db->mysqli, "select name,id from authors order by name;" );
 
@@ -32,9 +35,13 @@ class Authors extends ListClass {
             </select>";
   }
 
+  /*
+  * Get a list of all the authors for a single source.
+  *
+  * @param int $id ID of the source.
+  */
   public function get_source_author_details( $id ) {
-
-    $id_query = sprintf( "SELECT author_id from authorships WHERE source_id=%s", $this->db->mysqli->real_escape_string( $id ) );
+    $id_query = sprintf( "SELECT author_id from authorships WHERE source_id=%s", intval( $id ) );
     $result   = $this->db->mysqli->query( $id_query );
 
     if ( ! $result || $result->num_rows === 0 ) {
@@ -46,7 +53,7 @@ class Authors extends ListClass {
     $author_ids = $result->fetch_all();
 
     foreach( $author_ids as $id ) {
-      $author_query = sprintf( "SELECT name from authors WHERE id=%d", $this->db->mysqli->real_escape_string( $id[0] ) );
+      $author_query = sprintf( "SELECT name from authors WHERE id=%d", intval( $id[0] ) );
       $result       = $this->db->mysqli->query( $author_query );
       $author       = $result->fetch_all();
 

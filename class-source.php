@@ -38,6 +38,11 @@ class Source {
 
   }
 
+  /*
+  * Single source view.
+  *
+  * @param int $id ID of the source
+  */
   public function display( $id ) {
     $result = $this->get_source( $id );
 
@@ -63,20 +68,25 @@ class Source {
 
   }
 
+  /*
+  * Database query to fetch a single source.
+  *
+  * @param int $id ID of the source
+  */
   public function get_source( $id ) {
     $query = sprintf( "SELECT * from sources WHERE id=%s", $this->db->mysqli->real_escape_string( $id ) );
     return $this->db->mysqli->query( $query );
   }
 
+  /*
+  * Display the source details to a logged-in user.
+  *
+  * @param array $source Array of source details.
+  */
   public function private_source_detail( $source ) {
-    $authors      = $this->authors->get_source_author_details( $source['id'] );
-    $languages    = $this->languages->get_source_details( $source['id'] );
-    $countries    = $this->countries->get_source_details( $source['id'] );
-    $translations = $this->translations( $source );
-    $types        = $this->types->get_source_details( $source['id'] );
-    $subjects     = $this->subjects->get_source_details( $source['id'] );
-    $apparatus    = $this->apparatus( $source );
-    $live         = $source['live'] ? 'This record is visible to the public' : 'This record is hidden from the public';
+    $live    = $source['live'] ? 'This record is visible to the public' : 'This record is hidden from the public';
+    $queries = $this->get_source_queries( $source['id'] );
+
     return "<article class='source private'>
       <h5>Publication Information</h5>
       <p><span class='label'>Modern Editor/Translator:</span>&nbsp;{$source['editor']}</p>
@@ -87,20 +97,20 @@ class Source {
       <p><span class='label'>URL:</span>&nbsp;{$source['link']}</p>
       <h5>Original Text Information</h5>
       <p><span class='label'>Text name(s):</span>&nbsp;{$source['text_name']}</p>
-      <p><span class='label'>Medieval Author(s):</span>&nbsp;{$authors}</p>
+      <p><span class='label'>Medieval Author(s):</span>&nbsp;{$queries['authors']}</p>
       <p><span class='label'>Dates:</span>&nbsp;{$source['date_begin']} - {$source['date_end']}</p>
       <p><span class='label'>Archival Reference:</span>&nbsp;{$source['archive']}</p>
-      <p><span class='label'>Original Language(s):</span>&nbsp;{$languages}</p>
-      <p><span class='label'>Translation:</span>&nbsp;{$translations}</p>
+      <p><span class='label'>Original Language(s):</span>&nbsp;{$queries['languages']}</p>
+      <p><span class='label'>Translation:</span>&nbsp;{$this->translations( $source )}</p>
       <p><span class='label'>Translation Comments:</span>&nbsp;{$source['trans_comment']}</p>
       <h5>Region Information</h5>
-      <p><span class='label'>Geopolitical Region(s):</span>&nbsp;{$countries}</p>
+      <p><span class='label'>Geopolitical Region(s):</span>&nbsp;{$queries['countries']}</p>
       <p><span class='label'>County/Region:</span>&nbsp;{$source['region']}</p>
       <h5>Finding Aids</h5>
-      <p><span class='label'>Record Types:</span>&nbsp;{$types}</p>
-      <p><span class='label'>Subject Headings:</span>&nbsp;{$subjects}</p>
+      <p><span class='label'>Record Types:</span>&nbsp;{$queries['types']}</p>
+      <p><span class='label'>Subject Headings:</span>&nbsp;{$queries['subjects']}</p>
       <h5>Apparatus</h5>
-      <p><span class='label'>Apparatus:</span>&nbsp;{$apparatus}</p>
+      <p><span class='label'>Apparatus:</span>&nbsp;{$this->apparatus( $source )}</p>
       <p><span class='label'>Comments:</span>&nbsp;{$this->textile->parse( $source['comments'] )}</p>
       <p><span class='label'>Introduction Summary:</span>&nbsp;{$this->textile->parse( $source['intro_summary'] )}</p>
       <p><span class='label'>Cataloger:</span>&nbsp;{$source['cataloger']}</p>
@@ -110,10 +120,30 @@ class Source {
     </article>";
   }
 
+  /*
+  * Display the source details to a logged-out user.
+  *
+  * @param array $source Array of source details.
+  */
   public function public_source_detail( $source ) {
 
   }
 
+  public function get_source_queries( $source_id ) {
+    return [
+      'authors'   = $this->authors->get_source_author_details( $source_id );
+      'languages' = $this->languages->get_source_details( $source_id );
+      'countries' = $this->countries->get_source_details( $source_id );
+      'types'     = $this->types->get_source_details( $source_id );
+      'subjects'  = $this->subjects->get_source_details( $source_id );
+    ];
+  }
+
+  /*
+  * Generate a list of translation details for a source.
+  *
+  * @param array $source Array of source details.
+  */
   public function translations( $source ) {
     $list = '';
     if ( $source['trans_english'] ) {
@@ -134,6 +164,11 @@ class Source {
     return $list;
   }
 
+  /*
+  * Generate a list of apparatus details for a source.
+  *
+  * @param array $source Array of source details.
+  */
   public function apparatus( $source ) {
     $list = '';
     if ( $source['app_index'] ) {

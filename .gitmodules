@@ -1,0 +1,3 @@
+[submodule "vendor/textile"]
+	path = vendor/textile
+	url = https://github.com/textile/php-textile.git

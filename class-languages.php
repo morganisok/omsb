@@ -3,14 +3,23 @@
 namespace OMSB;
 
 require_once 'class-list.php';
+require_once 'class-database.php';
 
 use OMSB\ListClass;
+use OMSB\Database;
 
 class Languages extends ListCLass {
 
   public $list;
 
+  public $table_name;
+
+  public $db;
+
   public function __construct() {
+    $this->table_name = 'languages';
+    $this->db         = new Database;
+
     $this->list = [
       "Anglo-Norman",
       "Arabic",

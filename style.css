@@ -524,7 +524,7 @@ border: 1px solid #371b03;
 /* SOURCE DETAILS */
 /* ----------------------------------------- */
 
-label {
+.label {
 font-family: 'OpenSansBold';
 }
 
@@ -565,6 +565,7 @@ article.source h5 {
 border-top: 1px solid #908174;
 border-bottom: 1px solid #908174;
 }
+
 
 /* FOOTER */
 /* ----------------------------------------- */

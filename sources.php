@@ -13,12 +13,13 @@ if ( ! $_GET ) {
 	// If we don't have a search term, display the search form.
 	echo $search->display_search_form();
 } else {
-	echo '<h2>Source Details</h2>';
 	if ( isset( $_GET['id'] ) ) {
 		// Display a single source.
+		echo '<h2>Source Details</h2>';
 		echo $source->display( $_GET['id'] );
 	} else {
 		// Display search results.
-
+		echo '<h2>Search Results</h2>';
+		echo $source->display_results();
 	}
 }

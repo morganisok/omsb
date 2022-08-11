@@ -7,6 +7,7 @@ require_once 'class-types.php';
 require_once 'class-subjects.php';
 require_once 'class-authors.php';
 require_once 'class-database.php';
+require_once 'class-results.php';
 require_once 'vendor/textile/src/Netcarver/Textile/Parser.php';
 
 
@@ -16,6 +17,7 @@ use OMSB\Types;
 use OMSB\Subjects;
 use OMSB\Authors;
 use OMSB\Database;
+use OMSB\Results;
 use Netcarver\Textile\Parser;
 
 class Source {
@@ -32,6 +34,7 @@ class Source {
     $this->types     = new Types();
     $this->subjects  = new Subjects();
     $this->authors   = new Authors();
+    $this->results   = new Search_Results();
   }
 
   public function create() {
@@ -60,6 +63,13 @@ class Source {
 
   }
 
+  /*
+  * Search results list view.
+  */
+  public function display_results() {
+    echo $this->results->search();
+  }
+
   public function update() {
 
   }
@@ -77,6 +87,7 @@ class Source {
     $query = sprintf( "SELECT * from sources WHERE id=%s", $this->db->mysqli->real_escape_string( $id ) );
     return $this->db->mysqli->query( $query );
   }
+
 
   /*
   * Display the source details to a logged-in user.
@@ -157,6 +168,11 @@ class Source {
     </article>";
   }
 
+  /*
+  * Get all the source details from other database tables.
+  *
+  * @param array $source Array of source details.
+  */
   public function get_source_queries( $source_id ) {
     return [
       'authors'   => $this->authors->get_source_author_details( $source_id ),

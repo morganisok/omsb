@@ -30,7 +30,7 @@ class Authors extends ListClass {
       $options .= "<option value='{$row[1]}'>{$row[0]}</option>";
     }
 
-    return "<select name='author[]' multiple='multiple'>
+    return "<select name='author[]'>
                 {$options}
             </select>";
   }

@@ -163,6 +163,9 @@ class Search_Results {
   public function display_results( $rows ) {
     $results = $this->display_search_terms();
 
+    $number   = count( $rows );
+    $results .= "<p class='results_count'>{$number} results found</p>";
+
     $results .= '<ul class="search_results">';
     foreach ( $rows as $source ) {
       $admin  = '';

@@ -23,3 +23,5 @@ if ( ! $_GET ) {
 		echo $source->display_results();
 	}
 }
+
+include 'footer.php';

@@ -42,6 +42,7 @@ class Search_Results {
     $query_string = "SELECT sources.id,sources.editor,sources.title from sources";
 
     $terms = array_filter( $_GET );
+    $join  = array();
 
     // Add join queries to the query string.
     if ( $this->ar( $terms, 'author' ) || $this->ar( $terms, 'countries' ) || $this->ar( $terms, 'language' ) || $this->ar( $terms, 'subject' ) || $this->ar( $terms, 'type' ) ) {
@@ -105,14 +106,14 @@ class Search_Results {
         foreach( $val as $key2 => $val2 ) {
           $j++;
             $this->build_query_segment($key,$val2,$query_string);
-          if ( $j <> count($val)) $join_queries .= " OR ";
+          if ( $j <> count($val)) $this->join_queries .= " OR ";
           }
 
         } else {
 
         if ( $key != "page" && $key != "ipp" ) {
             $this->build_query_segment($key,$val,$query_string);
-          if ( $i <> count($terms)) $reg_queries .= " AnD ";
+          if ( $i <> count($terms)) $this->reg_queries .= " AnD ";
         }
       }
     }
@@ -145,7 +146,7 @@ class Search_Results {
     $result = $this->db->mysqli->query( $query_string );
 
     if ( $result->num_rows === 0 ) {
-      return '<p class="error">No results found for these search terms.</p>';
+      return $this->display_search_terms() . '<p class="error">No results found for these search terms.</p>';
     }
 
     $rows = $result->fetch_all(MYSQLI_ASSOC);
@@ -160,12 +161,58 @@ class Search_Results {
   * @param array $rows Array of search results
   */
   public function display_results( $rows ) {
-    $results = '<ul class="search_results">';
+    $results = $this->display_search_terms();
+
+    $results .= '<ul class="search_results">';
     foreach ( $rows as $source ) {
-      $results .= "<li>{$source['editor']}, <a href='/sources.php?id={$source['id']}'>{$source['title']}</a></li>";
+      $admin  = '';
+      $script = '';
+      if ( $this->is_logged_in ) {
+        $admin = "<span class='maintenance'>
+          <a href='/admin-sources.php?id={$source['id']}'>Edit</a> |
+          <a href='/admin-sources.php?delete={$source['id']}' onclick='return confirmAction()'>Delete</a>
+        </span>";
+
+        $script = '<script type="text/javascript" language="JavaScript">
+         function confirmAction(){
+            var confirmed = confirm("Are you sure? This will remove this source forever!");
+            return confirmed;
+         }
+         </script>';
+      }
+      $results .= "<li>{$source['editor']}, <a href='/sources.php?id={$source['id']}'>{$source['title']}</a>{$admin}</li>";
     }
-    $results .= '</ul>';
+    $results .= "</ul>{$script}";
     return $results;
+  }
+
+  public function display_search_terms() {
+    $terms = '<ul class="search_terms">You searched for:';
+    foreach( $_GET as $key => $value ) {
+      if( '' !== $value ) {
+        $clean_key = ucfirst( str_replace( '_', ' ', $key ) );
+
+        if ( is_array( $value ) ) {
+          if ( 'author' === $key ) {
+            $authors = array();
+            foreach( $value as $id ) {
+              $author = $this->authors->get_author_by_id( $id );
+              $authors[] = $author[0][0];
+            }
+            //echo '<pre>' . print_r( $authors, true) . '</pre>';
+            $clean_value = implode( '; ', $authors );
+          } else {
+            $clean_value = implode( ', ', $value );
+          }
+        } else {
+          $clean_value = str_replace( '+', ' ', $value );
+        }
+
+        $terms .= "<li>{$clean_key} = {$clean_value}</li>";
+      }
+    }
+
+    return $terms;
   }
 
   /*
@@ -238,7 +285,7 @@ class Search_Results {
           case 'author':
                   if ( strpos($this->tables,"authorships") === false )
                           $this->tables .= ",authorships";
-                  $join_queries .= "authorships.source_id=sources.id AND authorships.author_id like \"%$val%\"";
+                  $this->join_queries .= "authorships.source_id=sources.id AND authorships.author_id like \"%$val%\"";
                                   break;
           case 'language':
                   if ( strpos($this->tables,"languages") === false )
@@ -251,17 +298,17 @@ class Search_Results {
           case 'countries':
                   if ( strpos($this->tables,"countries") === false )
                           $this->tables .= ",countries";
-                  $join_queries .= "countries.source_id=sources.id AND countries.name like \"%$val%\"";
+                  $this->join_queries .= "countries.source_id=sources.id AND countries.name like \"%$val%\"";
                   break;
           case 'type':
                   if ( strpos($this->tables,"types") === false )
                           $this->tables .= ",types";
-                  $join_queries .= "types.source_id=sources.id AND types.name like \"%$val%\"";
+                  $this->join_queries .= "types.source_id=sources.id AND types.name like \"%$val%\"";
                   break;
           case 'subject':
                   if ( strpos($this->tables,"subjects") === false )
                           $this->tables .= ",subjects";
-                  $join_queries .= "subjects.source_id=sources.id AND subjects.name like \"%$val%\"";
+                  $this->join_queries .= "subjects.source_id=sources.id AND subjects.name like \"%$val%\"";
                   break;
           case 'app_index':
                   $this->reg_queries .= "sources.app_index like \"%$val%\"";

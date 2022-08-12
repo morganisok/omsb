@@ -251,6 +251,7 @@ class Search_Form {
           <li class="checkbox"><input name="hidden" value="1" type="checkbox">Hidden Records</li>
         </ul>
     </div>
+    <input type="submit" class="button" value="Search Sources" />
     </form>';
   }
 }

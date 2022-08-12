@@ -521,6 +521,12 @@ border: 1px solid #371b03;
     background: rgba(55, 27, 3, 0.3);
 }
 
+.maintenance {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
 /* SOURCE DETAILS */
 /* ----------------------------------------- */
 

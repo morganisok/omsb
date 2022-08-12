@@ -53,9 +53,7 @@ class Authors extends ListClass {
     $author_ids = $result->fetch_all();
 
     foreach( $author_ids as $id ) {
-      $author_query = sprintf( "SELECT name from authors WHERE id=%d", intval( $id[0] ) );
-      $result       = $this->db->mysqli->query( $author_query );
-      $author       = $result->fetch_all();
+      $author = $this->get_author_by_id( $id[0]);
 
       $details .= "<li><a href='/authors.php?id={$id[0]}'>{$author[0][0]}</a></li>";
     }
@@ -63,6 +61,13 @@ class Authors extends ListClass {
     $details .= '</ul>';
 
     return $details;
+  }
+
+  public function get_author_by_id( $id ) {
+    $author_query = sprintf( "SELECT name from authors WHERE id=%d", intval( $id ) );
+    $result       = $this->db->mysqli->query( $author_query );
+    // @todo error handling
+    return $result->fetch_all();
   }
 
 }

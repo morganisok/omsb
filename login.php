@@ -1,12 +1,12 @@
 <?php
 require_once('auth.php');
 include('header.php');
-echo '<pre>' . print_r($_SESSION,true) . '</pre>';
+
 $is_user_logged_in = isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) );
 
 if ( $is_user_logged_in ) {
 	$user = ( $_SESSION['user'] );
-	echo '<pre>' . print_r($_SESSION,true) . '</pre>';
+	//echo '<pre>' . print_r($_SESSION,true) . '</pre>';
 	echo 'Welcome ' . $user->user_nicename;
 	?>
 	<ul class="user-actions">

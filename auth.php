@@ -14,7 +14,7 @@ if ( isset( $_POST['action'] ) && 'logout' == $_POST['action'] ) {
 session_start();
 
 // User is requesting a new session.
-if ( isset( $_GET['code'] ) && ! isset( $_SESSION['user'] ) ) {
+if ( isset( $_GET['code'] ) && ( ! isset( $_SESSION['user'] ) || isset( $_SESSION['user']->error ) ) ) {
 
 	$curl_post_data = array(
 		'grant_type'    => 'authorization_code',

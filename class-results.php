@@ -189,6 +189,9 @@ class Search_Results {
     return $results;
   }
 
+  /*
+  * Display a list of the user's search terms
+  */
   public function display_search_terms() {
     $terms = '<ul class="search_terms">You searched for:';
     foreach( $_GET as $key => $value ) {

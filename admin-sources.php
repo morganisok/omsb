@@ -12,9 +12,15 @@ if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESS
     echo $source->source_form( true );
 	}
 
-  // if ( !empty( $_POST ) ) {
-  //   // Save the source.
-  // } elseif ( !empty( $_GET ) ) {
+  if ( !empty( $_POST ) ) {
+    if ( isset( $_POST['id'] ) && '' !== $_POST['id'] ) {
+      $source->update();
+    } else {
+      $source->create();
+    }
+
+  }
+  // elseif ( !empty( $_GET ) ) {
   //   // Edit or delete source.
   // }
 

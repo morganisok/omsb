@@ -26,6 +26,8 @@ class Source {
 
   private $textile;
 
+  private $is_logged_in;
+
   public function __construct() {
     $this->db        = new Database;
     $this->textile   = new Parser();
@@ -35,9 +37,73 @@ class Source {
     $this->subjects  = new Subjects();
     $this->authors   = new Authors();
     $this->results   = new Search_Results();
+
+    $this->is_logged_in = isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) );
   }
 
+  /*
+  * Create a new source.
+  */
   public function create() {
+    if ( ! $this->is_logged_in ) {
+      return '<p class="error">You do not have permission to do this.</p>';
+    }
+
+    $data = $this->sanitize_input();
+
+    $query = "INSERT INTO sources (id,my_id,editor,title,publication,pub_date,isbn,text_pages,trans_english,trans_french,trans_other,trans_none,date_begin,date_end,region,archive,link,app_index,app_glossary,app_appendix,app_bibliography,app_facsimile,app_intro,comments,intro_summary,addenda,live,created_at,updated_at,user_id,trans_comment,text_name,cataloger)
+VALUES (
+  NULLIF('$data[id]',''),
+  '$data[my_id]',
+  '$data[editor]',
+  '$data[title]',
+  '$data[publication]',
+  '$data[pub_date]',
+  '$data[isbn]',
+  '$data[text_pages]',
+  '$data[trans_english]',
+  '$data[trans_french]',
+  '$data[trans_other]',
+  '$data[trans_none]',
+  '$data[date_begin]',
+  '$data[date_end]',
+  '$data[region]',
+  '$data[archive]',
+  '$data[link]',
+  '$data[app_index]',
+  '$data[app_glossary]',
+  '$data[app_appendix]',
+  '$data[app_bibliography]',
+  '$data[app_facsimile]',
+  '$data[app_intro]',
+  '$data[comments]',
+  '$data[intro_summary]',
+  '$data[addenda]',
+  '$data[live]',
+  '$data[created_at]',
+  NULLIF('$data[updated_at]',''),
+  '$data[user_id]',
+  '$data[trans_comment]',
+  '$data[text_name]',
+  '$data[cataloger]'
+);";
+
+
+    $result = $this->db->mysqli->query($query);
+
+    if ( ! $result ) {
+      echo '<p class="error">Error updating database.  Please report the following error to the administrator: <pre>' . print_r( $this->db->mysqli->error, true ) . '</pre></p>';
+    } else {
+      if ( isset( $_POST['id'] ) ) {
+        $id = $_POST['id'];
+      } else {
+        $id = $this->db->mysqli->insert_id;
+      }
+      echo "<p class='success'>{$_POST['title']} has been added.<br />
+      <a href='/sources.php?id={$id}'>View Source</a>.<br .>
+      <a href='/admin-sources.php?id={$id}'>Edit Source</a>.</p>";
+    }
+
 
   }
 
@@ -55,7 +121,7 @@ class Source {
 
     $source = $result->fetch_array( MYSQLI_ASSOC );
 
-    if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) ) ) {
+    if ( $this->is_logged_in ) {
       return $this->private_source_detail( $source );
     } else {
       return $this->public_source_detail( $source );
@@ -247,13 +313,17 @@ class Source {
   * @param bool $edit Whether we are editing a source.  If false, we are searching for sources.
   */
   public function source_form( $edit = true ) {
+    $user_id = $_SESSION['user']->omsb_id ? $_SESSION['user']->omsb_id : '';
+
     if ( $edit ) {
       $id     = isset( $_GET['id'] ) ? '?id=' . $_GET['id'] : '';
       $action = "admin-sources.php{$id}";
       $method = 'post';
+      $button = 'Edit/Create Source'; // @todo - make this better
     } else {
       $action = '/sources.php';
       $method = 'get';
+      $button = 'Search Sources';
     }
     return "<form action='{$action}' method='{$method}'>
     <div class='form-section'>
@@ -262,6 +332,7 @@ class Source {
           <li class='half'>
             <label for='my_id'>MyID</label>
             <input id='my_id' name='my_id' type='text' autofocus>
+            <input id='user_id' name='user_id' type='hidden' value='{$user_id}'>
           </li>
           <li class='half'>
             <label for='cataloger'>Cataloger Initials</label>
@@ -294,7 +365,7 @@ class Source {
           </li>
           <li class='third'>
             <label for='text_pages'>Text Pages</label>
-            <input id='text_pages' name='text_pages' type='text'>
+            <input id='text_pages' name='text_pages' type='number'>
           </li>
           <li class='whole'>
             <label for='link'>Link</label>
@@ -387,8 +458,80 @@ class Source {
           <li class='checkbox'><input name='hidden' value='1' type='checkbox'>Hidden Records</li>
         </ul>
     </div>
-    <input type='submit' class='button' value='Search Sources' />
+    <input type='submit' class='button' value='{$button}' />
     </form>";
+  }
+
+  public function sanitize_input() {
+    $fields = array(
+      "id"               => "",
+      "my_id"            => "",
+      "editor"           => "",
+      "title"            => "",
+      "publication"      => "",
+      "pub_date"         => "",
+      "isbn"             => "",
+      "text_pages"       => "",
+      "trans_english"    => "",
+      "trans_french"     => "",
+      "trans_other"      => "",
+      "trans_none"       => "",
+      "date_begin"       => "",
+      "date_end"         => "",
+      "region"           => "",
+      "archive"          => "",
+      "link"             => "",
+      "app_index"        => "",
+      "app_glossary"     => "",
+      "app_appendix"     => "",
+      "app_bibliography" => "",
+      "app_facsimile"    => "",
+      "app_intro"        => "",
+      "comments"         => "",
+      "intro_summary"    => "",
+      "addenda"          => "",
+      "live"             => "",
+      "user_id"          => "",
+      "created_at"       => "",
+      "updated_at"       => "",
+      "trans_comment"    => "",
+      "text_name"        => "",
+      "cataloger"        => "",
+    );
+
+    $bools = array(
+      'trans_english',
+      'trans_french',
+      'trans_other',
+      'trans_none',
+      'app_index',
+      'app_glossary',
+      'app_appendix',
+      'app_bibliography',
+      'app_facsimile',
+      'app_intro',
+      'live'
+    );
+
+    foreach( $fields as $field => $value ) {
+      if ( isset( $_POST[ $field ] ) && '' !== $_POST[ $field ] ) {
+        $fields[ $field ] = $this->db->mysqli->real_escape_string( strip_tags( trim( $_POST[$field] ) ) );
+      }
+
+      if ( in_array( $field, $bools ) ) {
+        $fields[ $field ] = isset( $_POST[ $field ] ) ? 1 : 0;
+      }
+    }
+
+    if ( '' == $fields['id'] ) {
+      $fields['created_at'] = date( "Y-m-d H:i:s" );
+    } else {
+      $fields['updated_at'] = date( "Y-m-d H:i:s" );
+    }
+
+//echo '<pre>' . print_r( $fields, true ) . '</pre>';
+    return $fields;
+
   }
 
 }

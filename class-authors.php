@@ -21,16 +21,18 @@ class Authors extends ListClass {
   /*
   * Get a dropdown menu containing names of all the authors.
   */
-  public function get_author_select() {
+  public function get_author_select( $value = array() ) {
     $author_query = mysqli_query( $this->db->mysqli, "select name,id from authors order by name;" );
 
-    $options = '';
+    $options = '<option value=""></option>';
 
     while ( $row = mysqli_fetch_array( $author_query ) ) {
-      $options .= "<option value='{$row[1]}'>{$row[0]}</option>";
+      $selected = in_array( $row[1], $value ) ? 'selected' : '';
+
+      $options .= "<option {$selected} value='{$row[1]}'>{$row[0]}</option>";
     }
 
-    return "<select name='author[]'>
+    return "<select name='author[]' multiple='multiple'>
                 {$options}
             </select>";
   }
@@ -40,7 +42,7 @@ class Authors extends ListClass {
   *
   * @param int $id ID of the source.
   */
-  public function get_source_author_details( $id ) {
+  public function get_source_author_details( $id, $format = true ) {
     $id_query = sprintf( "SELECT author_id from authorships WHERE source_id=%s", intval( $id ) );
     $result   = $this->db->mysqli->query( $id_query );
 
@@ -48,9 +50,17 @@ class Authors extends ListClass {
       return;
     }
 
-    $details = '<ul>';
-
     $author_ids = $result->fetch_all();
+
+    if ( ! $format ) {
+      $values = array();
+      foreach ( $author_ids as $item ) {
+        $values[] = $item[0];
+      }
+      return $values;
+    }
+
+    $details = '<ul>';
 
     foreach( $author_ids as $id ) {
       $author = $this->get_author_by_id( $id[0]);
@@ -68,6 +78,14 @@ class Authors extends ListClass {
     $result       = $this->db->mysqli->query( $author_query );
     // @todo error handling
     return $result->fetch_all();
+  }
+
+  public function whitelist( $input ) {
+    foreach( $input as $key => $author ) {
+      $input[$key] = intval( $author );
+    }
+
+    return $input;
   }
 
 }

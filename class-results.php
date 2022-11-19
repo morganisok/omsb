@@ -102,19 +102,20 @@ class Search_Results {
         $j=0;
         if ( is_array($val) ) {
           return '<p class="error">Unable to build search query.  Please change your search terms and try again.</p>';
-
-        foreach( $val as $key2 => $val2 ) {
-          $j++;
-            $this->build_query_segment($key,$val2,$query_string);
-          if ( $j <> count($val)) $this->join_queries .= " OR ";
-          }
+          // this never happens because we just returned
+          // foreach( $val as $key2 => $val2 ) {
+          //   $j++;
+          //     $this->build_query_segment($key,$val2,$query_string);
+          //   if ( $j <> count($val)) $this->join_queries .= " OR ";
+          // }
 
         } else {
 
-        if ( $key != "page" && $key != "ipp" ) {
             $this->build_query_segment($key,$val,$query_string);
-          if ( $i <> count($terms)) $this->reg_queries .= " AnD ";
-        }
+            if ( $i <> count($terms) && $i !== 1 ) {
+              $this->reg_queries .= " AND ";
+            }
+
       }
     }
 
@@ -137,7 +138,7 @@ class Search_Results {
         $query_string .= ' where ';
       }
       $query_string .= " sources.live!=1 "; // I don't know why we have the extra trailing AND in the query, but we don't need to add it here again.
-    } elseif( !$this->is_logged_in )  {
+    } elseif( ! $this->is_logged_in )  {
       $query_string .= " AND sources.live=1 ";
     }
 
@@ -145,11 +146,11 @@ class Search_Results {
 
     $result = $this->db->mysqli->query( $query_string );
 
-    if ( $result->num_rows === 0 ) {
+    if ( ! $result || $result->num_rows === 0 ) {
       return $this->display_search_terms() . '<p class="error">No results found for these search terms.</p>';
     }
 
-    $rows = $result->fetch_all(MYSQLI_ASSOC);
+    $rows = $result->fetch_all( MYSQLI_ASSOC );
 
     return $this->display_results( $rows );
 

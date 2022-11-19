@@ -18,11 +18,14 @@ if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESS
     } else {
       $source->create();
     }
-
+  } elseif ( !empty( $_GET ) ) {
+    if ( isset( $_GET['delete'] ) && '' !== $_GET['delete'] ) {
+      $source->delete();
+    } elseif( isset( $_GET['id'] ) ) {
+      echo $source->source_form( true );
+    }
   }
-  // elseif ( !empty( $_GET ) ) {
-  //   // Edit or delete source.
-  // }
+
 
 } else {
   echo '<p class="error">You must be logged in to view this page.</p>';

@@ -8,7 +8,9 @@
 
   <link rel="stylesheet" href="/style.css">
 
-  <script src="/js/libs/modernizr-custom.js"></script>
+  <script src="js/libs/tom-select/js/tom-select.complete.min.js"></script>
+  <link href="js/libs/tom-select/css/tom-select.default.css" rel="stylesheet" />
+
 </head>
 
 <body>

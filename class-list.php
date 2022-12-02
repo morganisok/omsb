@@ -21,14 +21,19 @@ abstract class ListClass {
 
   public function get_select( $name, $multiple = false, $value = array() ) {
     $name_attr     = $multiple ? $name . '[]' : $name;
-    $multiple_attr = $multiple ? 'multiple="multiple"' : '';
+    $multiple_attr = $multiple ? 'multiple="multiple" class="multiselect"' : '';
 
     $options = '';
     foreach ( $this->list as $item ) {
-      $selected = in_array( $item, $value ) ? 'selected' : '';
+      if ( !is_array( $value ) ) {
+        $selected = '';
+      } else {
+          $selected = in_array( $item, $value ) ? 'selected' : '';
+      }
+
       $options .= "<option value='{$item}' {$selected}>{$item}</option>";
     }
-    return "<select name='{$name_attr}' {$multiple_attr}>
+    return "<select name='{$name_attr}' {$multiple_attr} placeholder='Type to search...'>
                 {$options}
             </select>";
 

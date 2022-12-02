@@ -6,11 +6,12 @@ $is_user_logged_in = isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] &&
 
 if ( $is_user_logged_in ) {
 	$user = ( $_SESSION['user'] );
-	//echo '<pre>' . print_r($_SESSION,true) . '</pre>';
+//	echo '<pre>' . print_r($_SESSION,true) . '</pre>';
 	echo 'Welcome ' . $user->user_nicename;
 	?>
 	<ul class="user-actions">
 		<li><a href="admin-sources.php" title="Add a new source">Add a new source.</a></li>
+		<li><a href="my-sources.php" title="View your sources">View your sources.</a></li>
 		<li><a href="admin-notes.php" title="View sources with notes">View sources with notes.</a></li>
 		<li><a href="admin-links.php" title="View online sources">View online sources.</a></li>
 		<?php if( in_array( 'administrator', $user->user_roles ) ) { ?>
@@ -34,7 +35,5 @@ if ( $is_user_logged_in ) {
 	</form>
 	<?php
 }
-
-
 
 include ('footer.php');

@@ -1,78 +1,34 @@
 <?php
-require_once 'header.php';
-require_once 'connect.php';
-require_once 'paginator.class.php';
 require_once 'auth.php';
+include 'header.php';
+require_once 'class-database.php';
+require_once 'class-results.php';
 
-if(isAppLoggedIn()) { 
+use OMSB\Database;
+use OMSB\Search_Results;
 
-$query = "SELECT sources.id,sources.editor,sources.title,sources.link from sources where link != \"\" order by link;";
-	   
-$result = mysqli_query($db_server, $query);
-		if ( !$result->num_rows ) {   # we have bad search results
-		  print ("Could not find any sources that match your search terms.");
-		} else {	###    we have results back from the SQL--display them now    ###
-		?>
+$is_user_logged_in = isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) );
 
-		<h4>Sources with Notes</h4>
-		<!-- Pagination Stuff -->
-		<div class="pages">
+if ( $is_user_logged_in ) {
+	$database = new Database();
+	$results  = new Search_Results();
 
-			<?php
-			$result = mysqli_query($db_server, $query);
-			$db_count = mysqli_num_rows($result);
-			echo $db_count." total results";
-#			$count_query = "SELECT count(sources.id) from sources ".$tmpquery.";";
-			#echo $count_query;
-#			$db_count = mysqli_fetch_array($result);
-			$pages = new Paginator;
-			$pages->items_total = $db_count;
-			$pages->mid_range = 7;
-			$pages->paginate();
-			echo $pages->display_pages();
-			echo $pages->display_items_per_page();
-			$pages->limit;
-			$query = substr_replace($query ,"",-1);
-			$query .= $pages->limit.";";
-#			echo "<br>".$query."<br>";
-			$result = mysqli_query($db_server, $query);
-#			$result = mysqli_query($db_server, $query);
-			?>
-	   </div>
-	   <!-- End Pagination Stuff -->
+	$query_string =  "SELECT sources.id,sources.editor,sources.title,sources.link from sources where link != \"\" order by link;";
 
-	   <?php while ($row = mysqli_fetch_array($result)){
-	      $id = $row['id'];
-	      $editor = $row['editor'];
-	      $title = $row['title'];
-	      $link = $row['link'] ?>
+	$result = $database->mysqli->query( $query_string );
 
-	      <ul>
-	         <li><?php echo $editor; ?>, <a href="/sources.php?id=<?php echo $id; ?>">
-	            <?php echo $title; ?></a>
-	            <div class="link">URL:<a href="<?php echo $link; ?>" target="_blank"><?php echo $link; ?></a></div>
-	            <?php if(isAppLoggedIn()) { ?>
-	               <p class="maintenance">
-	                     <script type="text/javascript" language="JavaScript">
-	                     function confirmAction(){
-	                        var confirmed = confirm("Are you sure? This will remove this source forever!");
-	                        return confirmed;
-	                     }
-	                     </script>
-	                  <a href="/admin-sources.php?id=<?php echo $id; ?>">Edit</a> |
-	                  <a href="/admin-sources.php?delete=<?php echo $id; ?>" onclick="return confirmAction()">Delete</a>
-	               </p>
-	            <?php } ?>
-	         </li>
-	      </ul>
+	if ( ! $result || $result->num_rows === 0 ) {
+		return '<p class="error">Could not find any sources with links.</p>';
+	}
 
-	      <?php
-	       }	 
-	   }##   end of while loop going over results   
+	$rows = $result->fetch_all( MYSQLI_ASSOC );
 
-} else { ?>
-	<p>Sorry, you must <a href="/login.php">log in</a> to view this page.</p>
-<?php } ?>
+	echo '<h3>Online Sources</h3>';
 
+	echo $results->display_results( $rows );
 
-<?php include 'footer.php'; ?>
+} else {
+	echo '<p>Sorry, you must <a href="/login.php">log in</a> to view this page.</p>';
+}
+
+include 'footer.php';

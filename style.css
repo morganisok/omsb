@@ -533,6 +533,12 @@ border: 1px solid #371b03;
   margin-bottom: 8px;
 }
 
+.back-to-top {
+  position: fixed;
+  right: 10px;
+  bottom: 50px;
+}
+
 /* SOURCE DETAILS */
 /* ----------------------------------------- */
 

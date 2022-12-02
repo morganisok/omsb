@@ -27,12 +27,16 @@ class Authors extends ListClass {
     $options = '<option value=""></option>';
 
     while ( $row = mysqli_fetch_array( $author_query ) ) {
-      $selected = in_array( $row[1], $value ) ? 'selected' : '';
+      if ( !is_array( $value ) ) {
+        $selected = '';
+      } else {
+          $selected = in_array( $row[1], $value ) ? 'selected' : '';
+      }
 
       $options .= "<option {$selected} value='{$row[1]}'>{$row[0]}</option>";
     }
 
-    return "<select name='author[]' multiple='multiple'>
+    return "<select name='author[]' multiple='multiple' class='multiselect' placeholder='Type to search...'>
                 {$options}
             </select>";
   }

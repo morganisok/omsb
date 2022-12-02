@@ -194,7 +194,7 @@ VALUES (
 
     if( $result ) {
       $this->update_join_tables( $data, $action = 'update' );
-      
+
       echo "<p class='success'>{$data['title']} has been updated.<br />
       <a href='/sources.php?id={$id}'>View Source</a>.<br .>
       <a href='/admin-sources.php?id={$id}'>Edit Source</a>.</p>";
@@ -260,6 +260,16 @@ VALUES (
   */
   public function private_source_detail( $source ) {
     $live    = $source['live'] ? 'This record is visible to the public' : 'This record is hidden from the public';
+    $admin   = '<p class="maintenance">
+      						<script type="text/javascript" language="JavaScript">
+      						function confirmAction(){
+      					      var confirmed = confirm("Are you sure? This will remove this source forever!");
+      					      return confirmed;
+      						}
+      						</script>
+        					<a href="/admin-sources.php?id=' . $source['id'] . '">Edit</a> |
+        					<a href="/admin-sources.php?delete=' . $source['id'] . '" onclick="return confirmAction()">Delete</a>
+        				</p>';
     $queries = $this->get_source_queries( $source['id'] );
 
     return "<article class='source private'>
@@ -292,6 +302,7 @@ VALUES (
       <p><span class='label'>My ID:</span>&nbsp;{$source['my_id']}</p>
       <p><span class='label'>Notes:</span>&nbsp;{$source['addenda']}</p>
       <p>{$live}</p>
+      {$admin}
     </article>";
   }
 
@@ -415,30 +426,41 @@ VALUES (
     $existing = isset( $_GET['id'] );
     $values   = $this->get_field_values();
     $id_field = $existing ? "<input id='id' name='id' type='hidden' value='" . $_GET['id'] . "'>" : '';
-//echo '<pre>' . print_r( $values, true ) . '</pre>';
+    $checked  = $this->get_checked_attributes( $values );
+
     if ( $edit ) {
       $id     = $existing ? '?id=' . $_GET['id'] : '';
+      $inits  = $existing ? $values['cataloger'] : $_SESSION['user']->initials;
+      $userid = $values['user_id'];
+      $live   = "<li class='checkbox'><input name='live' id='live' value='1' type='checkbox' {$checked['live']}><label for='live'>Make record public</label></li>";
       $action = "admin-sources.php{$id}";
       $method = 'post';
       $button = $existing ? 'Update Source' : 'Create Source';
+
+      $values['cataloger'] = $_SESSION['user']->initials ? $_SESSION['user']->initials : '';
+
     } else {
+      $userid = '';
+      $live = "<li class='checkbox'><input name='live' id='live' value='1' type='checkbox'><label for='live'>Public Records</label></li>
+                <li class='checkbox'><input name='hidden' id='hidden' value='1' type='checkbox'><label for='hidden'>Hidden Records</label></li>";
       $action = '/sources.php';
       $method = 'get';
       $button = 'Search Sources';
     }
+
     return "<form action='{$action}' method='{$method}'>
     <div class='form-section'>
       <h3>Cataloger Information</h3>
         <ul>
           <li class='half'>
             <label for='my_id'>MyID</label>
-            <input id='my_id' name='my_id' type='text' autofocus>
-            <input id='user_id' name='user_id' type='hidden' value='{$values['user_id']}'>
+            <input id='my_id' name='my_id' type='text' autofocus value='{$values['my_id']}'>
+            <input id='user_id' name='user_id' type='hidden' value='{$userid}'>
             {$id_field}
           </li>
           <li class='half'>
             <label for='cataloger'>Cataloger Initials</label>
-            <input id='cataloger' name='cataloger' type='text' value='{$values['cataloger']}'>
+            <input id='cataloger' name='cataloger' type='text' value='{$inits}'>
           </li>
         </ul>
     </div>
@@ -491,16 +513,16 @@ VALUES (
             <input id='date_end' name='date_end' type='text' value='{$values['date_end']}'>
           </li>
           <li class='checkbox'>
-            <input name='trans_none' value='1' type='checkbox' {$values['trans_none']}><label for='trans_none'>Original language included</label>
+            <input name='trans_none' id='trans_none' value='1' type='checkbox' {$checked['trans_none']}><label for='trans_none'>Original language included</label>
           </li>
           <li class='checkbox'>
-            <input name='trans_english' value='1' type='checkbox' {$values['trans_english']}><label for='trans_english'>Translated into English</label>
+            <input name='trans_english' id='trans_english' value='1' type='checkbox' {$checked['trans_english']}><label for='trans_english'>Translated into English</label>
           </li>
           <li class='checkbox'>
-            <input name='trans_french' value='1' type='checkbox' {$values['trans_french']}><label for='trans_french'>Translated into French</label>
+            <input name='trans_french' id='trans_french' value='1' type='checkbox' {$checked['trans_french']}><label for='trans_french'>Translated into French</label>
           </li>
           <li class='checkbox'>
-            <input name='trans_other' value='1' type='checkbox' {$values['trans_other']}><label for='trans_other'>Translated into another language</label>
+            <input name='trans_other' id='trans_other' value='1' type='checkbox' {$checked['trans_other']}><label for='trans_other'>Translated into another language</label>
           </li>
           <li class='half'>
             <label for='trans_comment'>Translation Comments</label>
@@ -544,24 +566,23 @@ VALUES (
     <div class='form-section'>
       <h3>Apparatus</h3>
         <ul>
-          <li class='checkbox'><input name='app_index' value='1' type='checkbox' {$values['app_index']}>Index</li>
-          <li class='checkbox'><input name='app_glossary' value='1' type='checkbox' {$values['app_glossary']}>Glossary</li>
-          <li class='checkbox'><input name='app_appendix' value='1' type='checkbox' {$values['app_appendix']}>Appendix</li>
-          <li class='checkbox'><input name='app_bibliography' value='1' type='checkbox' {$values['app_bibliography']}>Bibliography</li>
-          <li class='checkbox'><input name='app_facsimile' value='1' type='checkbox' {$values['app_facsimile']}>Facsimile</li>
-          <li class='checkbox'><input name='app_intro' value='1' type='checkbox' {$values['app_intro']}>Introduction</li>
+          <li class='checkbox'><input name='app_index' id='app_index' value='1' type='checkbox' {$checked['app_index']}><label for='app_index'>Index</label></li>
+          <li class='checkbox'><input name='app_glossary' id='app_glossary' value='1' type='checkbox' {$checked['app_glossary']}><label for='app_glossary'>Glossary</label></li>
+          <li class='checkbox'><input name='app_appendix' id='app_appendix' value='1' type='checkbox' {$checked['app_appendix']}><label for='app_appendix'>Appendix</label></li>
+          <li class='checkbox'><input name='app_bibliography' id='app_bibliography' value='1' type='checkbox' {$checked['app_bibliography']}><label for='app_bibliography'>Bibliography</label></li>
+          <li class='checkbox'><input name='app_facsimile' id='app_facsimile' value='1' type='checkbox' {$checked['app_facsimile']}><label for='app_facsimile'>Facsimile</label></li>
+          <li class='checkbox'><input name='app_intro' id='app_intro' value='1' type='checkbox' {$checked['app_intro']}><label for='app_intro'>Introduction</label></li>
           <li class='whole'><label for='comments'>Comments</label>
             <textarea id='comments' name='comments' rows='3'>{$values['comments']}</textarea></li>
           <li class='whole'><label for='intro_summary'>Introduction Summary</label>
             <textarea id='intro_summary' name='intro_summary' rows='3'>{$values['intro_summary']}</textarea></li>
           <li class='whole'><label for='addenda'>Notes</label>
             <textarea id='addenda' name='addenda' rows='3'>{$values['addenda']}</textarea></li>
-          <li class='checkbox'><input name='live' value='1' type='checkbox'>Public Records</li>
-          <li class='checkbox'><input name='hidden' value='1' type='checkbox'>Hidden Records</li>
+            {$live}
         </ul>
     </div>
     <input type='submit' class='button' value='{$button}' />
-    </form>"; // @todo - deal with live and hidden sources
+    </form>";
   }
 
   /*
@@ -569,10 +590,7 @@ VALUES (
   *
   */
   public function get_field_values() {
-    $empty_values = $this->fields_array();
-
-    $empty_values['user_id']   = $_SESSION['user']->omsb_id ? $_SESSION['user']->omsb_id : '';
-    $empty_values['cataloger'] = $_SESSION['user']->initials ? $_SESSION['user']->initials : '';
+    $empty_values = $this->empty_values();
 
     if ( !isset( $_GET['id'] ) || '' == $_GET['id'] ) {
       return $empty_values;
@@ -587,7 +605,6 @@ VALUES (
     $values = $source->fetch_array( MYSQLI_ASSOC );
     $merged = array_merge( $empty_values, $values );
 
-    $checkboxes = $this->checkbox_array();
     foreach( $checkboxes as $checkbox ) {
       if ( $merged[ $checkbox ] == 1 ) {
         $merged[ $checkbox ] = 'checked="checked"';
@@ -607,6 +624,36 @@ VALUES (
     }
 
     return $merged;
+  }
+
+  public function empty_values() {
+    $fields = $this->fields_array();
+
+    $checkboxes = $this->checkbox_array();
+    foreach( $checkboxes as $fieldname ) {
+      $fields[$fieldname] = '';
+    }
+
+    $select_fields = $this->selects_array();
+    foreach( $select_fields as $fieldname ) {
+      $fields[$fieldname] = '';
+    }
+
+    return $fields;
+  }
+
+  public function get_checked_attributes( $values ) {
+    $checkboxes = $this->checkbox_array();
+    $checked    = array();
+    foreach( $checkboxes as $fieldname ) {
+      if ( $values[$fieldname] == 1 ) {
+        $checked[$fieldname] = 'checked="checked"';
+      } else {
+        $checked[$fieldname] = '';
+      }
+    }
+
+    return $checked;
   }
 
   /*
@@ -762,7 +809,7 @@ VALUES (
   * @param string $context Whether to get the name of the table or the name of the field
   */
   public function selects_array( $context = 'field' ) {
-    if( $context === 'field' ) {
+    if( $context == 'field' ) {
       $selects = array(
         'countries',
         'language',

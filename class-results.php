@@ -102,12 +102,6 @@ class Search_Results {
         $j=0;
         if ( is_array($val) ) {
           return '<p class="error">Unable to build search query.  Please change your search terms and try again.</p>';
-          // this never happens because we just returned
-          // foreach( $val as $key2 => $val2 ) {
-          //   $j++;
-          //     $this->build_query_segment($key,$val2,$query_string);
-          //   if ( $j <> count($val)) $this->join_queries .= " OR ";
-          // }
 
         } else {
 
@@ -187,6 +181,7 @@ class Search_Results {
       $results .= "<li>{$source['editor']}, <a href='/sources.php?id={$source['id']}'>{$source['title']}</a>{$admin}</li>";
     }
     $results .= "</ul>{$script}";
+    $results .= "<a href='#content' class='back-to-top'>Back to top</a>";
     return $results;
   }
 
@@ -206,7 +201,7 @@ class Search_Results {
               $author = $this->authors->get_author_by_id( $id );
               $authors[] = $author[0][0];
             }
-            //echo '<pre>' . print_r( $authors, true) . '</pre>';
+
             $clean_value = implode( '; ', $authors );
           } else {
             $clean_value = implode( ', ', $value );

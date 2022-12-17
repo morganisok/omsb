@@ -3,12 +3,10 @@ namespace OMSB;
 
 require_once 'class-list.php';
 require_once 'class-database.php';
-require_once 'class-results.php';
 require_once 'vendor/textile/src/Netcarver/Textile/Parser.php';
 
 use OMSB\ListClass;
 use OMSB\Database;
-use OMSB\Results;
 use Netcarver\Textile\Parser;
 
 class Authors extends ListClass {
@@ -20,8 +18,9 @@ class Authors extends ListClass {
   public function __construct() {
     $this->table_name = 'authors';
     $this->db         = new Database();
-    $this->results    = new Search_Results();
     $this->textile    = new Parser();
+
+    $this->is_logged_in = isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) );
   }
 
   /*
@@ -211,7 +210,7 @@ class Authors extends ListClass {
   }
 
   public function display_author( $id ) {
-    $id     = mysqli_real_escape_string($db_server, $_GET['id']);
+    $id     = $this->db->mysqli->real_escape_string( $_GET['id'] );
     $query  = "select * from authors where id=$id;";
     $result = $this->db->mysqli->query( $query );
 
@@ -225,7 +224,7 @@ class Authors extends ListClass {
       $date_type  = $author['date_type'] ?? '';
       $date_circa = $author['date_circa'] ? 'c.&nbsp;' : '';
       $bio        = $author['bio'] ?? '';
-      $works      = $this->get_works_by_author( $id );
+      $works      = $this->get_works_by_author( $id, $author['name'] );
 
       if ( isset( $author['date_begin'] ) && '' !== $author['date_begin'] && isset( $author['date_end'] ) && '' !== $author['date_end'] ) {
         $date = $author['date_begin'] . ' - ' . $author['date_end'];
@@ -245,20 +244,42 @@ class Authors extends ListClass {
           {$this->textile->parse( $bio )}
       </div>
 
-      <div class='works'>
-            <h5>OMSB Records by {$name}</h5>
-            {$works}
-        </div>
       </article>";
     }
   }
 
-  public function get_works_by_author( $id ) {
-    $id     = mysqli_real_escape_string($db_server, $_GET['id']);
+  public function get_works_by_author( $id, $name ) {
+    $id     = $this->db->mysqli->real_escape_string( $_GET['id'] );
     $query  = "select source_id from authorships where author_id=$id;";
     $result = $this->db->mysqli->query( $query );
-    $rows = $result->fetch_all( MYSQLI_ASSOC );
-    return $this->results->display_results( $rows );
+    $rows   = $result->fetch_all( MYSQLI_ASSOC );
+
+    if ( empty( $rows ) ) {
+      return;
+    }
+
+    $results .= "<div class='works'><ul class='search_results'><h5>OMSB Records by {$name}</h5>";
+    foreach ( $rows as $source ) {
+      $admin  = '';
+      $script = '';
+      if ( $this->is_logged_in ) {
+        $admin = "<span class='maintenance'>
+          <a href='/admin-sources.php?id={$source['id']}'>Edit</a> |
+          <a href='/admin-sources.php?delete={$source['id']}' onclick='return confirmAction()'>Delete</a>
+        </span>";
+
+        $script = '<script type="text/javascript" language="JavaScript">
+         function confirmAction(){
+            var confirmed = confirm("Are you sure? This will remove this source forever!");
+            return confirmed;
+         }
+         </script>';
+      }
+      $results .= "<li>{$source['editor']}, <a href='/sources.php?id={$source['id']}'>{$source['title']}</a>{$admin}</li>";
+    }
+    $results .= "</ul></div>{$script}";
+    $results .= "<a href='#content' class='back-to-top'>Back to top</a>";
+    return $results;
   }
 
   public function fields_array() {
@@ -294,6 +315,56 @@ class Authors extends ListClass {
       <input type="submit" class="button" value="Search" />
       </form>
   	<?php
+  }
+
+  public function author_search_results() {
+    $searchterm = $this->db->mysqli->real_escape_string( strip_tags( trim( $_GET[ 'search' ] ) ) );
+    $query      = "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';";
+    $result     = $this->db->mysqli->query( $query );
+
+    if ( ! $result->num_rows ) {
+      echo "<p>No author matched your search term. Please try searching again.</p>";
+      echo $this->author_search_form;
+    } else {
+      echo "<h2>Author Search Results</h2>
+      <p>You searched for {$_GET['search']}</p>
+      <h4>Search Results:</h4>
+      <ul>";
+      while ( $author = $result->fetch_array( MYSQLI_ASSOC ) ) {
+        $alias = $author['alias'] ? "({$author['alias']})" : '';
+        $begin = $author['date_begin'] ? $author['date_begin'] : false;
+        $end   = $author['date_end'] ? $author['date_end'] : false;
+        if ( $begin && $end ) {
+          $date = "{$begin} - {$end}";
+        } elseif ( $begin && !$end ) {
+          $date = $begin;
+        } elseif ( !$begin && $end ) {
+          $date = $end;
+        } else {
+          $date = '';
+        }
+
+        if ( $this->is_logged_in ) {
+          $maintenance = "<p class='maintenance'>
+            <script type='text/javascript' language='JavaScript'>
+            function confirmAction(){
+                var confirmed = confirm('Are you sure? This will remove this author forever.'');
+                return confirmed;
+            }
+            </script>
+            <a href='admin-authors.php?id={$author['id']}'>Edit</a> |
+            <a href='admin-authors.php?delete={$author['id']}'' onclick='return confirmAction()''>Delete</a>
+          </p>";
+        } else {
+          $maintenance = '';
+        }
+        echo "<li>
+          <a href='authors.php?id={$author['id']}'>{$author['name']}</a> {$alias} {$date}
+          {$maintenance}
+        </li>";
+      }
+      echo "</ul>";
+    }
   }
 
 }

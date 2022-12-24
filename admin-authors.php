@@ -25,15 +25,14 @@ if ( isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESS
     } else {
       $authors->create();
     }
+  } elseif ( ! empty( $_GET ) ) {
+    // Delete a source or show the form to edit a source
+    if ( isset( $_GET['delete'] ) && '' !== $_GET['delete'] ) {
+      $authors->delete();
+    } elseif( isset( $_GET['id'] ) ) {
+      echo $authors->author_form( true );
+    }
   }
-  //elseif ( ! empty( $_GET ) ) {
-  //   // Delete a source or show the form to edit a source
-  //   if ( isset( $_GET['delete'] ) && '' !== $_GET['delete'] ) {
-  //     $source->delete();
-  //   } elseif( isset( $_GET['id'] ) ) {
-  //     echo $source->source_form( true );
-  //   }
-  // }
 
 
 } else {

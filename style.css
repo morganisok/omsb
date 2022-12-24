@@ -37,9 +37,6 @@ footer, header, hgroup, menu, nav, section {
 body {
     line-height: 1;
 }
-ol, ul {
-    list-style: none;
-}
 blockquote, q {
     quotes: none;
 }
@@ -414,12 +411,12 @@ margin-bottom: 20px;
 clear: both;
 }
 
-form ul {
+form > ul {
   display: flex;
   flex-flow: row wrap;
 }
 
-form li {
+form > ul > li {
 list-style-type: none;
 margin: 10px 0;
 }
@@ -595,4 +592,72 @@ font-size: 12px;
 border-top: 1px solid #371b03;
 -webkit-box-shadow: 0px 10px 10px -10px #371b03;
 box-shadow: 0px -10px 10px -10px #371b03;
+}
+
+/* TEXTILE PREVIEW */
+/* ----------------------------------------- */
+
+
+.text_preview {
+  padding: 0 1em 4px 1em;
+  color: #444;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.text_preview h1 {
+  line-height: 1.1;
+  font-size: 2em;
+}
+.text_preview h2 {
+  line-height: 1.1;
+  font-size: 1.6em;
+}
+.text_preview h3 {
+  line-height: 1.14;
+  font-size: 1.36em;
+}
+.text_preview h4 {
+  line-height: 1.2;
+  font-size: 1.14em;
+}
+.text_preview h5 {
+  line-height: 1.24;
+  font-size: 1em;
+}
+.text_preview h6 {
+  line-height: 1.24;
+  font-size: 1em;
+}
+.text_preview code {
+  background: #f4f4f4;
+}
+.text_preview table {
+  border-collapse : collapse;
+}
+.text_preview table th,
+.text_preview table td {
+  padding : 4px 8px;
+  border : 1px solid #aaa;
+}
+.text_preview ul {
+  margin-left: 0;
+  padding-left: 2em;
+}
+.text_preview acronym {
+  text-decoration : none;
+  border-bottom : 1px dotted #888;
+  cursor: help;
+}
+.text_preview blockquote {
+  margin-left: .6em;
+  padding-left: 1em;
+  border-left: .4em solid #ddd;
+}
+.text_preview pre > code {
+  display: block;
+}
+.text_preview .caps {
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: .1em;
 }

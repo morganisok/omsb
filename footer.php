@@ -19,4 +19,5 @@ document.querySelectorAll('.multiselect').forEach((el)=>{
  	new TomSelect(el,settings);
 });
 </script>
+<script src="js/omsb-textile.js"></script>
 </html>

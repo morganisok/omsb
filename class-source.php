@@ -8,6 +8,7 @@ require_once 'class-subjects.php';
 require_once 'class-authors.php';
 require_once 'class-database.php';
 require_once 'class-results.php';
+require_once 'class-textile-editor.php';
 require_once 'vendor/textile/src/Netcarver/Textile/Parser.php';
 
 
@@ -18,6 +19,7 @@ use OMSB\Subjects;
 use OMSB\Authors;
 use OMSB\Database;
 use OMSB\Results;
+use OMSB\Textile_Editor;
 use Netcarver\Textile\Parser;
 
 class Source {
@@ -37,6 +39,7 @@ class Source {
     $this->subjects  = new Subjects();
     $this->authors   = new Authors();
     $this->results   = new Search_Results();
+    $this->editor    = new Textile_Editor();
 
     $this->is_logged_in = isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) );
   }
@@ -428,6 +431,11 @@ VALUES (
     $id_field = $existing ? "<input id='id' name='id' type='hidden' value='" . $_GET['id'] . "'>" : '';
     $checked  = $this->get_checked_attributes( $values );
 
+    $comments_field = "<li class='whole'><label for='comments'>Comments</label>
+      <textarea id='comments' name='comments' rows='3'>{$values['comments']}</textarea></li>";
+    $intro_field = "<li class='whole'><label for='intro_summary'>Introduction Summary</label>
+      <textarea id='intro_summary' name='intro_summary' rows='3'>{$values['intro_summary']}</textarea></li>";
+
     if ( $edit ) {
       $id     = $existing ? '?id=' . $_GET['id'] : '';
       $inits  = $existing ? $values['cataloger'] : $_SESSION['user']->initials;
@@ -436,6 +444,9 @@ VALUES (
       $action = "admin-sources.php{$id}";
       $method = 'post';
       $button = $existing ? 'Update Source' : 'Create Source';
+
+      $comments_field = $this->editor->render_field( 'Comments', 'comments', $values['comments'] );
+      $intro_fiel     = $this->editor->render_field( 'Introduction Summary', 'intro_summary', $values['intro_summary'] );
 
       $values['cataloger'] = $_SESSION['user']->initials ? $_SESSION['user']->initials : '';
 
@@ -572,10 +583,8 @@ VALUES (
           <li class='checkbox'><input name='app_bibliography' id='app_bibliography' value='1' type='checkbox' {$checked['app_bibliography']}><label for='app_bibliography'>Bibliography</label></li>
           <li class='checkbox'><input name='app_facsimile' id='app_facsimile' value='1' type='checkbox' {$checked['app_facsimile']}><label for='app_facsimile'>Facsimile</label></li>
           <li class='checkbox'><input name='app_intro' id='app_intro' value='1' type='checkbox' {$checked['app_intro']}><label for='app_intro'>Introduction</label></li>
-          <li class='whole'><label for='comments'>Comments</label>
-            <textarea id='comments' name='comments' rows='3'>{$values['comments']}</textarea></li>
-          <li class='whole'><label for='intro_summary'>Introduction Summary</label>
-            <textarea id='intro_summary' name='intro_summary' rows='3'>{$values['intro_summary']}</textarea></li>
+          {$comments_field}
+          {$intro_field}
           <li class='whole'><label for='addenda'>Notes</label>
             <textarea id='addenda' name='addenda' rows='3'>{$values['addenda']}</textarea></li>
             {$live}

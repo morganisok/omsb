@@ -96,22 +96,20 @@ class Search_Results {
 
     // Build the regular queries.
     $i=0;
-    foreach( $terms as $key => $val){	  ##  looping over the $_GET array
+    foreach( $terms as $key => $val ) {
 
         $i++;
         $j=0;
-        if ( is_array($val) ) {
+        if ( is_array( $val ) ) {
           return '<p class="error">Unable to build search query.  Please change your search terms and try again.</p>';
-
         } else {
-
-            $this->build_query_segment($key,$val,$query_string);
-            if ( $i <> count($terms) && $i !== 1 ) {
+            if ( count( $terms ) > 1 && $i !== 1 ) {
               $this->reg_queries .= " AND ";
             }
-
+            $this->build_query_segment( $key, $val, $query_string );
       }
     }
+
 
     // Put all the queries together.
     if ( !( empty( $this->join_queries ) && empty( $this->reg_queries ) ) ) {

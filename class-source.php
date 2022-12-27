@@ -323,9 +323,11 @@ VALUES (
 
     $queries = $this->get_source_queries( $source['id'] );
 
+    $link = $source['link'] ? "<a href='{$source['link']}' target=_blank'>Read this source online</a>" : '';
+
     return "<article class='source public'>
       <p class='citation'>
-        {$source['editor']}, <i>{$source['title']} ({$source['publication']})</i>
+        {$source['editor']}, <i>{$source['title']} ({$source['publication']})</i> {$link}
       </p>
       <p><span class='label'>Text name(s):</span>&nbsp;{$source['text_name']}</p>
       <p><span class='label'>Number of pages of primary source text:</span>&nbsp;{$source['text_pages']}</p>

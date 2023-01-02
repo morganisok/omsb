@@ -597,6 +597,29 @@ box-shadow: 0px -10px 10px -10px #371b03;
 /* TEXTILE PREVIEW */
 /* ----------------------------------------- */
 
+.tab-selectors {
+  display: inline-block;
+}
+
+.tab-selectors > li {
+  display: inline-block;
+}
+
+.tab-selectors > .active-tab-selector {
+  border: 1px solid #f00;
+}
+
+.tab-content {
+  display: inline-block;
+}
+
+.tab-contents > div {
+  display: none;
+}
+
+.tab-contents > .tab-content-active {
+  display: block;
+}
 
 .text_preview {
   padding: 0 1em 4px 1em;

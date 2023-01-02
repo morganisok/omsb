@@ -272,6 +272,7 @@ class Authors extends ListClass {
   }
 
   public function display_author( $id ) {
+    echo $this->textile->parse( '"Google":http://google.com' );
     $author = $this->get_author_by_id( $id );
 
     if ( ! $author ) {

@@ -448,7 +448,7 @@ VALUES (
       $button = $existing ? 'Update Source' : 'Create Source';
 
       $comments_field = $this->editor->render_field( 'Comments', 'comments', $values['comments'] );
-      $intro_fiel     = $this->editor->render_field( 'Introduction Summary', 'intro_summary', $values['intro_summary'] );
+      $intro_field    = $this->editor->render_field( 'Introduction Summary', 'intro_summary', $values['intro_summary'] );
 
       $values['cataloger'] = $_SESSION['user']->initials ? $_SESSION['user']->initials : '';
 

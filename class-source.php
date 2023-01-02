@@ -441,7 +441,7 @@ VALUES (
     if ( $edit ) {
       $id     = $existing ? '?id=' . $_GET['id'] : '';
       $inits  = $existing ? $values['cataloger'] : $_SESSION['user']->initials;
-      $userid = $values['user_id'];
+      $userid = $existing ? $values['user_id'] : $_SESSION['user']->omsb_id;
       $live   = "<li class='checkbox'><input name='live' id='live' value='1' type='checkbox' {$checked['live']}><label for='live'>Make record public</label></li>";
       $action = "admin-sources.php{$id}";
       $method = 'post';

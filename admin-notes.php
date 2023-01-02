@@ -18,7 +18,7 @@ if ( $is_user_logged_in ) {
 	$result = $database->mysqli->query( $query_string );
 
 	if ( ! $result || $result->num_rows === 0 ) {
-		return $'<p class="error">Could not find any sources with notes.</p>';
+		return '<p class="error">Could not find any sources with notes.</p>';
 	}
 
 	$rows = $result->fetch_all( MYSQLI_ASSOC );

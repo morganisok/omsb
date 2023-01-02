@@ -281,7 +281,7 @@ class Authors extends ListClass {
       $title      = $author['title'] ?? '';
       $date_type  = $author['date_type'] ?? '';
       $date_circa = $author['date_circa'] ? 'c.&nbsp;' : '';
-      $bio        = $author['bio'] ?? '';
+      $bio        = $author['bio'] ? "<div class='bio'>{$this->textile->parse( $author['bio'] )}<div>" : '';
       $works      = $this->get_works_by_author( $id, $author['name'] );
 
       if ( isset( $author['date_begin'] ) && '' !== $author['date_begin'] && isset( $author['date_end'] ) && '' !== $author['date_end'] ) {
@@ -298,9 +298,7 @@ class Authors extends ListClass {
       <h4><span class='name'>{$author['name']}</span> {$alias} {$title}</h4>
       <p>{$date_type} {$date}</p>
 
-      <div class='bio'>
-          {$this->textile->parse( $bio )}
-      </div>
+      {$bio}
 
       {$works}
 

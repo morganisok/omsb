@@ -1,14 +1,8 @@
-<?php 
+<?php
 include 'header.php'; ?>
 
-<div id="credits">
-	<p>Created by the <a href="http://www.fordham.edu/mvst">Center for Medieval Studies</a>, Fordham University</p>
-	<p class="editors">Edited by Maryanne Kowaleski, Fordham University<br />Assistant 
-	Editor Morgan Kay, Fordham University</p>
-</div>
-
 <article id="home" class="left">
-<p>The Online Medieval Sources Bibliography provides detailed information about modern editions - both in print and online - 
+<p>The <b>Online Medieval Sources Bibliography</b> provides detailed information about modern editions - both in print and online -
 of medieval primary sources.  Our goal is to help users find the sources and editions that are most suited to their needs.
 	<ul>
 		<li><b>Teachers and Professors</b>: find the best texts and editions to assign to your students</li>
@@ -25,11 +19,9 @@ of medieval primary sources.  Our goal is to help users find the sources and edi
 </p>
 </article>
 
-<aside id="home" class="right">
-	<ul>
-		<li class="action"><a href="sources.php" title="Search the Medieval Sources Bibliography">Search</a> for modern editions of medieval primary sources</li>
-		<li><a href="authors.php" title="Search for Medieval Authors">Authors</a>: search for medieval authors</li>
-	</ul>
-</aside>
+<div class="buttons">
+	<a href="sources.php" class="button" title="Search the Medieval Sources Bibliography">Search for sources</a>
+	<a href="authors.php" class="button" title="Search for Medieval Authors">Search for authors</a>
+</div>
 
 <?php include 'footer.php'; ?>

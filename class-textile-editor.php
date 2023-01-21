@@ -25,7 +25,7 @@ class Textile_Editor {
 
       <div class='tab-contents'>
         <div class='tab-content-active'>
-          <textarea id='{$name}' cols='80' rows='15' data-name={$name} onchange='textileParser(" . '"' . $name . '"' . ")'>{$value}</textarea>
+          <textarea id='{$name}' cols='80' rows='15' data-name={$name} data-source={$name} onchange='textileParser(" . '"' . $name . '"' . ")'>{$value}</textarea>
         </div>
         <div>
 

@@ -525,16 +525,16 @@ VALUES (
             <label for='date_end'>Latest Date</label>
             <input id='date_end' name='date_end' type='text' value='{$values['date_end']}'>
           </li>
-          <li class='checkbox'>
+          <li class='checkbox fourth'>
             <input name='trans_none' id='trans_none' value='1' type='checkbox' {$checked['trans_none']}><label for='trans_none'>Original language included</label>
           </li>
-          <li class='checkbox'>
+          <li class='checkbox fourth'>
             <input name='trans_english' id='trans_english' value='1' type='checkbox' {$checked['trans_english']}><label for='trans_english'>Translated into English</label>
           </li>
-          <li class='checkbox'>
+          <li class='checkbox fourth'>
             <input name='trans_french' id='trans_french' value='1' type='checkbox' {$checked['trans_french']}><label for='trans_french'>Translated into French</label>
           </li>
-          <li class='checkbox'>
+          <li class='checkbox fourth'>
             <input name='trans_other' id='trans_other' value='1' type='checkbox' {$checked['trans_other']}><label for='trans_other'>Translated into another language</label>
           </li>
           <li class='half'>

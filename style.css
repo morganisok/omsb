@@ -1,182 +1,69 @@
-/* RESET */
-/* ----------------------------------------- */
-
-/**
- * Eric Meyer's Reset Stylesheet
- *
- * v2.0
- * 2011-01-26
- * Author: Eric Meyer - http://meyerweb.com/eric/tools/css/reset/
- */
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-    display: block;
-}
-body {
-    line-height: 1;
-}
-blockquote, q {
-    quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-    content: '';
-    content: none;
-}
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-
-
-
 /* FONTS */
 /* ----------------------------------------- */
 
 @font-face {
-    font-family: 'Chantelli';
-    src: url('fonts/Chantelli_Antiqua-webfont.eot');
-    src: url('fonts/Chantelli_Antiqua-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/Chantelli_Antiqua-webfont.woff') format('woff'),
-         url('fonts/Chantelli_Antiqua-webfont.ttf') format('truetype'),
-         url('fonts/Chantelli_Antiqua-webfont.svg#ChantelliAntiquaRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
+font-family: 'Minion';
+font-style: normal;
+font-weight: normal;
+src: local('Minion Pro Regular'), url('fonts/MinionPro-Regular.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Minion Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Minion Pro Italic'), url('fonts/MinionPro-It.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Minion Bold';
+font-style: normal;
+font-weight: normal;
+src: local('Minion Pro Bold'), url('fonts/MinionPro-Bold.woff') format('woff');
 }
 
 @font-face {
-    font-family: 'OpenSans';
-    src: url('fonts/OpenSans-Regular-webfont.eot');
-    src: url('fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/OpenSans-Regular-webfont.woff') format('woff'),
-         url('fonts/OpenSans-Regular-webfont.ttf') format('truetype'),
-         url('fonts/OpenSans-Regular-webfont.svg#OpenSansRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
+font-family: 'Minion Bold Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Minion Pro Bold Italic'), url('fonts/MinionPro-BoldIt.woff') format('woff');
 }
-
-@font-face {
-    font-family: 'OpenSansItalic';
-    src: url('fonts/OpenSans-Italic-webfont.eot');
-    src: url('fonts/OpenSans-Italic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/OpenSans-Italic-webfont.woff') format('woff'),
-         url('fonts/OpenSans-Italic-webfont.ttf') format('truetype'),
-         url('fonts/OpenSans-Italic-webfont.svg#OpenSansItalic') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'OpenSansBold';
-    src: url('fonts/OpenSans-Bold-webfont.eot');
-    src: url('fonts/OpenSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/OpenSans-Bold-webfont.woff') format('woff'),
-         url('fonts/OpenSans-Bold-webfont.ttf') format('truetype'),
-         url('fonts/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'OpenSansBoldItalic';
-    src: url('fonts/OpenSans-BoldItalic-webfont.eot');
-    src: url('fonts/OpenSans-BoldItalic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/OpenSans-BoldItalic-webfont.woff') format('woff'),
-         url('fonts/OpenSans-BoldItalic-webfont.ttf') format('truetype'),
-         url('fonts/OpenSans-BoldItalic-webfont.svg#OpenSansBoldItalic') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
 
 
 
 /* GENERAL */
 /* ----------------------------------------- */
 
+* {
+  box-sizing: border-box;
+}
+
 html, body {
-height: 100%;
-font-family: 'OpenSans', sans-serif;
-font-size: 16px;
-line-height: 24px;
-background: #E9DDC7;
-color: #371b03;
-}
-
-#wrapper {
-min-height: 100%;
-width: 90%;
-max-width: 1200px;
-min-width: 700px;
-margin: 0 auto;
-}
-
-#shadow {
-min-height: 100%;
-}
-
-#content {
-overflow:auto;
-padding-bottom: 30px;
-min-height: 500px;
-}
-
-footer {
-position: relative;
-margin-top: -30px;
-height: 30px;
-clear:both;
-}
-
-/*Opera Fix for sticky footer*/
-body:before {/* thanks to Maleika (Kohoutec)*/
-content:"";
-height:100%;
-float:left;
-width:0;
-margin-top:-32767px;/* thank you Erik J - negate effect of float*/
+font-family: 'Minion', serif;
+font-size: 22px;
+line-height: 30px;
+background: #fff;
+color: #000;
+margin: 0;
 }
 
 p {
+margin-top: 0;
 margin-bottom: 20px;
 }
 
-h1, h2, h3, h4, h5 {
-font-family: 'Chantelli', serif;
+h2, h3, h4, h5 {
+font-family: 'Minion Bold', serif;
 text-align: center;
 }
 
 h1 {
-font-size: 36px;
-line-height: 46px;
-margin-bottom: 30px;
+font-family: 'Minion', serif;
+font-size: 50px;
+line-height: 50px;
+margin-bottom: 0;
 }
 
 h2 {
@@ -206,24 +93,23 @@ text-align: left;
 }
 
 b, strong {
-font-family: 'OpenSansBold';
+font-family: 'Minion Bold';
 }
 
 i, em {
-font-family: 'OpenSansItalic';
+font-family: 'Minion Italic';
 }
 
 a {
-color: #074C88;
-text-decoration: none;
+color: #843139;
 }
 
 a:hover {
-color: #0A6CC2 !important;
+s
 }
 
 a:visited {
-color: #4B044E;
+
 }
 
 article li {
@@ -246,126 +132,154 @@ border: 1px solid rgb(209, 108, 108);
 /* HEADER */
 /* ----------------------------------------- */
 
+header {
+  color: #fff;
+  background: url('/img/bonaventure.webp') left center no-repeat #843139;
+  background-size: 20%;
+}
+
 hgroup {
-text-align: center;
-margin-top: 30px;
-margin-bottom: 10px;
+  padding: 20px 20px 20px 22%;
 }
 
 hgroup h1 {
-background: url('/images/logo.png') no-repeat;
-width: 500px;
-height: 130px;
-text-indent: 100%;
-white-space: nowrap;
-overflow: hidden;
-margin: 0 auto;
+  font-variant: small-caps;
 }
 
 hgroup h2 {
-font-size: 22px;
+  text-align: left;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-weight: normal;
+  font-size: 24px;
 }
 
 
+
+/* SIDEBAR */
+/* ----------------------------------------- */
+ #content {
+   display: flex;
+ }
+
+ aside {
+   width: 25%;
+   min-width: 200px;
+ }
+
+ aside img.seal {
+   width: 50%;
+   display: block;
+   margin: 20px auto;
+ }
 
 
 /* NAVIGATION */
 /* ----------------------------------------- */
 
-header nav {
-height: 40px;
-line-height: 40px;
-border-bottom: 1px solid #371b03;
-border-top: 1px solid #371b03;
--webkit-box-shadow: 0px 10px 10px -10px #371b03;
-box-shadow: 0px 10px 10px -10px #371b03;
-margin-bottom: 30px;
-text-align: center;
-font-size: 16px;
+nav li a {
+display: block;
+background: #843139;
+color: #fff;
+font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+font-weight: bold;
+text-decoration: none;
+text-transform: lowercase;
+font-size: 18px;
+padding: 5px;
 }
 
-header nav li a {
-display: inline-block;
-line-height: 40px;
+nav li a:hover {
+  background: #561b20;
 }
 
-header nav li {
-display: inline;
-padding: 0 20px;
+nav ul {
+  margin: 10px;
+  padding: 0;
+}
+
+nav li {
+display: block;
+margin: 10px 0;
 position: relative;
+list-style-type: none;
 }
 
-header nav li ul {
+nav li ul {
 display: none;
 position: absolute;
-left: 0;
-background: url('/images/paperbg.jpg');
-border: 1px solid #371b03;
--webkit-box-shadow: 0px 2px 8px 2px #371b03;
-box-shadow: 0px 2px 8px 2px #371b03;
+left: calc(100% - 10px);
+top: -10px;
+padding: 5px;
+z-index: 999;
 }
 
-header nav li:hover ul {
+nav li:hover ul {
 display: block;
+background: #843139;
 }
 
-header nav li ul li {
+nav li ul li {
 display: block;
 line-height: 26px;
 text-align: left;
+margin: 0;
 }
 
-header nav li ul li a {
-display: inline-block;
-line-height: 26px;
+.about {
+  border: 1px solid #843139;
+  padding: 8px;
+  margin: 10px;
+  text-align: center;
+  font-size: 14px;
 }
 
+.about h4 {
+  font-variant: small-caps;
+  font-size: 16px;
+  text-align: center;
+  margin: 0;
+}
 
-/* HOME PAGE */
+.about img {
+  width: 100%;
+}
+
+.about h5 {
+  font-variant: small-caps;
+  font-size: 14px;
+  text-align: center;
+  margin: 0;
+}
+
+.about .school {
+  display: block;
+  font-size: 13px;
+}
+
+.about .img-credit {
+  font-family: 'Minion Italic';
+  font-size: 10px;
+  line-height: 10px;
+  text-align: left;
+}
+
+/* PAGES */
 /* ----------------------------------------- */
 
-#credits {
-text-align: center;
-margin-bottom: 20px;
+#main {
+  background: rgba(234, 208, 168, .25);
+  margin: 10px;
+  padding: 20px;
+  width: 100%;
 }
 
-#credits p {
-margin-bottom: 0;
+#main h2 {
+  border-bottom: 2px solid #000;
+  text-transform: uppercase;
+  margin-top: 0;
+  padding: .25em 0;
 }
 
-#credits .editors {
-font-size: 12px;
-}
-
-aside li.action {
-font-family: 'OpenSansBold';
-font-size: 16px;
-margin-bottom: 12px;
-}
-
-article.left {
-float: left;
-width: 65%;
-}
-
-aside.right {
-float: right;
-width: 30%;
-margin-right: 10px;
--webkit-box-shadow: 0px 2px 8px 2px #371b03;
-box-shadow: 0px 2px 8px 2px #371b03;
--moz-box-sizing: border-box;
--webkit-box-sizing: border-box;
-box-sizing: border-box;
-padding: 10px;
-}
-
-/* ABOUT PAGES */
-/* ----------------------------------------- */
-
-aside#about li {
-margin-bottom: 10px;
-}
 
 table {
 margin: 0 auto;
@@ -384,41 +298,57 @@ span.field {
 text-transform: uppercase;
 }
 
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 2em;
+}
+
+.buttons .button {
+  width: 35%;
+}
+
 /* FORMS */
 /* ----------------------------------------- */
 
 form fieldset legend {
-font-family: 'Chantelli', serif;
+font-family: 'Minion', serif;
 }
 
 form label {
-display: block;
+display: inline-block;
 }
 
-form input,
+form input:not(.button),
 form textarea,
 form select {
-width: 95%;
-border: 1px solid #371b03;
-padding: 4px 6px;
-font-family: 'OpenSans', sans-serif;
+width: 100%;
+border: 2px solid #000;
+border-radius: 0;
+font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+padding: .5em;
+font-size: 16px;
 }
 
-form fieldset {
-border: 1px solid #908174;
-padding: 10px;
-margin-bottom: 20px;
-clear: both;
+form input:focus,
+form input:focus-visible {
+  border: 2px solid #843139;
+  border-radius: 0;
+  outline: 2px solid rgba(132, 49, 57, .25);
 }
 
-form > ul {
+form > ul,
+.form-section > ul {
   display: flex;
   flex-flow: row wrap;
+  margin: 0;
+  padding: 0;
+  justify-content: space-between;
 }
 
-form > ul > li {
+form li {
 list-style-type: none;
-margin: 10px 0;
+margin: 10px;
 }
 
 form li.whole {
@@ -426,45 +356,57 @@ width: 100%;
 }
 
 form li.half {
-width: 50%;
+width: calc( 50% - 1em );
 }
 
 form li.third {
-width: 32%;
+width: calc( 33% - 1em );
 }
 
 form li.fourth {
-width: 23%;
+width: calc( 24% - 1em );
 }
 
 form li.checkbox {
-border: 1px solid #908174;
-margin-right: 10px;
-padding: 4px 6px;
+  position: relative;
 }
 
 form li.checkbox input {
-width: 20px;
+width: 16px;
+position: absolute;
+    left: -5px;
+    top: 3px;
 }
 
-input.button {
-display: block;
-margin: 0 auto;
-width: 200px;
-clear: both;
-box-shadow: inset 0 0 30px #371b03;
-color: #fff;
-text-shadow: 1px 1px #371b03;
-font-size: 16px;
-background: #E8DCC6;
+form li.checkbox label {
+padding-left: 1em;
+}
+
+.button,
+input[type="submit"] {
+display: inline-block;
+border: 2px solid #843139;
+background: #fff;
+color: #000;
+font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+font-size: 20px;
+padding: .5em 2em;
+text-decoration: none;
 font-weight: bold;
--webkit-border-radius: 4px;
--moz-border-radius: 4px;
-border-radius: 4px;
+text-align: center;
+box-shadow: 7px 7px 24px -4px rgb(0 0 0 / 26%)
 }
 
-input.button:hover {
-box-shadow: inset 0 0 30px #908174;
+form input[type="submit"] {
+  display: block;
+  margin: 2em auto;
+}
+
+.button:hover,
+input[type="submit"]:hover {
+border-color: #000;
+color: #843139;
+background-color: rgba(234, 208, 168, .1);
 }
 
 #format {
@@ -499,23 +441,24 @@ margin-left: 1em;
 /* SEARCH RESULTS */
 /* ----------------------------------------- */
 
-.pages {
-margin-bottom: 15px;
-text-align: center;
+.search_terms {
+  font-size: 18px;
+  line-height: 22px;
 }
 
-.pages a {
-display: inline-block;
-border: 1px solid #908174;
-width: 22px;
-height: 22px;
-line-height: 22px;
-text-align: center;
+.search_terms,
+.search_results {
+  margin: 0;
+  padding: 0;
 }
 
-.pages a.current {
-font-weight: bold;
-border: 1px solid #371b03;
+.search_terms li {
+  list-style-type: none;
+}
+
+.search_results li {
+  list-style-type: none;
+  margin-bottom: .5em;
 }
 
 .notes {
@@ -532,32 +475,47 @@ border: 1px solid #371b03;
 
 .back-to-top {
   position: fixed;
-  right: 10px;
-  bottom: 50px;
+  right: 20px;
+  bottom: 20px;
+  background: #843139;
+  font-size: 14px;
+  color: #fff;
+  display: block;
+  padding: 8px 12px 4px 12px;
+  text-decoration: none;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  text-align: center;
+}
+
+.back-to-top span:before {
+  display: block;
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 9px 15px 9px;
+  border-color: transparent transparent #fff transparent;
+  margin: 0 auto;
 }
 
 /* SOURCE DETAILS */
 /* ----------------------------------------- */
 
-.label {
-font-family: 'OpenSansBold';
-}
-
-.citation {
-font-size: 16px;
-border: 1px solid #371b03;
-padding: 5px;
-background: rgba(55, 27, 3, 0.12);
+article.source .label {
+  font-family: 'Minion Bold';
 }
 
 article.source {
-border: 2px solid #371b03;
-padding: 10px;
 margin-bottom: 20px;
 }
 
 article.source p {
 margin-bottom: 10px;
+}
+
+article.source ul {
+  margin: 0;
+  padding: 0;
 }
 
 article.source ul.apparatus li,
@@ -576,11 +534,6 @@ article.source ul.translation li:last-child:after {
 content: '';
 }
 
-article.source h5 {
-border-top: 1px solid #908174;
-border-bottom: 1px solid #908174;
-}
-
 
 /* FOOTER */
 /* ----------------------------------------- */
@@ -596,6 +549,10 @@ box-shadow: 0px -10px 10px -10px #371b03;
 
 /* TEXTILE PREVIEW */
 /* ----------------------------------------- */
+
+.accessible-tabs-container {
+  min-height: 350px;
+}
 
 .tab-selectors {
   display: inline-block;
@@ -683,4 +640,57 @@ box-shadow: 0px -10px 10px -10px #371b03;
   font-variant: small-caps;
   text-transform: lowercase;
   letter-spacing: .1em;
+}
+
+/* MULTISELECT - TOM SELECT */
+/* ----------------------------------------- */
+
+#main .ts-control {
+  border: 2px solid #000;
+  border-radius: 0;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  padding: .5em;
+  font-size: 16px;
+}
+
+#main .ts-control:focus,
+#main .ts-control:focus-visible {
+  border: 2px solid #843139;
+  border-radius: 0;
+  outline: 2px solid rgba(132, 49, 57, .25);
+}
+
+#main .ts-dropdown {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+#main .ts-dropdown .active {
+  background-color: rgba(234, 208, 168, .1);
+  color: #843139;
+}
+
+#main .ts-wrapper.multi .ts-control>div {
+    background: #843139;
+    border: none;
+    color: #fff;
+    margin: 0 4px 4px 0;
+    padding: 3px 8px;
+}
+
+#main .ts-wrapper.multi .ts-control [data-value] {
+    background-color: #843139;
+    background-image: none;
+    border-radius: 0;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#main .ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
+    border-left: 1px solid #fff;
+}
+
+#main .ts-wrapper.plugin-remove_button .item .remove {
+    border-radius: 0;
+    padding: 0 8px;
 }

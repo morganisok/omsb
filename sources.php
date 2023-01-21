@@ -11,6 +11,7 @@ $source  = new OMSB\Source;
 
 if ( ! $_GET ) {
 	// If we don't have a search term, display the search form.
+	echo '<h2>Search for Sources</h2>';
 	echo $search->display_search_form();
 } else {
 	if ( isset( $_GET['id'] ) ) {

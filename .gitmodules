@@ -1,6 +1,3 @@
-[submodule "vendor/textile"]
-	path = vendor/textile
-	url = https://github.com/textile/php-textile.git
 [submodule "vendor/nonce-php"]
 	path = vendor/nonce-php
 	url = https://github.com/elhardoum/nonce-php.git

@@ -50,16 +50,12 @@ class Search_Form {
           <label for="text_title">Text Name</label>
           <input id="text_title" name="text_title" placeholder="Medieval or modern title of the work">
         </li>
-        <li class="half">
-          <label for="author">Medieval Author</label>
-          <p>You can find all records by an author using the <a href="/authors.php">Medieval author search</a>.</p>
-        </li>
-        <li class="half">
+        <li class="whole">
           <label for="editor">Modern Editor/Translator</label>
           <input id="editor" name="editor" type="text">
         </li>
-        <li class="checkbox">
-          <input name="link" value="1" type="checkbox"><label for="link">Limit search to sources available online</label>
+        <li class="checkbox whole">
+          <input name="link" id="link" value="1" type="checkbox"><label for="link">Limit search to sources available online</label>
         </li>
         <li class="half">
           <label for="date_begin">Earliest Date</label>
@@ -69,17 +65,17 @@ class Search_Form {
           <label for="date_end">Latest Date</label>
           <input id="date_end" name="date_end" type="text">
         </li>
-        <li class="checkbox">
-          <input name="trans_none" value="1" type="checkbox"><label for="trans_none">Original language included</label>
+        <li class="checkbox fourth">
+          <input name="trans_none" id="trans_none" value="1" type="checkbox"><label for="trans_none">Original language included</label>
         </li>
-        <li class="checkbox">
-          <input name="trans_english" value="1" type="checkbox"><label for="trans_english">Translated into English</label>
+        <li class="checkbox fourth">
+          <input name="trans_english" id="trans_english" value="1" type="checkbox"><label for="trans_english">Translated into English</label>
         </li>
-        <li class="checkbox">
-          <input name="trans_french" value="1" type="checkbox"><label for="trans_french">Translated into French</label>
+        <li class="checkbox fourth">
+          <input name="trans_french" id="trans_french" value="1" type="checkbox"><label for="trans_french">Translated into French</label>
         </li>
-        <li class="checkbox">
-          <input name="trans_other" value="1" type="checkbox"><label for="trans_other">Translated into another language</label>
+        <li class="checkbox fourth">
+          <input name="trans_other" id="trans_other" value="1" type="checkbox"><label for="trans_other">Translated into another language</label>
         </li>
         <li class="half">
           <label for "language">Original Language:</label>

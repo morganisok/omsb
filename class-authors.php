@@ -392,7 +392,7 @@ class Authors extends ListClass {
       echo "<h2>Author Search Results</h2>
       <p>You searched for {$_GET['search']}</p>
       <h4>Search Results:</h4>
-      <ul>";
+      <ul class='search_results'>";
       while ( $author = $result->fetch_array( MYSQLI_ASSOC ) ) {
         $alias = $author['alias'] ? "({$author['alias']})" : '';
         $begin = $author['date_begin'] ? $author['date_begin'] : false;
@@ -427,6 +427,7 @@ class Authors extends ListClass {
         </li>";
       }
       echo "</ul>";
+      echo "<a href='#content' class='back-to-top'><span>Top</span></a>";
     }
   }
 

@@ -179,7 +179,7 @@ class Search_Results {
       $results .= "<li>{$source['editor']}, <a href='/sources.php?id={$source['id']}'>{$source['title']}</a>{$admin}</li>";
     }
     $results .= "</ul>{$script}";
-    $results .= "<a href='#content' class='back-to-top'>Back to top</a>";
+    $results .= "<a href='#content' class='back-to-top'><span>Top</span></a>";
     return $results;
   }
 
@@ -211,6 +211,7 @@ class Search_Results {
         $terms .= "<li>{$clean_key} = {$clean_value}</li>";
       }
     }
+    $terms .= '</ul>';
 
     return $terms;
   }

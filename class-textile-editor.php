@@ -1,7 +1,8 @@
 <?php
 namespace OMSB;
 
-require_once 'vendor/textile/src/Netcarver/Textile/Parser.php';
+require_once 'vendor/autoload.php';
+require_once 'vendor/netcarver/textile/src/Netcarver/Textile/Parser.php';
 
 use Netcarver\Textile\Parser;
 

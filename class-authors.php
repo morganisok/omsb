@@ -4,7 +4,8 @@ namespace OMSB;
 require_once 'class-list.php';
 require_once 'class-database.php';
 require_once 'class-textile-editor.php';
-require_once 'vendor/textile/src/Netcarver/Textile/Parser.php';
+require_once 'vendor/autoload.php';
+require_once 'vendor/netcarver/textile/src/Netcarver/Textile/Parser.php';
 
 use OMSB\ListClass;
 use OMSB\Database;
@@ -272,7 +273,6 @@ class Authors extends ListClass {
   }
 
   public function display_author( $id ) {
-    echo $this->textile->parse( '"Google":http://google.com' );
     $author = $this->get_author_by_id( $id );
 
     if ( ! $author ) {

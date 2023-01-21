@@ -9,7 +9,8 @@ require_once 'class-authors.php';
 require_once 'class-database.php';
 require_once 'class-results.php';
 require_once 'class-textile-editor.php';
-require_once 'vendor/textile/src/Netcarver/Textile/Parser.php';
+require_once 'vendor/autoload.php';
+require_once 'vendor/netcarver/textile/src/Netcarver/Textile/Parser.php';
 
 
 use OMSB\Languages;

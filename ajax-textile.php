@@ -1,7 +1,8 @@
 <?php
 
 // Include the textile parser library
-require_once 'vendor/textile/src/Netcarver/Textile/Parser.php';
+require_once 'vendor/autoload.php';
+require_once 'vendor/netcarver/textile/src/Netcarver/Textile/Parser.php';
 
 // Create a new Textile object
 use Netcarver\Textile\Parser;

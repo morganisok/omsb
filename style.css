@@ -319,6 +319,11 @@ form label {
 display: inline-block;
 }
 
+form .description {
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-size: 16px;
+}
+
 form input:not(.button),
 form textarea,
 form select {
@@ -481,10 +486,11 @@ margin-left: 1em;
   font-size: 14px;
   color: #fff;
   display: block;
-  padding: 8px 12px 4px 12px;
+  padding: 8px 12px 6px 12px;
   text-decoration: none;
   font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
   text-align: center;
+  font-weight: bold;
 }
 
 .back-to-top span:before {
@@ -534,6 +540,10 @@ article.source ul.translation li:last-child:after {
 content: '';
 }
 
+article.author h5 {
+  font-size: 22px;
+}
+
 
 /* FOOTER */
 /* ----------------------------------------- */
@@ -556,14 +566,28 @@ box-shadow: 0px -10px 10px -10px #371b03;
 
 .tab-selectors {
   display: inline-block;
+  margin: 0;
+  padding: 0;
 }
 
 .tab-selectors > li {
   display: inline-block;
+  color: #fff;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 0 0 0 -5px;
+  padding: 10px 20px;
+  border-right: 2px solid #fff;
+  background: rgba(132, 49, 57, .6);
+}
+
+.tab-selectors > li:first-child {
+  margin-left: 0;
 }
 
 .tab-selectors > .active-tab-selector {
-  border: 1px solid #f00;
+  background: #843139;
 }
 
 .tab-content {
@@ -579,34 +603,11 @@ box-shadow: 0px -10px 10px -10px #371b03;
 }
 
 .text_preview {
+  min-height: 305px;
+  border: 2px solid #000;
+  background: #fff;
   padding: 0 1em 4px 1em;
   color: #444;
-  font-size: 13px;
-  line-height: 1.4;
-}
-.text_preview h1 {
-  line-height: 1.1;
-  font-size: 2em;
-}
-.text_preview h2 {
-  line-height: 1.1;
-  font-size: 1.6em;
-}
-.text_preview h3 {
-  line-height: 1.14;
-  font-size: 1.36em;
-}
-.text_preview h4 {
-  line-height: 1.2;
-  font-size: 1.14em;
-}
-.text_preview h5 {
-  line-height: 1.24;
-  font-size: 1em;
-}
-.text_preview h6 {
-  line-height: 1.24;
-  font-size: 1em;
 }
 .text_preview code {
   background: #f4f4f4;
@@ -622,6 +623,12 @@ box-shadow: 0px -10px 10px -10px #371b03;
 .text_preview ul {
   margin-left: 0;
   padding-left: 2em;
+}
+.text_preview ul li {
+  list-style-type: disc;
+}
+.text_preview ol li {
+  list-style-type: decimal;
 }
 .text_preview acronym {
   text-decoration : none;

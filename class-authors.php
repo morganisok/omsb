@@ -113,6 +113,12 @@ class Authors extends ListClass {
   * @param bool $edit Whether we are editing an existing author.
   */
   public function author_form( $edit = true ) {
+    $user = ( $_SESSION['user'] );
+    if ( ! $edit && !in_array( 'author', $user->user_roles ) && !in_array( 'administrator', $user->user_roles ) ) {
+      echo '<p class="error">You do not have sufficient priveleges to create new authors.</p>';
+      return;
+    }
+
     $data = $this->fields_array();
 
     if ( $edit ) {
@@ -178,6 +184,9 @@ class Authors extends ListClass {
     	</form>";
   }
 
+  /*
+  * Update an existing author.
+  */
   public function update() {
     $data = $this->sanitize_input();
 
@@ -231,6 +240,9 @@ class Authors extends ListClass {
     }
   }
 
+  /*
+  * Create a new author.
+  */
   public function create() {
     $data = $this->sanitize_input();
 
@@ -272,6 +284,11 @@ class Authors extends ListClass {
     }
   }
 
+  /*
+  * Display an author's details.
+  *
+  * @param $id int The ID of the author.
+  */
   public function display_author( $id ) {
     $author = $this->get_author_by_id( $id );
 
@@ -307,6 +324,12 @@ class Authors extends ListClass {
     }
   }
 
+  /*
+  * Get a list of all works by an author.
+  *
+  * @param $id int the author id.
+  * @param $name string the author's name.
+  */
   public function get_works_by_author( $id, $name ) {
     $id          = $this->db->mysqli->real_escape_string( $_GET['id'] );
     $query       = "select source_id from authorships where author_id=$id;";
@@ -344,6 +367,9 @@ class Authors extends ListClass {
     return $results;
   }
 
+  /*
+  * Return a list of al lo fthe fields in the author table.
+  */
   public function fields_array() {
     return array(
       'id' => '',
@@ -358,6 +384,9 @@ class Authors extends ListClass {
     );
   }
 
+  /*
+  * Sanitize the input when creating or editing an author.
+  */
   public function sanitize_input() {
     $fields = $this->fields_array();
     $fields[ 'date_circa' ] = isset( $_POST[ 'date_circa' ] ) ? 1 : 0;
@@ -370,6 +399,9 @@ class Authors extends ListClass {
     return $fields;
   }
 
+  /*
+  * Display the search form for authors.
+  */
   public function author_search_form() {
     ?>
   	<h2>Search for Medieval Authors</h2>
@@ -380,6 +412,9 @@ class Authors extends ListClass {
   	<?php
   }
 
+  /*
+  * Display the results of an author search.
+  */
   public function author_search_results() {
     $searchterm = $this->db->mysqli->real_escape_string( strip_tags( trim( $_GET[ 'search' ] ) ) );
     $query      = "select * from authors where authors.name like '%$searchterm%' or authors.alias like '%$searchterm%';";
@@ -431,6 +466,9 @@ class Authors extends ListClass {
     }
   }
 
+  /*
+  * Delete an author.
+  */
   public function delete() {
     if ( ! $this->is_logged_in ) {
       return '<p class="error">You do not have permission to do this.</p>';

@@ -34,7 +34,6 @@
   				<li><a href="/authors.php" title="Search Medieval Authors">Search Authors</a></li>
   				<li><a href="/about/" title="About the Medieval Sources Bibliography">About</a>
   					<ul>
-  						<li><a href="/news" title="News">News</a></li>
   						<li><a href="/about/codebook.php" title="Codebook">Codebook</a></li>
   						<li><a href="/about/compilers.php" title="Compilers">Compilers</a></li>
   						<li><a href="/about/contents.php" title="Contents">Contents</a></li>

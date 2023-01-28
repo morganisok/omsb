@@ -132,7 +132,7 @@ border: 1px solid rgb(209, 108, 108);
 /* HEADER */
 /* ----------------------------------------- */
 
-header {
+body > header {
   color: #fff;
   background: url('/img/bonaventure.webp') left center no-repeat #843139;
   background-size: 20%;
@@ -548,20 +548,14 @@ article.author h5 {
 /* FOOTER */
 /* ----------------------------------------- */
 
-footer {
-clear: both;
-text-align: center;
-font-size: 12px;
-border-top: 1px solid #371b03;
--webkit-box-shadow: 0px 10px 10px -10px #371b03;
-box-shadow: 0px -10px 10px -10px #371b03;
-}
+
 
 /* TEXTILE PREVIEW */
 /* ----------------------------------------- */
 
 .accessible-tabs-container {
   min-height: 350px;
+  width: 100%;
 }
 
 .tab-selectors {

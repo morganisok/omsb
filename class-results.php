@@ -176,7 +176,8 @@ class Search_Results {
          }
          </script>';
       }
-      $results .= "<li>{$source['editor']}, <a href='/sources.php?id={$source['id']}'>{$source['title']}</a>{$admin}</li>";
+      $editor = $source['editor'] ? $source['editor'] . ',' : '';
+      $results .= "<li>{$editor} <a href='/sources.php?id={$source['id']}'>{$source['title']}</a>{$admin}</li>";
     }
     $results .= "</ul>{$script}";
     $results .= "<a href='#content' class='back-to-top'><span>Top</span></a>";
@@ -286,12 +287,12 @@ class Search_Results {
           case 'author':
                   if ( strpos($this->tables,"authorships") === false )
                           $this->tables .= ",authorships";
-                  $this->join_queries .= "authorships.source_id=sources.id AND authorships.author_id like \"%$val%\"";
+                  $this->join_queries .= "authorships.source_id=sources.id AND authorships.author_id like \"$val\"";
                                   break;
           case 'language':
                   if ( strpos($this->tables,"languages") === false )
                           $this->tables .= ",languages";
-                  $this->join_queries .= "languages.source_id=sources.id AND languages.name like \"%$val%\"";
+                  $this->join_queries .= "languages.source_id=sources.id AND languages.name like \"$val\"";
                   break;
           case 'region':
                   $this->reg_queries .= "sources.region like \"%$val%\"";
@@ -299,17 +300,17 @@ class Search_Results {
           case 'countries':
                   if ( strpos($this->tables,"countries") === false )
                           $this->tables .= ",countries";
-                  $this->join_queries .= "countries.source_id=sources.id AND countries.name like \"%$val%\"";
+                  $this->join_queries .= "countries.source_id=sources.id AND countries.name like \"$val\"";
                   break;
           case 'type':
                   if ( strpos($this->tables,"types") === false )
                           $this->tables .= ",types";
-                  $this->join_queries .= "types.source_id=sources.id AND types.name like \"%$val%\"";
+                  $this->join_queries .= "types.source_id=sources.id AND types.name like \"$val\"";
                   break;
           case 'subject':
                   if ( strpos($this->tables,"subjects") === false )
                           $this->tables .= ",subjects";
-                  $this->join_queries .= "subjects.source_id=sources.id AND subjects.name like \"%$val%\"";
+                  $this->join_queries .= "subjects.source_id=sources.id AND subjects.name like \"$val\"";
                   break;
           case 'app_index':
                   $this->reg_queries .= "sources.app_index like \"%$val%\"";

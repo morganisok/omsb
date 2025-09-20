@@ -263,7 +263,12 @@ VALUES (
   */
   public function get_source( $id ) {
     $query = sprintf( "SELECT * from sources WHERE id=%s", $this->db->mysqli->real_escape_string( $id ) );
-    return $this->db->mysqli->query( $query );
+    $result = $this->db->mysqli->query( $query );
+    if ( ! $result ) {
+      return false;
+    } else {
+      return $result;
+    }
   }
 
 
@@ -273,6 +278,7 @@ VALUES (
   * @param array $source Array of source details.
   */
   public function private_source_detail( $source ) {
+
     $live    = $source['live'] ? 'This record is visible to the public' : 'This record is hidden from the public';
     $admin   = '<p class="maintenance">
       						<script type="text/javascript" language="JavaScript">
@@ -627,14 +633,6 @@ VALUES (
 
     $values = $source->fetch_array( MYSQLI_ASSOC );
     $merged = array_merge( $empty_values, $values );
-
-    foreach( $checkboxes as $checkbox ) {
-      if ( $merged[ $checkbox ] == 1 ) {
-        $merged[ $checkbox ] = 'checked="checked"';
-      } else {
-        $merged[ $checkbox ] = '';
-      }
-    }
 
     $selects_data = $this->get_source_queries( $_GET['id'], false );
 

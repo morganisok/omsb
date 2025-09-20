@@ -44,6 +44,9 @@ abstract class ListClass {
 
     $query  = sprintf( "SELECT name from %s WHERE source_id=%s", $this->db->mysqli->real_escape_string( $this->table_name ), $this->db->mysqli->real_escape_string( $id ) );
     $result = $this->db->mysqli->query( $query );
+    if( ! $result ) {
+      return false;
+    }
     $list   = $result->fetch_all();
 
     if ( ! $format ) {

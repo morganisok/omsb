@@ -16,8 +16,11 @@ use Netcarver\Textile\Parser;
 class Authors extends ListClass {
 
   public $table_name;
-
   public $db;
+  private $textile;
+  private $editor;
+
+  private $is_logged_in;
 
   public function __construct() {
     $this->table_name = 'authors';
@@ -79,7 +82,9 @@ class Authors extends ListClass {
     foreach( $author_ids as $id ) {
       $author = $this->get_author_by_id( $id[0]);
 
-      $details .= "<li><a href='/authors.php?id={$id[0]}'>{$author['name']}</a></li>";
+      if ( $author ) {
+        $details .= "<li><a href='/authors.php?id={$id[0]}'>{$author['name']}</a></li>";
+      }
     }
 
     $details .= '</ul>';
@@ -360,7 +365,9 @@ class Authors extends ListClass {
          }
          </script>';
       }
-      $results .= "<li>{$source[0]['editor']}, <a href='/sources.php?id={$source[0]['id']}'>{$source[0]['title']}</a>{$admin}</li>";
+      if ( isset( $source[0] ) && is_array( $source[0] )  ) {
+        $results .= "<li>{$source[0]['editor']}, <a href='/sources.php?id={$source[0]['id']}'>{$source[0]['title']}</a>{$admin}</li>";
+      }
     }
     $results .= "</ul></div>{$script}";
     $results .= "<a href='#content' class='back-to-top'>Back to top</a>";
@@ -395,7 +402,6 @@ class Authors extends ListClass {
         $fields[ $field ] = $this->db->mysqli->real_escape_string( strip_tags( trim( $_POST[ $field ] ) ) );
       }
     }
-
     return $fields;
   }
 
@@ -422,7 +428,7 @@ class Authors extends ListClass {
 
     if ( ! $result->num_rows ) {
       echo "<p>No author matched your search term. Please try searching again.</p>";
-      echo $this->author_search_form;
+      echo $this->author_search_form();
     } else {
       echo "<h2>Author Search Results</h2>
       <p>You searched for {$_GET['search']}</p>

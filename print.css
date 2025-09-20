@@ -1,0 +1,10 @@
+@media print {
+  header,
+  aside {
+    display: none !important;
+  }
+
+  #main {
+    background: none;
+  }
+}

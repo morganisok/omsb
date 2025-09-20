@@ -71,8 +71,18 @@ abstract class ListClass {
         unset( $key[ $value ] );
       }
     }
-
     return $input;
+  }
+
+  public function display_list( $title ) {
+    $list = "<h2>List of {$title}</h2>";
+    $list .= '<ul>';
+    foreach( $this->list as $item ) {
+      $list .= "<li>{$item}</li>";
+    }
+    $list .= '</ul>';
+
+    echo $list;
   }
 
 }

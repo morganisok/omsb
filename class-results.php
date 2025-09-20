@@ -18,7 +18,17 @@ use OMSB\Database;
 class Search_Results {
 
   private $db;
+  private $languages;
+  private $countries;
+  private $types;
+  private $subjects;
+  private $authors;
 
+  private $join_queries;
+  private $reg_queries;
+  private $tables;
+
+  private $is_logged_in;
 
   public function __construct() {
     $this->db        = new Database;
@@ -176,7 +186,10 @@ class Search_Results {
          }
          </script>';
       }
+
       $editor = $source['editor'] ? $source['editor'] . ',' : '';
+      $source['title'] = $source['title'];
+
       $results .= "<li>{$editor} <a href='/sources.php?id={$source['id']}'>{$source['title']}</a>{$admin}</li>";
     }
     $results .= "</ul>{$script}";

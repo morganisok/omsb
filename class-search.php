@@ -45,6 +45,7 @@ class Search_Form {
 
     return
     '<form action="/sources.php" method="get">
+      <input type="submit" class="button" value="Search Sources" />
       <ul>
         <li class="whole">
           <label for="text_title">Text Name</label>

@@ -6,7 +6,8 @@
   <meta name="description" content="An Annotated Bibliography of Printed and Online Primary Sources for the Middle Ages">
   <meta http-equiv="cleartype" content="on">
 
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  <link media="print" rel="stylesheet" type="text/css" href="/print.css" />
 
   <script src="js/libs/tom-select/js/tom-select.complete.min.js"></script>
   <link href="js/libs/tom-select/css/tom-select.default.min.css" rel="stylesheet" />
@@ -34,10 +35,10 @@
   				<li><a href="/authors.php" title="Search Medieval Authors">Search Authors</a></li>
   				<li><a href="/about/" title="About the Medieval Sources Bibliography">About</a>
   					<ul>
-  						<li><a href="/about/codebook.php" title="Codebook">Codebook</a></li>
-  						<li><a href="/about/compilers.php" title="Compilers">Compilers</a></li>
-  						<li><a href="/about/contents.php" title="Contents">Contents</a></li>
-  						<li><a href="/about/acknowledgements.php" title="Acknowledgements">Acknowledgements</a></li>
+  						<li><a href="/about/codebook" title="Codebook">Codebook</a></li>
+  						<li><a href="/about/compilers" title="Compilers">Compilers</a></li>
+  						<li><a href="/about/contents" title="Contents">Contents</a></li>
+  						<li><a href="/about/acknowledgements" title="Acknowledgements">Acknowledgements</a></li>
   						<li><a href="/news/feedback/" title="Feedback">Leave Feedback</a></li>
   					</ul>
   				</li>

@@ -8,8 +8,11 @@ use Netcarver\Textile\Parser;
 
 class Textile_Editor {
 
+  private $textile;
+  private $is_logged_in;
+
   public function __construct() {
-    $this->textile    = new Parser();
+    $this->textile = new Parser();
 
     $this->is_logged_in = isset( $_SESSION['user'] ) && ! empty( $_SESSION['user'] && ! isset( $_SESSION['user']->error ) );
   }
@@ -26,7 +29,7 @@ class Textile_Editor {
 
       <div class='tab-contents'>
         <div class='tab-content-active'>
-          <textarea id='{$name}' cols='80' rows='15' data-name={$name} onchange='textileParser(" . '"' . $name . '"' . ")'>{$value}</textarea>
+          <textarea id='{$name}' cols='80' rows='15' data-name={$name} name={$name} onchange='textileParser(" . '"' . $name . '"' . ")'>{$value}</textarea>
         </div>
         <div class='text_preview' data-source={$name}>
 

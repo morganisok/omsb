@@ -8,7 +8,9 @@ class Database {
 
   public function __construct() {
     include 'dbcreds.php';
-    $mysqli = new \mysqli( $db_hostname, $db_username, $db_password, 'omsb_dev' );
+    $mysqli = new \mysqli( $db_hostname, $db_username, $db_password, 'omsb_db' );
+    
+    $mysqli->set_charset("utf8mb4");
 
     if( $mysqli ) {
       $this->mysqli = $mysqli;

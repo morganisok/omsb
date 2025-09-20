@@ -26,8 +26,14 @@ use Netcarver\Textile\Parser;
 class Source {
 
   private $db;
-
   private $textile;
+  private $languages;
+  private $countries;
+  private $types;
+  private $subjects;
+  private $authors;
+  private $results;
+  private $editor;
 
   private $is_logged_in;
 
@@ -54,6 +60,10 @@ class Source {
     }
 
     $data = $this->sanitize_input();
+
+    if ( ! isset( $data['my_id'] ) ) {
+      return '<p class="error">Your user profile is missing your OMSB ID number.  Please contact an administrator to add an ID number to your user account.</p>';
+    }
 
     $query = "INSERT INTO sources (id,my_id,editor,title,publication,pub_date,isbn,text_pages,trans_english,trans_french,trans_other,trans_none,date_begin,date_end,region,archive,link,app_index,app_glossary,app_appendix,app_bibliography,app_facsimile,app_intro,comments,intro_summary,addenda,live,created_at,updated_at,user_id,trans_comment,text_name,cataloger)
 VALUES (
@@ -253,7 +263,12 @@ VALUES (
   */
   public function get_source( $id ) {
     $query = sprintf( "SELECT * from sources WHERE id=%s", $this->db->mysqli->real_escape_string( $id ) );
-    return $this->db->mysqli->query( $query );
+    $result = $this->db->mysqli->query( $query );
+    if ( ! $result ) {
+      return false;
+    } else {
+      return $result;
+    }
   }
 
 
@@ -263,6 +278,7 @@ VALUES (
   * @param array $source Array of source details.
   */
   public function private_source_detail( $source ) {
+
     $live    = $source['live'] ? 'This record is visible to the public' : 'This record is hidden from the public';
     $admin   = '<p class="maintenance">
       						<script type="text/javascript" language="JavaScript">
@@ -441,7 +457,7 @@ VALUES (
 
     if ( $edit ) {
       $id     = $existing ? '?id=' . $_GET['id'] : '';
-      $inits  = $existing ? $values['cataloger'] : $_SESSION['user']->initials;
+      $inits  = $values['cataloger'] ? $values['cataloger'] : $_SESSION['user']->initials;
       $userid = $existing ? $values['user_id'] : $_SESSION['user']->omsb_id;
       $live   = "<li class='checkbox'><input name='live' id='live' value='1' type='checkbox' {$checked['live']}><label for='live'>Make record public</label></li>";
       $action = "admin-sources.php{$id}";
@@ -455,7 +471,8 @@ VALUES (
 
     } else {
       $userid = '';
-      $live = "<li class='checkbox'><input name='live' id='live' value='1' type='checkbox'><label for='live'>Public Records</label></li>
+      $inits  = '';
+      $live   = "<li class='checkbox'><input name='live' id='live' value='1' type='checkbox'><label for='live'>Public Records</label></li>
                 <li class='checkbox'><input name='hidden' id='hidden' value='1' type='checkbox'><label for='hidden'>Hidden Records</label></li>";
       $action = '/sources.php';
       $method = 'get';
@@ -551,7 +568,7 @@ VALUES (
             " . $this->authors->get_author_select( $values['author'] ) . "
           </li>
           <li class='half'>
-            <label for 'language'>Original Language:</label>
+            <label for='language'>Original Language:</label>
             " . $this->languages->get_select( 'language', true, $values['language'] ) . "
           </li>
         </ul>
@@ -561,7 +578,7 @@ VALUES (
         <ul>
           <li class='half'><label for='region'>County/Town/Parish/Village</label>
             <input id='region' name='region' value='' type='text' value='{$values['region']}'></li>
-          <li class='half'><label for 'countries'>Geopolitical Region:</label>
+          <li class='half'><label for='countries'>Geopolitical Region:</label>
             " . $this->countries->get_select( 'countries', true, $values['countries'] ) . "
           </li>
         </ul>
@@ -617,14 +634,6 @@ VALUES (
     $values = $source->fetch_array( MYSQLI_ASSOC );
     $merged = array_merge( $empty_values, $values );
 
-    foreach( $checkboxes as $checkbox ) {
-      if ( $merged[ $checkbox ] == 1 ) {
-        $merged[ $checkbox ] = 'checked="checked"';
-      } else {
-        $merged[ $checkbox ] = '';
-      }
-    }
-
     $selects_data = $this->get_source_queries( $_GET['id'], false );
 
     $selects = $this->selects_array( 'table' );
@@ -675,6 +684,7 @@ VALUES (
   public function sanitize_input() {
     $fields  = $this->fields_array();
     $bools   = $this->checkbox_array();
+    $ints    = array( 'text_pages', 'date_begin', 'date_end' );
     $selects = $this->selects_array( 'fields' );
 
     foreach( $fields as $field => $value ) {
@@ -684,6 +694,10 @@ VALUES (
 
       if ( in_array( $field, $bools ) ) {
         $fields[ $field ] = isset( $_POST[ $field ] ) ? 1 : 0;
+      }
+
+      if ( in_array( $field, $ints ) ) {
+        $fields[ $field ] = intval( $_POST[ $field ] );
       }
     }
 
@@ -724,11 +738,9 @@ VALUES (
   *
   */
   public function update_join_tables( $data, $action = 'insert' ) {
-
     $tables = $this->selects_array( 'table' );
-
     foreach( $tables as $tablename => $fieldname ) {
-      if( ! $data[$fieldname] ) {
+      if( ! isset( $data[$fieldname] ) ) {
         continue;
       }
       $name = $tablename == 'authorships' ? 'author_id' : 'name';

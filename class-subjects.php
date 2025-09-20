@@ -25,19 +25,19 @@ class Subjects extends ListClass {
       "Apocalypticism",
       "Architecture and Buildings",
       "Art",
-      "Asiatic Nomads: Huns Mongols, etc.",
+      "Asiatic Nomads: Huns, Mongols, etc.", // comma!
       "Byzantium",
       "Carolingians",
       "Church Fathers",
       "Classics / Humanism",
       "Clergy - Anticlericalism",
-      "Clergy - Monks Nuns, Friars",
-      "Clergy - Priests Bishops, Canons",
+      "Clergy - Monks, Nuns, Friars", // comma!
+      "Clergy - Priests, Bishops, Canons", // comma!
       "Conversion",
       "Cosmology",
       "Crusades",
       "Diplomacy",
-      "Early Germanic Peoples: Goths Franks, etc.",
+      "Early Germanic Peoples: Goths, Franks, etc.", // comma!
       "Economy - Crafts and Industry",
       "Economy - Guilds and Labor",
       "Economy - Trade",
@@ -62,7 +62,7 @@ class Subjects extends ListClass {
       "Literature - Other",
       "Magic / Witchcraft",
       "Maritime",
-      "Material Culture: Food Clothing, Household",
+      "Material Culture: Food, Clothing, Household", // comma!
       "Medicine",
       "Military Orders",
       "Monasticism",
